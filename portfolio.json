@@ -3,7 +3,7 @@
   "track_counts": {
     "memory": 3,
     "safety": 2,
-    "post-training": 2,
+    "post-training": 3,
     "autonomous": 2
   },
   "projects": [
@@ -87,6 +87,15 @@
       "stage": "event application/approval unverified",
       "priority": "CONDITIONAL time-boxed",
       "next": "Check approval and event rules; attend only if logistics permit or continue the same research outside the hack."
+    },
+    {
+      "id": "adaptive-ttc",
+      "title": "Adaptive Test-Time Compute (TTC)",
+      "track": "post-training",
+      "source": "https://frontier-rl-project-atlas-2711vedant-6531.vercel.app/",
+      "stage": "conceptual research design; no dedicated TTC code or executed result verified",
+      "priority": "CONDITIONAL—cost/headroom pilot before RL spend",
+      "next": "Audit Atlas and prior art; reuse Terminal DreamGym or Role Work Forge verifiable tasks; test compute-sensitive headroom and cheap strong baselines; only then train RL controller."
     }
   ]
 }

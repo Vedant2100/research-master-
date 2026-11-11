@@ -7,9 +7,9 @@ from pathlib import Path
 root = Path(__file__).resolve().parents[1]
 data = json.loads((root / "portfolio.json").read_text())
 projects = data["projects"]
-assert len(projects) == 9
-assert len({p["id"] for p in projects}) == 9
-assert data["track_counts"] == {"memory": 3, "safety": 2, "post-training": 2, "autonomous": 2}
+assert len(projects) == 10
+assert len({p["id"] for p in projects}) == 10
+assert data["track_counts"] == {"memory": 3, "safety": 2, "post-training": 3, "autonomous": 2}
 for p in projects:
     slug = p["id"]
     for filename in (
@@ -23,4 +23,4 @@ for p in projects:
     assert copilot.startswith("---") and "description:" in copilot.split("---", 2)[1]
     codex = tomllib.loads((root / f".codex/agents/{slug}.toml").read_text())
     assert codex["name"] == slug and codex["description"] and codex["developer_instructions"]
-print("PASS: 9 thread agents; Copilot + Codex profiles; exact track counts")
+print("PASS: 10 thread agents; Copilot + Codex profiles; exact track counts")

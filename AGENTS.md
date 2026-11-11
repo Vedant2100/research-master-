@@ -1,6 +1,6 @@
 # Master agent contract
 
-**Four active research tracks; nine thread-specific specialists.** Each role owns one research question and one status file. This repo tracks evidence and coordination; code and raw results remain in their original repositories.
+**Four active research tracks; ten thread-specific specialists.** Each role owns one research question and one status file. This repo tracks evidence and coordination; code and raw results remain in their original repositories.
 
 ## Mandatory upstream reuse (supersedes any suggestion to reimplement)
 
@@ -23,4 +23,8 @@ Before writing code, every specialist MUST open [SOURCE_MAP.md](SOURCE_MAP.md), 
 - Codex: one project-scoped role at `.codex/agents/<slug>.toml`; explicitly delegate from a session with the necessary repo permissions.
 - Parallelism is permitted only when resources and assignments are independently isolated. Never invent agent sessions, submissions or model runs.
 
-Supporting Fleet-Mem governance is prior work, **not a tenth agent**.
+Supporting Fleet-Mem governance is prior work, **not an eleventh agent**.
+
+
+## Tenth specialist — TTC
+`adaptive-ttc` is a **design-stage conditional pilot** under RL Post-Training, not an existing trained model. Read [TTC brief](projects/adaptive-ttc.md) and [Source Map](SOURCE_MAP.md); use original DreamGym/reward verifier code rather than making another generic agent harness. Cross-episode policy learning, matched compute budgets, and held-out transfer are the scientific differentiators. Coordinate upstream code changes with the DreamGym and RewardHackLab agents. [Issue #10](https://github.com/Vedant2100/research-master-/issues/10).
