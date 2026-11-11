@@ -1,0 +1,92 @@
+{
+  "schema_version": "2026-11-11",
+  "track_counts": {
+    "memory": 3,
+    "safety": 2,
+    "post-training": 2,
+    "autonomous": 2
+  },
+  "projects": [
+    {
+      "id": "frontiermemory",
+      "title": "FrontierMemory Learning",
+      "track": "memory",
+      "source": "https://github.com/Vedant2100/frontiermemory-learning",
+      "stage": "executed official-style audit, drafted paper",
+      "priority": "HIGH—finish paper",
+      "next": "Finalize latest generator/blend arm and artifact, freeze figures, decide FORGE Nov 15 submission and save receipt; then per-task oracle-from-history and Word2Vec ablations."
+    },
+    {
+      "id": "evomembench",
+      "title": "EvoMemBench",
+      "track": "memory",
+      "source": "https://github.com/Vedant2100/evo-mem-bench",
+      "stage": "implemented harness and exploratory diagnostic; full matrix unverified",
+      "priority": "CONDITIONAL—competence gate first",
+      "next": "Run no-memory/playbook headroom (overall >=55%, category >=30%, avoid >95% ceiling), matched seeds, complete held-out core methods before large GPU matrix."
+    },
+    {
+      "id": "stalestream",
+      "title": "StaleStream / CS258",
+      "track": "memory",
+      "source": "https://github.com/Vedant2100/f26/tree/main/cs258/stalestream",
+      "stage": "proposal and preflight, not trained",
+      "priority": "HIGH—course deliverable",
+      "next": "Nov 12 proposal target; Nov 19 300 held-out episodes with oracle QA >=90% and >=20 point gap vs strongest fair baseline plus measured 20-step timing; Nov 24 GRPO pilot; Dec 3 freeze; Dec 10 report."
+    },
+    {
+      "id": "contagionbench",
+      "title": "ContagionBench / Swarm",
+      "track": "safety",
+      "source": "https://github.com/Vedant2100/role-work-forge-artifacts/tree/main/hackathons/2026-11/contagionbench",
+      "stage": "executed pilot, needs causal replication",
+      "priority": "HIGH after independence fix",
+      "next": "Complete independent-seed and source/mediator replication; AGENT Nov 20 only if evidence strong; Dec Apart Agent Attribution requires truly new controller-attribution experiments."
+    },
+    {
+      "id": "provenancetrap",
+      "title": "ProvenanceTrap / micro1",
+      "track": "safety",
+      "source": "https://github.com/Vedant2100/role-work-forge-artifacts/tree/main/hackathons/2026-11/provenancetrap",
+      "stage": "executed diagnostic, agent competence blocker",
+      "priority": "CONDITIONAL",
+      "next": "Improve task completion then retest under same scoring; AGENTVERIFY/AGENT or later reliability venue only if evidence matures."
+    },
+    {
+      "id": "rewardhacklab",
+      "title": "RewardHackLab / Lexsi",
+      "track": "post-training",
+      "source": "https://github.com/Vedant2100/role-work-forge-artifacts/tree/main/hackathons/2026-11/rewardhacklab",
+      "stage": "completed SFT pilot, no RL run",
+      "priority": "CONDITIONAL—fix execution first",
+      "next": "Repair tool-call execution to get nonzero baseline, then try real RL; submit honest Lexsi Stage 1 packet by Nov 15 AoE if feasible."
+    },
+    {
+      "id": "vals",
+      "title": "Vals AI Benchmaxxing",
+      "track": "post-training",
+      "source": "https://www.vals.ai/hackathon",
+      "stage": "registration approved, event not run",
+      "priority": "HIGH time-boxed",
+      "next": "Prepare benchmark and training environment, attend if practical, run baseline→training→eval, preserve code and evidence; avoid spawning an unrelated permanent repo."
+    },
+    {
+      "id": "terminal-dreamgym",
+      "title": "Terminal DreamGym",
+      "track": "autonomous",
+      "source": "https://github.com/Vedant2100/terminal_dreamgym",
+      "stage": "implemented live loop, conflicting result protocols",
+      "priority": "HIGH if replicated",
+      "next": "Reconcile test splits/prompts/protocol and repeat matched multiple seeds; compare no-skill, reflection, naive gate, heldout gate; then prepare genuine demo/paper."
+    },
+    {
+      "id": "iterate",
+      "title": "Iterate AI Research Hack",
+      "track": "autonomous",
+      "source": "https://luma.com/sht6n8du",
+      "stage": "event application/approval unverified",
+      "priority": "CONDITIONAL time-boxed",
+      "next": "Check approval and event rules; attend only if logistics permit or continue the same research outside the hack."
+    }
+  ]
+}
