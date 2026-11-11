@@ -15,3 +15,10 @@
 - **Stop/go:** Not a codebase or completed result; must check exact official competition rules and avoid overfitting.
 
 **Cross-project rule:** Avoid duplicated experiments. Preserve a distinct falsifiable causal question and controls.
+
+## [Adaptive Test-Time Compute (TTC)](../projects/adaptive-ttc.md)
+- **Current state:** hypothesis / incubation; no verified TTC-specific trained model or results.
+- **Priority:** CONDITIONAL pilot, worth testing because of long-horizon agentic RL fit; no significant GPU investment until a competence and compute-headroom check passes.
+- **Question:** can a persistent RL compute-allocation policy learn from prior tasks, then transfer to held-out task families at matched token, latency and tool budgets?
+- **Next:** reuse existing terminal/tool evaluation source, audit the [Atlas](https://frontier-rl-project-atlas-2711vedant-6531.vercel.app/) and prior work, run an honest cheap cost/utility diagnostic. [Owner issue #10](https://github.com/Vedant2100/research-master-/issues/10).
+- **Stop/go:** stop if heuristics or per-task routers already saturate the compute-quality Pareto frontier, if the model cannot solve tasks, or if transfer disappears.

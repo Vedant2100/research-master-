@@ -1,6 +1,6 @@
 # Canonical upstream code map — reuse before implementation
 
-**All nine specialists must use existing working code, configs, tests, artifacts, and prior experiment results. This public master is a control plane, not a monorepo. Do not copy source directories or rebuild a working harness here.**
+**All ten specialists must use existing working code, configs, tests, artifacts, and prior experiment results. This public master is a control plane, not a monorepo. Do not copy source directories or rebuild a working harness here.**
 
 ## Exact source locations
 
@@ -30,3 +30,12 @@
 ## Scope control
 
 This map is an index, not a synchronization system. No Git submodules, copies of entire repos, new CI runners for the scientific workloads, or auto-launched agents are needed. Each specialist should first answer: **What already exists, which version works, and what is the smallest justified next change?**
+
+
+## New tenth agent — Adaptive TTC (conditional pilot)
+
+| Agent | Existing sources (do not duplicate) | First verified scope |
+|---|---|---|
+| `adaptive-ttc` | [Terminal DreamGym](https://github.com/Vedant2100/terminal_dreamgym) `main` — `terminal_dreamgym/`, `task_templates/`, `tests/`, `runs/`, `reports/`; [private Role Work Forge artifacts](https://github.com/Vedant2100/role-work-forge-artifacts) `main` — `hackathons/2026-11/rewardhacklab/`, `experiments/`, `tests/`; [Frontier Agent Learning Atlas](https://frontier-rl-project-atlas-2711vedant-6531.vercel.app/) as conceptual design artifact, **not code verified available**. | Read original repos and tests first, choose a verifiable task harness with measurable compute sensitivity, then implement only the missing TTC action-router module **in that source repository**. Coordinate with `terminal-dreamgym` and `rewardhacklab`; do not copy their code into this public master. |
+
+The Vercel Atlas deployment exists and is READY but its deployment file-reader truncates the HTML. Do not claim a full Atlas audit until an authorized full-page read is available.
