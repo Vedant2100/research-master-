@@ -1,0 +1,4 @@
+[agents]
+enabled = true
+# Allows explicit delegation to nine specialists, without launching them automatically.
+max_concurrent_threads_per_session = 9
