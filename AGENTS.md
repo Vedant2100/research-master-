@@ -2,6 +2,10 @@
 
 **Four active research tracks; nine thread-specific specialists.** Each role owns one research question and one status file. This repo tracks evidence and coordination; code and raw results remain in their original repositories.
 
+## Mandatory upstream reuse (supersedes any suggestion to reimplement)
+
+Before writing code, every specialist MUST open [SOURCE_MAP.md](SOURCE_MAP.md), access the correct original upstream repository and any relevant experiment branches, inspect existing source/tests/configs/results, and continue the implementation from there. **Do not create duplicate harnesses, experiment pipelines, training code, or source copies in this master.** Only missing functionality is implemented, as scoped changes to the original upstream source. Vals reuses RewardHackLab/evaluation infrastructure; Iterate reuses Terminal DreamGym. If the original repo is private or unavailable, stop and report access needs, not an invented substitute.
+
 ## Workflow
 1. Read `README.md`, `AGENT_ROSTER.md`, `GOVERNANCE.md`, `EVIDENCE.md`, the assigned `projects/<slug>.md`, its `workstreams/<slug>/STATUS.md`, and the actual source repository.
 2. Record hypothesis, controls, split, seeds, worker, verifier SHA, cost cap and end-to-end timing before a new experiment.

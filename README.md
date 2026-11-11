@@ -23,6 +23,9 @@ The research portfolio coordinating **nine distinct workstreams across four cont
 
 ## Tracking and sources
 
+- **[Canonical upstream code map — required for all nine agents](SOURCE_MAP.md): reuse source repositories and existing results; do not reinvent or copy them.**
+
+
 - [Nine-agent roster](AGENT_ROSTER.md) and [coordination protocol](AGENTS.md)
 - [Evidence ledger](EVIDENCE.md) · [Investment decisions](DECISIONS.md) · [Roadmap](ROADMAP.md) · [Research venues](VENUES.md) · [Scientific governance](GOVERNANCE.md)
 - [Track summaries](tracks) · [Machine-readable index](portfolio.json)
