@@ -14,3 +14,9 @@
 | Dec 11–13 | Apart Agent Attribution sprint only if registered, new attribution experiments |
 
 **Weekly minimum:** Memory — completed audit/competence/headroom; Safety — independent seeded safety/competence test; RL — nonzero tool-agent verified outcome or actual reward training; Autonomous — matched DreamGym transfer replication. Report blocker, evidence URL, next action for EACH track.
+
+## TTC incubation — internal checkpoints, not external deadlines
+- First: inspect the entire accessible [Atlas](https://frontier-rl-project-atlas-2711vedant-6531.vercel.app/) and existing DreamGym/RewardHackLab source + actual traces; write a prior-art overlap matrix against learned dynamic planning and reasoning-budget papers.
+- Then: run cheap paired task-level headroom assessment (fixed low/high budget and strongest cheap heuristic), recording real tokens, latency, verification/tool calls and terminal success. Coordinate with source-repo owners; do not duplicate a harness.
+- Only if competence, budget sensitivity and heldout splits are verified: implement an actual experience-adaptive RL allocation policy, compare vs heuristics/bandits/SFT router, replicate across >=3 independent seeds and shifted task families.
+- Go/no-go before any material GPU allocation; this remains a **conditional tenth workstream** within the existing four active tracks, not a fifth track or confirmed TTC result.

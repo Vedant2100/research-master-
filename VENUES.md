@@ -16,3 +16,7 @@
 | [ICML 2027](https://icml.cc/Conferences/2027/CallForPapers) | CFP TBD | mature RL and memory | Watch |
 
 Do not submit duplicate archival manuscripts simultaneously. Verify source CFP, abstract cutoffs, page limits, prior-work disclosures and deadlines before choosing. All submissions require receipts. Apart Fellowships are usually through strong sprint performance; missing Swarm does not bar future Apart participation.
+
+## Adaptive TTC publication strategy (candidate, not selected)
+
+TTC is research design only. Its strongest target is a later topical **ICLR/ICML/NeurIPS workshop** on RL post-training, learning agents or efficient inference *after* a genuine matched-budget held-out result exists; check official workshop CFP dates and archival/preprint policies at submission time. Reuse existing Vals benchmark participation only if organizers' permitted environment meaningfully tests compute allocation; otherwise do not retrofit an unrelated hackathon entry. Existing **AGENT** workshop might thematically fit, but Nov 20 is too near for a new, unimplemented TTC experiment—do not rush a paper. No venue submission has occurred.

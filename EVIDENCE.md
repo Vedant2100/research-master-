@@ -37,3 +37,10 @@
 **Interpretation limits:** Overlaps Vals; do not claim both attended or a general recursively self-improving agent.
 
 **Claim labels:** proposed, implemented, executed, replicated, externally submitted, accepted. Do not infer one from another; source repository linked from each project card.
+
+## [Adaptive Test-Time Compute (TTC)](projects/adaptive-ttc.md)
+**Status — conceptual only:** Earlier conversations proposed learning an agent's inference-time budget policy over repeated long-horizon tasks and measuring cost, transfer, retention and delayed reward. The referenced [Frontier Agent Learning Atlas](https://frontier-rl-project-atlas-2711vedant-6531.vercel.app/) is deployed and marked READY by Vercel on Nov 11, but its source HTML was truncated by the available reader. No dedicated TTC code, trained policy, compute savings, or held-out results have been verified. The new TTC agent and workstream are coordination files, not an executed experiment.
+
+**Existing scientific evidence from others (not our results):** [Learning When to Plan](https://arxiv.org/abs/2509.03581) uses SFT+PPO to learn planning choices in sequential agents; [Learning When to Think](https://arxiv.org/abs/2608.20256) uses GRPO to choose reasoning effort; [constrained compute allocation](https://arxiv.org/abs/2604.14853) learns cost-limited sample allocation; [When Agents Slow Down](https://arxiv.org/abs/2609.15309) analyzes compute-efficiency breakdowns. TTC novelty must be established relative to these baselines.
+
+**Future proof needed:** compute-sensitive verified task successes, matched tool/token/latency budgets, strong heuristic/bandit baselines, an actually learned RL policy, heldout transfer across task families, multiple independent seeds, uncertainty, and provenance. Do not make progress/novelty claims before this evidence exists.
