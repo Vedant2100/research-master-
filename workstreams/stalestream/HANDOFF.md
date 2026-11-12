@@ -37,6 +37,8 @@ Read this, then `STATUS.md` (evidence log), `README.md` (commands), `CS258_Desig
   FactConsolidation. Injections optional.
 
 ## Work queue (in order; each has a done-criterion)
+Parallelism: A (gate v2) mostly needs GPU 1 (extraction model, 32B check); B7 (full fine-tuning
+timing) needs GPU 0. They can run at the same time.
 
 ### A. Before any more training (blocking)
 1. **Validation split.** Three-way entity-disjoint split (train/val/test) by subject hash, without
@@ -60,17 +62,35 @@ Read this, then `STATUS.md` (evidence log), `README.md` (commands), `CS258_Desig
 7. **Full fine-tuning path** for `grpo.py`: policy on GPU 0 (bf16, gradient checkpointing,
    8-bit or bf16 Adam), writer sampler and reader both on GPU 1, weight sync each step (TRL vLLM
    server-mode sync or equivalent), KL penalty to the reference model. Done when a 20-step run
-   completes, with s/step recorded.
+   completes, with s/step recorded. The submitted proposal text may say "with LoRA"; tell the owner
+   so the Google Doc gets a one-line note when this lands.
 8. **Sample bank → RFT + DPO.** Base writer samples G=8 per state; pairs share the same prompt
    (per-session shared-prefix states, finished greedily to score). Match GRPO's sampling budget
    (steps × 32 trajectories). DPO keeps pairs with a reward gap ≥ 2/6.
 9. **Main runs:** GRPO 300 steps × 3 seeds; DPO and RFT × 3 seeds; model selection on validation only.
+   RLOO only if time permits. Its advantages are unnormalized (~6× smaller gradients than GRPO at
+   the same lr), so either tune its lr on validation or report the effective-step-size difference.
 10. **Held-out reader** (different model family) on final test memories.
 
 ### C. Evaluation and writing
 11. **FactConsolidation** (MemoryAgentBench, built from MQuAKE): remove its entities from training
     first; 6K single-hop version; report the memory budget used.
-12. Update the Google Doc design (compute = 2× A30; DPO added; scope cuts). The owner does this.
+12. **Injections (optional, only if time):** held-out MemPoison-style attack families; writer trained
+    with vs without injections vs a static consistency-check defense.
+13. Update the Google Doc design (compute = 2× A30; DPO added; optional items marked). The owner does this.
+
+### D. Housekeeping
+14. Open a PR for `agent/stalestream/v0-env` (the owner or coordinator merges it).
+15. The original machine has a local-only branch `backup/pre-push-rewrite` (pre-rewrite history,
+    including the gate file). Delete it once the PR is merged.
+16. Update STATUS as each item lands (evidence, commands, numbers), and tick this queue.
+
+### E. Later (after RL shows real conflict-resolution gains)
+17. **Weight-space programming comparison.** A frontier LLM edits the writer's weights from a
+    plain-language memory policy, without gradients (MIT CSAIL, Nov 2026:
+    https://rikiyat.github.io/blog/weight-space-programming/). Compare against GRPO/DPO on the same
+    held-out episodes. This tests whether RL's gains are only "obstacle removal" (format/budget).
+    Needs paid frontier-API access: ask the owner first. Not part of the CS258 proposal.
 
 ## Known machine pitfalls (original machine)
 - Home has a hidden ~11 GB cap. Everything heavy goes on `/scratch`; `source /scratch/vbork001/stalestream/env.sh`.
