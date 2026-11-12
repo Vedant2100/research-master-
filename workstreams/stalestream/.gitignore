@@ -1,2 +1,4 @@
 __pycache__/
 *.pyc
+# copied locally from private Vedant2100/f26@1b30fd7; do not commit to this public repo
+headroom_gate.py

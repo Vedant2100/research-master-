@@ -1,8 +1,12 @@
 # StaleStream code (v0)
 
 Environment, baselines, reader and GRPO/RLOO loop for the CS258 project. See
-`CS258_Design_Doc.md` for the design and `STATUS.md` for evidence. `headroom_gate.py`
-is copied unchanged from `Vedant2100/f26@1b30fd7:cs258/stalestream/headroom_gate.py`.
+`CS258_Design_Doc.md` for the design and `STATUS.md` for evidence.
+
+The gate script lives in the private source repo and is **not** committed here (this repo
+is public). Copy it next to this README before step 4:
+`cp <f26 checkout>/cs258/stalestream/headroom_gate.py .` (used unchanged at `f26@1b30fd7`;
+it is git-ignored here).
 
 ## Setup (this machine)
 
