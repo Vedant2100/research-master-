@@ -29,8 +29,8 @@
 **Interpretation limits:** Not a codebase or completed result; must check exact official competition rules and avoid overfitting.
 
 ## [Terminal DreamGym](projects/terminal-dreamgym.md)
-**Verified/source-reported:** Live Qwen2.5-7B demo baseline train/heldout/adv 2/8,1/6,2/6; reflection 4/8,2/6,1/6; gated 6/8,3/6,4/6. Later two-seed sweep reports zero deltas and 100% false promotion under its metric.
-**Interpretation limits:** Single positive demo and null sweep are not same protocol; cannot claim robust self-improvement. Mock runs not evidence of model learning.
+**Verified/source-reported:** Preregistered matched evaluation, 2026-11-12 (Qwen2.5-7B, 100 tasks × 3 seeds, equal attempts): handwritten skills − no skill = +0.060 strict success, 95% CI [−0.028, +0.151]; placebo − no skill +0.018; all 1,200 runs re-scored from sandboxes. The July demo's gain came with 3× the baseline's attempts; the "two-seed sweep" was unit-test mock data, not a model run.
+**Interpretation limits:** Skills are fixed handwritten text, so this is not a self-improvement test. Held-out tasks share repos with train tasks; low power (9 of 19 base tasks tie).
 
 ## [Iterate AI Research Hack](projects/iterate.md)
 **Verified/source-reported:** Event Nov 14–15. DreamGym existing repository is candidate; no evidence of accepted registration, attendance or official submission.

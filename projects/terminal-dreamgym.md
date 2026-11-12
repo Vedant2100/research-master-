@@ -2,22 +2,22 @@
 
 **Track:** Autonomous Research & Self-Improvement  
 **Source:** https://github.com/Vedant2100/terminal_dreamgym  
-**State:** implemented live loop, conflicting result protocols  
+**State:** matched evaluation executed 2026-11-12 (null primary result); skills are handwritten, not model-written  
 **Decision:** HIGH if replicated
 
 ## Research question
 Can failure-conditioned generated practice tasks and skill promotion yield sustained held-out/adversarial transfer beyond naive reflection?
 
 ## Existing evidence
-Live Qwen2.5-7B demo baseline train/heldout/adv 2/8,1/6,2/6; reflection 4/8,2/6,1/6; gated 6/8,3/6,4/6. Later two-seed sweep reports zero deltas and 100% false promotion under its metric.
+Matched evaluation (Qwen2.5-7B, 100 tasks × 3 seeds, equal 3-attempt budget, preregistered): handwritten skills 0.572 vs no skill 0.512 strict success, +0.060 [−0.028, +0.151]; placebo 0.530; bad-advice text 0.442. The July demo (2/8,1/6,2/6 → 6/8,3/6,4/6) gave the baseline 1 attempt vs 3; the "two-seed sweep" was unit-test mock data. Details: [STATUS](../workstreams/terminal-dreamgym/STATUS.md).
 
 ## Methods / comparisons
 Real model suggests patches after pytest failures; generate curriculum worlds and SKILL.md; holdout/adversarial gates; capture diffs, decisions, costs and regressions.
 
 ## Limitations and unproven claims
-Single positive demo and null sweep are not same protocol; cannot claim robust self-improvement. Mock runs not evidence of model learning.
+Skills and diagnoses are fixed handwritten text, so self-improvement is untested. Held-out tasks share repos with train tasks; weak regression check; low power (9 of 19 base tasks tie).
 
 ## Next decisive action
-Reconcile test splits/prompts/protocol and repeat matched multiple seeds; compare no-skill, reflection, naive gate, heldout gate; then prepare genuine demo/paper.
+Model-written skills from the model's own failure traces, leave-one-family-out, same protocol; compare with handwritten, placebo and no skill.
 
 See [evidence ledger](../EVIDENCE.md), [investment assessment](../DECISIONS.md) and [venues](../VENUES.md).
