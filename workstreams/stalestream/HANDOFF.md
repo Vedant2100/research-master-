@@ -91,6 +91,18 @@ timing) needs GPU 0. They can run at the same time.
    GRPO: 32 trajectories/step as 32 episodes × 1. Reader reward logged for monitoring and checkpoint
    selection only. Next: `ALGO=opsd DATA=$S/data/episodes_v3 TAG=_opsd STEPS=10 scripts/full_ft_timing.sh`
    once the gate passes. Possible later ablation: hints vs answers as privileged information.
+8c. **Shared-memory local groups for GRPO (Memory-R2's LoGo-GRPO, arXiv 2605.21768).** Once rollouts write
+   different session-1 memories, their later rewards are not comparable (different effective
+   environments), so plain trajectory-level GRPO gives biased credit. Add a local branch: from one
+   sampled intermediate memory, roll out G candidates for the next session, finish greedily, and compute
+   group-relative advantages within that shared state, alongside the global trajectory advantage.
+   Reuse the shared-state machinery of the DPO bank (item 8). Ablate global-only vs global+local.
+8d. **Session-length curriculum.** Train 2 → 3 → 4 sessions (Memory-R2: without a horizon curriculum,
+   long-horizon training collapsed). Select each stage's checkpoint on val.
+8e. **Per-session verifiable reward (ablation, not default).** After each session, the fraction of
+   currently valid facts (truth as of that session, from hidden labels) whose correct value appears in
+   memory. Dense and needs no learned verifier (cf. TrustMem 2606.25161, AiO-Mem 2610.21147).
+   The 160-token budget limits stuffing. The default reward stays reader EM.
 9. **Main runs:** GRPO 300 steps × 3 seeds; DPO and RFT × 3 seeds; model selection on validation only.
    RLOO only if time permits. Its advantages are unnormalized (~6× smaller gradients than GRPO at
    the same lr), so either tune its lr on validation or report the effective-step-size difference.
@@ -101,6 +113,9 @@ timing) needs GPU 0. They can run at the same time.
     first; 6K single-hop version; report the memory budget used.
 12. **Injections (optional, only if time):** held-out MemPoison-style attack families; writer trained
     with vs without injections vs a static consistency-check defense.
+12a. **Related work update.** The proposal line "RL writers like Memory-R1 and Mem-α don't handle stale
+    facts" is dated: cite Memory-R2, TrustMem, LifeFuse-Mem, AiO-Mem (2026) and narrow the gap claim to
+    conflict resolution under dates and source reliability.
 13. Update the Google Doc design (compute = 2× A30; DPO added; optional items marked). The owner does this.
 
 ### D. Housekeeping
