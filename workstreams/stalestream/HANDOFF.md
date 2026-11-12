@@ -29,8 +29,9 @@ Read this, then `STATUS.md` (evidence log), `README.md` (commands), `CS258_Desig
   deterministic; vLLM sampling is only approximately reproducible.
 
 ## Decisions already made by the owner
-- Main comparison: **GRPO vs DPO**, with **RFT** as the supervised baseline. RLOO only if time
-  permits. Keep/drop controller dropped. (Agreed with the course instructor by email.)
+- Main comparison: **GRPO vs DPO**, with **RFT** as the supervised baseline (agreed with the course
+  instructor by email). **OPSD added as a training arm** (owner, 2026-11-12), with hints-only privileged
+  information. RLOO only if time permits. Keep/drop controller dropped.
 - **No LoRA:** switch to full fine-tuning (matches Memory-R1 / Mem-α).
 - Baselines promised: no memory, oracle, BM25, newest-wins, LLM extraction + rules, prompted
   Qwen3-1.7B and Qwen3-32B writers, RFT. Evaluation: held-out entities, one held-out reader,
@@ -81,6 +82,15 @@ timing) needs GPU 0. They can run at the same time.
 8. **Sample bank → RFT + DPO.** Base writer samples G=8 per state; pairs share the same prompt
    (per-session shared-prefix states, finished greedily to score). Match GRPO's sampling budget
    (steps × 32 trajectories). DPO keeps pairs with a reward gap ≥ 2/6.
+8b. **OPSD arm (owner decision 2026-11-12; implemented, not yet smoke-tested).** On-policy self-distillation
+   (Zhao et al., arXiv 2601.18734): `grpo_full.py --algo opsd`. The student is the writer; the teacher is the
+   same current model (gradient-free) prompted with **derivable hints only** (`hints.py`): resolved absolute
+   dates for the current session's statements, aliases introduced so far, and the unreliable source only
+   after its audit line has appeared. Never answers or oracle memory (limits "privilege illusion").
+   Loss: per-token full-vocabulary reverse KL(student‖teacher) on student rollouts. Budget matched to
+   GRPO: 32 trajectories/step as 32 episodes × 1. Reader reward logged for monitoring and checkpoint
+   selection only. Next: `ALGO=opsd DATA=$S/data/episodes_v3 TAG=_opsd STEPS=10 scripts/full_ft_timing.sh`
+   once the gate passes. Possible later ablation: hints vs answers as privileged information.
 9. **Main runs:** GRPO 300 steps × 3 seeds; DPO and RFT × 3 seeds; model selection on validation only.
    RLOO only if time permits. Its advantages are unnormalized (~6× smaller gradients than GRPO at
    the same lr), so either tune its lr on validation or report the effective-step-size difference.

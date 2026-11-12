@@ -38,6 +38,20 @@ def build_prompt(tok, memory: str, statements, session: int, budget: int = BUDGE
                                    add_generation_prompt=True, enable_thinking=False)
 
 
+def build_teacher_prompt(tok, memory: str, ep, session: int, budget: int = BUDGET_TOKENS) -> str:
+    """OPSD teacher view: same instructions and memory, statements annotated with resolved dates,
+    plus notes derivable from the stream so far (see hints.py). Never contains answers."""
+    from .hints import teacher_notes, teacher_statements
+    body = WRITER_PROMPT.format(budget=budget, memory=memory or "(empty)", session=session + 1,
+                                statements="\n".join(teacher_statements(ep, session)))
+    notes = teacher_notes(ep, session)
+    if notes:
+        body = body.replace("Write the full revised memory now",
+                            "VERIFIED NOTES:\n" + notes + "\n\nWrite the full revised memory now")
+    return tok.apply_chat_template([{"role": "user", "content": body}], tokenize=False,
+                                   add_generation_prompt=True, enable_thinking=False)
+
+
 def clean(text: str) -> str:
     import re
     return re.sub(r"<think>.*?</think>", "", text, flags=re.S).strip()

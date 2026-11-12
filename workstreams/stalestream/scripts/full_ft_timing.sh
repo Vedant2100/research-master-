@@ -4,8 +4,9 @@
 set -euo pipefail
 source /scratch/vbork001/stalestream/env.sh
 export HF_HUB_OFFLINE=1 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
-D=$S/data/episodes_v1
-R=$S/runs/full_ft_timing
+D=${DATA:-$S/data/episodes_v1}
+ALGO=${ALGO:-grpo}
+R=$S/runs/full_ft_timing${TAG:-}
 mkdir -p "$R"
 log() { echo "[$(date +%T)] $*"; }
 
@@ -32,10 +33,14 @@ RS=$!
 wait_up 8401 $RS
 log "servers up"
 
+# OPSD: same 32 trajectories per step as GRPO, as 32 episodes x 1 sample (no groups needed)
+EXTRA=""; [ "$ALGO" = opsd ] && EXTRA="--episodes-per-step 32 --group 1"
 CUDA_VISIBLE_DEVICES=0 python -m stalestream.grpo_full --episodes $D/train_2s.jsonl --aliases $D/value_aliases.json \
-  --steps ${STEPS:-20} --algo grpo --beta 0 --out $R/beta0 >|"$R/beta0.log" 2>&1
-log "beta0 done"
-CUDA_VISIBLE_DEVICES=0 python -m stalestream.grpo_full --episodes $D/train_2s.jsonl --aliases $D/value_aliases.json \
-  --steps 5 --algo grpo --beta 0.01 --out $R/beta001 >|"$R/beta001.log" 2>&1
-log "beta001 done"
+  --steps ${STEPS:-20} --algo $ALGO --beta 0 $EXTRA --out $R/${ALGO}_beta0 >|"$R/${ALGO}_beta0.log" 2>&1
+log "${ALGO} beta0 done"
+if [ "${KL_TEST:-0}" = 1 ]; then
+  CUDA_VISIBLE_DEVICES=0 python -m stalestream.grpo_full --episodes $D/train_2s.jsonl --aliases $D/value_aliases.json \
+    --steps 5 --algo grpo --beta 0.01 --out $R/beta001 >|"$R/beta001.log" 2>&1
+  log "beta001 done"
+fi
 log "TIMING DONE"
