@@ -125,6 +125,14 @@ timing) needs GPU 0. They can run at the same time.
 16. Update STATUS as each item lands (evidence, commands, numbers), and tick this queue.
 
 ### E. Later (after RL shows real conflict-resolution gains)
+17a. **PPO (optional, owner 2026-11-12).** A separate critic does not fit (GPU 0 at 21 GB with full
+    fine-tuning). Options: a value head on the policy trunk, or VinePPO-style Monte Carlo values from
+    shared-state rerollouts (reuses item 8c). Memory-R1 found GRPO ≥ PPO, so this is a comparison
+    point, not an expected win.
+17b. **Learned reward models (optional).** (i) Bradley-Terry reward model trained on the DPO preference
+    pairs, then RL against it: compares DPO vs RM+RL on the same preference data. (ii) A learned
+    per-session process reward model (cf. AiO-Mem): lowest priority, since 8e already gives a
+    verifiable per-session score.
 17. **Weight-space programming comparison.** A frontier LLM edits the writer's weights from a
     plain-language memory policy, without gradients (MIT CSAIL, Nov 2026:
     https://rikiyat.github.io/blog/weight-space-programming/). Compare against GRPO/DPO on the same
