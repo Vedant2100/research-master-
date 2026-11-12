@@ -3,7 +3,7 @@
 **Area:** Memory & Continual Learning
 **Source:** https://github.com/Vedant2100/f26/tree/main/cs258/stalestream
 **Owner agent:** `stalestream`
-**Current agent state:** v0 IMPLEMENTED + EXECUTED (headroom gate FAILED vs symbolic resolver; GRPO 20-step timing measured). Next: v1 language difficulty.
+**Current agent state:** v1 gate PASS vs template baselines; 100-step GRPO/RLOO pilot +3 pts (format/budget, not conflict resolution). BLOCKED on strong LLM-extract+resolve baseline before more training.
 
 ## Research aim
 Learn a bounded memory rewrite policy for changing facts with downstream reader reward.
@@ -69,6 +69,21 @@ Gate (all non-privileged arms incl. prompted_4b): strongest = prompted_4b, oracl
 - **Eval:** greedy writer with final adapter on the 300 v1 test episodes (3–4 sessions, held-out entities); same reader; compared paired to prompted_1.7b (0.222, the same model without training).
 - **Learning-signal criterion (decides the Nov 24 branch):** trained − prompted_1.7b on test EM with paired bootstrap 95% CI excluding 0, for at least one of GRPO/RLOO. Otherwise: "no learning signal at 100 steps" and RFT becomes the main trained writer per the design. Train-reward trend (mean of last 20 vs first 20 steps) reported but not decisive.
 - **Not tested here:** seeds, held-out readers, RFT, controller. One seed only: no claim about GRPO vs RLOO ranking.
+
+### 2026-11-12 — v1 pilot result (1 seed; executed, not replicated)
+Training: 100 steps each, 22.6 s/step, ~38 min per run. GRPO train reward by 20-step block 0.241 → 0.251 → 0.244 → 0.265 → 0.283; RLOO ended at a similar level (RLOO grad norms ~5× smaller than GRPO at the same lr, since its advantages are not std-normalized — a confound in any GRPO-vs-RLOO reading).
+
+Held-out v1 test (300 episodes, paired bootstrap vs the same model untrained, prompted_1.7b = 0.222):
+
+| arm | EM | Δ vs prompted_1.7b [95% CI] |
+|---|---|---|
+| grpo_100 | 0.252 | +0.030 [+0.007, +0.054] |
+| rloo_100 | 0.251 | +0.029 [+0.003, +0.054] |
+| grpo − rloo | | +0.001 [−0.021, +0.024] |
+
+Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** the gain is concentrated in slots with no conflict feature ("plain": 0.298 → 0.387 GRPO) and comes with shorter memories (149 → 119 tokens); unreliable-source (0.214 → 0.225 / 0.208) and out-of-order (0.218 → 0.235 / 0.222) slots barely move. Interpretation: 100 steps of RL mostly learned format/budget compliance, not conflict resolution. No GRPO-vs-RLOO claim.
+
+**Open validity issue (blocks extensive training):** the v1 gate passed only against a template-regex resolver. The missing strong non-privileged baseline is *LLM extraction + symbolic resolution* (an LLM turns each paraphrased line into (subject, relation, value, date, source) tuples; rules then do aliasing, dates and audit-based source exclusion). If it nears the oracle, RL's remaining advantage is small and mostly about parsing; the environment then needs reasoning that this pipeline cannot do, before more RL. Next: build and run this baseline (pilot), then decide.
 
 **Not yet built:** BM25, prompted Qwen3-32B writer, consistency-check defense, privileged resolver, keep/drop controller, RFT, injections, held-out readers.
 
