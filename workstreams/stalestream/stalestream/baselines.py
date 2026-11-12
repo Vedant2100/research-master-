@@ -12,7 +12,24 @@ from functools import lru_cache
 BUDGET_TOKENS = 160
 TOKENIZER = "Qwen/Qwen3-1.7B"
 
-DATE = r"(\d{4}-\d{2}-\d{2})"
+_MON = r"(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\.?"
+# Every absolute date surface form the generator can emit (v0: ISO; v1: mixed).
+DATE = (r"(\d{4}-\d{2}-\d{2}|\d{4}/\d{2}/\d{2}|" + _MON + r" \d{1,2}, \d{4}|\d{1,2} " + _MON + r" \d{4})")
+_MONTHS = {m: i + 1 for i, m in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"])}
+
+
+def norm_date(text: str) -> str:
+    """Normalize any supported surface form to ISO so dates compare correctly."""
+    t = text.strip()
+    m = re.fullmatch(r"(\d{4})[-/](\d{2})[-/](\d{2})", t)
+    if m:
+        return f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
+    m = re.fullmatch(r"([A-Za-z]+)\.? (\d{1,2}), (\d{4})", t) or re.fullmatch(r"(\d{1,2}) ([A-Za-z]+)\.? (\d{4})", t)
+    if m:
+        a, b, y = m.groups()
+        mon, day = (a, b) if a[0].isalpha() else (b, a)
+        return f"{y}-{_MONTHS[mon[:3].lower()]:02d}-{int(day):02d}"
+    raise ValueError(t)
 SRC = r"([A-Za-z]+-[A-Za-z]+)"
 STATEMENT_RES = [
     re.compile(rf"^\[{SRC}, as of {DATE}\] (.+)\.$"),
@@ -103,7 +120,7 @@ def parse_stream(ep, grammar: Grammar):
                 parsed = grammar.parse(fact)
                 if parsed:
                     claims.append({"subject": parsed[0], "prompt": parsed[1], "value": parsed[2],
-                                   "date": date, "source": src, "session": sess_i})
+                                   "date": norm_date(date), "source": src, "session": sess_i})
                 break
     return claims, aliases, flagged
 

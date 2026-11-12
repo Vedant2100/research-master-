@@ -43,14 +43,14 @@ def clean(text: str) -> str:
     return re.sub(r"<think>.*?</think>", "", text, flags=re.S).strip()
 
 
-def run_writer(llm, sp, episodes, budget: int = BUDGET_TOKENS):
+def run_writer(llm, sp, episodes, budget: int = BUDGET_TOKENS, lora_request=None):
     tok = llm.get_tokenizer()
     memories = [""] * len(episodes)
     max_s = max(len(ep["sessions"]) for ep in episodes)
     for s in range(max_s):
         idx = [i for i, ep in enumerate(episodes) if s < len(ep["sessions"])]
         prompts = [build_prompt(tok, memories[i], episodes[i]["sessions"][s], s, budget) for i in idx]
-        outs = llm.generate(prompts, sp, use_tqdm=False)
+        outs = llm.generate(prompts, sp, use_tqdm=False, lora_request=lora_request)
         for i, o in zip(idx, outs):
             memories[i] = truncate(clean(o.outputs[0].text), budget)
     return memories
@@ -63,14 +63,21 @@ def main():
     ap.add_argument("--arm", default="prompted_1.7b")
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--lora", type=Path, default=None, help="trained LoRA adapter dir")
+    ap.add_argument("--lora-r", type=int, default=16)
     args = ap.parse_args()
     from vllm import LLM, SamplingParams
     eps = [json.loads(l) for l in args.episodes.open()]
     if args.limit:
         eps = eps[: args.limit]
-    llm = LLM(model=args.model, gpu_memory_utilization=0.85, max_model_len=4096, seed=0)
+    lora_kw = dict(enable_lora=True, max_lora_rank=args.lora_r, max_loras=1) if args.lora else {}
+    llm = LLM(model=args.model, gpu_memory_utilization=0.85, max_model_len=4096, seed=0, **lora_kw)
     sp = SamplingParams(temperature=0.0, max_tokens=320)
-    mems = run_writer(llm, sp, eps)
+    lora = None
+    if args.lora:
+        from vllm.lora.request import LoRARequest
+        lora = LoRARequest("eval", 1, str(args.lora))
+    mems = run_writer(llm, sp, eps, lora_request=lora)
     with args.out.open("w") as f:
         for ep, m in zip(eps, mems):
             f.write(json.dumps({"episode_id": ep["episode_id"], "arm": args.arm, "memory": m}) + "\n")

@@ -93,7 +93,20 @@ def make_alias(rng: random.Random, subject: str) -> str:
     return f"{initials}-{rng.randrange(10, 99)}"
 
 
-def build_episode(rng: random.Random, ep_id: str, slots, pool, n_sessions: int):
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
+          "September", "October", "November", "December"]
+
+
+def format_date(rng: random.Random, d: dt.date, style: str) -> str:
+    """'iso' (v0) or 'mixed' (v1): one of several absolute surface forms."""
+    if style == "iso":
+        return d.isoformat()
+    forms = [d.isoformat(), f"{MONTHS[d.month - 1]} {d.day}, {d.year}", f"{d.day} {MONTHS[d.month - 1]} {d.year}",
+             f"{MONTHS[d.month - 1][:3]}. {d.day}, {d.year}", f"{d.year}/{d.month:02d}/{d.day:02d}"]
+    return rng.choice(forms)
+
+
+def build_episode(rng: random.Random, ep_id: str, slots, pool, n_sessions: int, date_style: str = "iso"):
     k = rng.randint(6, 10)
     chosen, subjects = [], set()
     for s in rng.sample(slots, min(len(slots), 200)):
@@ -147,24 +160,33 @@ def build_episode(rng: random.Random, ep_id: str, slots, pool, n_sessions: int):
     if len(asked) < 6:  # only possible when k == 6
         asked.append(audited)
 
+    # Each line is (sort key, text, must_keep strings). must_keep is privileged metadata
+    # used only by the paraphraser to verify that the label-bearing strings survive.
     sessions = [[] for _ in range(n_sessions)]
     alias_intro = {x: rng.randrange(max(1, n_sessions - 1)) for x in alias_of}
     for sid, sess in alias_intro.items():
-        sessions[sess].append((-1.0, rng.choice(ALIAS_TEMPLATES).format(
-            source=rng.choice(good), alias=alias_of[sid], subject=chosen[int(sid[1:])]["subject"])))
+        tmpl = rng.choice(ALIAS_TEMPLATES)  # draw order matches v0 for reproducibility
+        src, subj = rng.choice(good), chosen[int(sid[1:])]["subject"]
+        sessions[sess].append((-1.0, tmpl.format(source=src, alias=alias_of[sid], subject=subj),
+                               [src, alias_of[sid], subj]))
     for e in events:
         s = chosen[int(e["slot"][1:])]
         name = s["subject"]
         if e["slot"] in alias_of and e["session"] > alias_intro[e["slot"]] and rng.random() < 0.7:
             name = alias_of[e["slot"]]
-        text = rng.choice(STATEMENT_TEMPLATES).format(
-            source=e["source"], date=e["date"].isoformat(), fact=fact_text(s["prompt"], name, e["value"]))
-        sessions[e["session"]].append((rng.random(), text))
+        tmpl = rng.choice(STATEMENT_TEMPLATES)
+        date = format_date(rng, e["date"], date_style)
+        text = tmpl.format(
+            source=e["source"], date=date, fact=fact_text(s["prompt"], name, e["value"]))
+        sessions[e["session"]].append((rng.random(), text, [e["source"], date, name, e["value"]]))
     claim = next(e for e in events if e["slot"] == audited and not e["reliable"])
     s = chosen[int(audited[1:])]
     sessions[rng.randrange(claim["session"], n_sessions)].append((rng.random(), rng.choice(AUDIT_TEMPLATES).format(
-        audit=AUDIT, bad=bad, fact=fact_text(s["prompt"], s["subject"], claim["value"]))))
-    sessions = [[t for _, t in sorted(sess)] for sess in sessions]
+        audit=AUDIT, bad=bad, fact=fact_text(s["prompt"], s["subject"], claim["value"])),
+        [AUDIT, bad, s["subject"], claim["value"]]))
+    sessions = [sorted(sess, key=lambda x: (x[0], x[1])) for sess in sessions]
+    must_keep = [[m for _, _, m in sess] for sess in sessions]
+    sessions = [[t for _, t, _ in sess] for sess in sessions]
 
     return {
         "episode_id": ep_id,
@@ -178,6 +200,7 @@ def build_episode(rng: random.Random, ep_id: str, slots, pool, n_sessions: int):
             "unreliable_source": bad,
             "aliases": {alias_of[x]: chosen[int(x[1:])]["subject"] for x in alias_of},
             "difficulty": {x: sorted(hard[x]) for x in asked},
+            "must_keep": must_keep,
         },
     }
 
@@ -200,6 +223,7 @@ def main():
     ap.add_argument("--n-train", type=int, default=2000)
     ap.add_argument("--n-test", type=int, default=300)
     ap.add_argument("--seed", type=int, default=2026)
+    ap.add_argument("--date-style", choices=["iso", "mixed"], default="iso")
     args = ap.parse_args()
     slots, pool, aliases = load_slots(args.mquake)
     train, test = split_subjects(slots)
@@ -208,7 +232,7 @@ def main():
     for name, src, n, (lo, hi) in [("train_2s", train, args.n_train, (2, 2)), ("test", test, args.n_test, (3, 4))]:
         with (args.out / f"{name}.jsonl").open("w") as f:
             for i in range(n):
-                ep = build_episode(rng, f"{name}-{i:05d}", src, pool, rng.randint(lo, hi))
+                ep = build_episode(rng, f"{name}-{i:05d}", src, pool, rng.randint(lo, hi), args.date_style)
                 validate(ep)
                 f.write(json.dumps(ep) + "\n")
     (args.out / "value_aliases.json").write_text(json.dumps(aliases))

@@ -20,7 +20,13 @@ source /scratch/vbork001/stalestream/env.sh && export HF_HUB_OFFLINE=1
 D=$S/data
 # 1. episodes (entity-disjoint train/test split; ground truth from dates + hidden reliability)
 python -m stalestream.generator --mquake $D/MQuAKE-CF-3k-v2.json --out $D/episodes_v0
-# 2. prompted LLM writer baseline (GPU 0)
+# 1b. v1 (current): mixed date formats + LLM paraphrase with verbatim label strings
+python -m stalestream.generator --mquake $D/MQuAKE-CF-3k-v2.json --out $D/episodes_v1_raw --date-style mixed --seed 2027
+CUDA_VISIBLE_DEVICES=0 python -m stalestream.paraphrase --episodes $D/episodes_v1_raw/test.jsonl --out $D/episodes_v1/test.jsonl
+CUDA_VISIBLE_DEVICES=0 python -m stalestream.paraphrase --episodes $D/episodes_v1_raw/train_2s.jsonl --out $D/episodes_v1/train_2s.jsonl
+cp $D/episodes_v1_raw/{value_aliases,meta}.json $D/episodes_v1/
+# (steps 2-5 below: substitute episodes_v1 for episodes_v0)
+# 2. prompted LLM writer baseline (GPU 0; add --model Qwen/Qwen3-4B --arm prompted_4b for the 4B writer)
 CUDA_VISIBLE_DEVICES=0 python -m stalestream.writer --episodes $D/episodes_v0/test.jsonl --out $S/runs/v0_writer_1.7b.jsonl
 # 3. reader over rule arms + writer memories (GPU 1)
 CUDA_VISIBLE_DEVICES=1 python -m stalestream.reader --episodes $D/episodes_v0/test.jsonl \
