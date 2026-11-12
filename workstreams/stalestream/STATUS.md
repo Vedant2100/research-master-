@@ -3,13 +3,13 @@
 **Area:** Memory & Continual Learning
 **Source:** https://github.com/Vedant2100/f26/tree/main/cs258/stalestream
 **Owner agent:** `stalestream`
-**Current agent state:** gate v2 PASS on a frozen test set (oracle 0.998 vs extraction+rules 0.632, gap 0.366); 32B-extractor check running. Full fine-tuning GRPO implemented and timed (21.4 s/step). Next: RFT/DPO sample bank, then main runs (HANDOFF section B).
+**Current agent state:** gate v2 FAILS under the stricter 32B-extractor check (oracle 0.998 vs 32B extraction+rules 0.805, gap 0.193 < 0.20); passes vs all preregistered arms (gap 0.366 vs 4B extraction). Full fine-tuning GRPO implemented and timed (21.4 s/step). Next: RFT/DPO sample bank, then main runs (HANDOFF section B).
 
 ## Research aim
 Learn a bounded memory rewrite policy for changing facts with downstream reader reward.
 
 ## Next decisive action
-See `HANDOFF.md`. Gate v2 passed; next: 32B-extractor check result, KL decision, RFT/DPO sample bank, then GRPO/DPO/RFT main runs with model selection on val.
+See `HANDOFF.md`. Gate v2 failed the 32B-extractor check: redesign conflicts so rules over perfect extraction cannot solve them (HANDOFF A6b), regenerate (v3), rerun the gate, then train.
 
 ## Experimental gate
 Oracle reader at least 90% EM and 20 percentage-point headroom over strongest nonprivileged baseline.
@@ -96,7 +96,12 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
 
-### 2026-11-12 — gate v2 result: PASS (1 seed, 300 frozen test episodes)
+### 2026-11-12 — gate v2 REVISED: FAIL under the stricter 32B-extractor check
+Same pipeline as `extract_rules`, with Qwen3-32B-AWQ as the extractor (`extract.py --model Qwen/Qwen3-32B-AWQ`), on the frozen v2 test set. Extraction accuracy: value 0.954 (4B: 0.880), subject 0.938, relation valid 0.974, source 1.000, date 1.000. **Test EM 0.805.** Gate over all non-privileged arms: strongest = extract_rules_32b, oracle − strongest = **0.193**, paired bootstrap 95% CI [0.174, 0.214] → **FAIL** (threshold 0.20, unchanged). As stated before this check ran, the v2 verdict is revised to FAIL.
+
+**Interpretation:** v2 conflicts are mostly an extraction problem. Once a strong model parses each line, fixed rules (aliases, latest date, drop sources caught by an audit) resolve most of them. Per the design ("do not train on a failed gate"), conflicts must get harder before main training. The candidate changes are listed in HANDOFF (A6b) and need an owner decision.
+
+### 2026-11-12 — gate v2 result: PASS vs the preregistered arms (superseded above)
 Commands: `scripts/gate_v2.sh` (driver log and outputs in `$S/runs/gate_v2/`). Data: `episodes_v2` (seed 2028), 2,000 train / 300 val / 300 test, all validated, splits pairwise subject-disjoint, 0 FactConsolidation-6K subjects. Paraphrase fallback 8.1% test / 7.6% val / 7.5% train.
 
 **Paraphrase faithfulness:** Qwen3-32B-AWQ judged 400 random paraphrased test lines: 3 unfaithful (0.75%, Wilson 95% [0.26%, 2.18%]), under the 2% bar. One real error (a source name turned into an alias); two turned "as of DATE" into "on DATE".

@@ -54,11 +54,22 @@ timing) needs GPU 0. They can run at the same time.
    Report extraction accuracy against the hidden labels on validation.
 4. **[DONE: 0.192 test]** **BM25 baseline** (`rank_bm25` is installed): retrieve top-k statements by question, budget-truncate, read.
 5. **[DONE: AWQ fits one A30 at 0.93 util (KV ~4.4k tokens, slow); 0.168 test]** **Prompted Qwen3-32B writer.** Test that a 4-bit (AWQ) version fits one A30 with vLLM; thinking off.
-6. **[DONE: PASS, gap 0.366 [0.339, 0.393]]** **Run gate v2** on the frozen test set with all non-trained arms. If extraction + rules is within
+6. **[DONE: PASS vs preregistered arms (gap 0.366); FAIL vs 32B extraction + rules (0.805, gap 0.193)]** **Run gate v2** on the frozen test set with all non-trained arms. If extraction + rules is within
    20 points of the oracle, stop and redesign conflicts (e.g. reliability inferred from contradiction
    patterns instead of an explicit audit line, relative/implicit dates). Don't train on a failed gate.
 
-### B. Training (after gate v2 passes)
+6b. **[OPEN, owner decision] Harder conflicts (v3).** Rules over near-perfect extraction already reach
+   0.80, so the remaining headroom is small. Make conflicts that per-line extraction plus fixed rules
+   cannot resolve. Candidates:
+   - Unreliable sources revealed only by contradiction patterns (e.g. a source repeatedly
+     disagreeing with later verified facts) instead of an explicit audit line.
+   - Relative or implicit dates ("two months after Source-B's report", "earlier this year").
+   - Facts whose validity depends on another fact (multi-hop: the question asks about X's spouse's
+     country, so the writer must keep both links current).
+   - Partial retractions ("Source-A now says its 2023 report on X was mistaken").
+   Rerun the gate with the 32B-extractor arm included from the start.
+
+### B. Training (after the gate passes)
 7. **Full fine-tuning path** for `grpo.py`: policy on GPU 0 (bf16, gradient checkpointing,
    8-bit or bf16 Adam), writer sampler and reader both on GPU 1, weight sync each step (TRL vLLM
    server-mode sync or equivalent), KL penalty to the reference model. Done when a 20-step run
