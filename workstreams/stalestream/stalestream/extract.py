@@ -103,6 +103,8 @@ def main():
     ap.add_argument("--model", default="Qwen/Qwen3-4B")
     ap.add_argument("--arm", default="extract_rules")
     ap.add_argument("--gpu-mem", type=float, default=0.85)
+    ap.add_argument("--max-tokens", type=int, default=1024,
+                    help="output cap; 160 truncated the 32B extractor's date arithmetic on v3 (fixed 2026-11-12)")
     ap.add_argument("--context", choices=["header", "session"], default="header",
                     help="header: the session's date line (if any) is shown with each line; "
                          "session: the whole session's text is shown (resolves cross-references)")
@@ -132,7 +134,7 @@ def main():
     prompts = [tok.apply_chat_template([{"role": "user", "content": PROMPT.format(
         labels=label_text, context=context(eps[e]["sessions"][s]), line=eps[e]["sessions"][s][l])}],
         tokenize=False, add_generation_prompt=True, enable_thinking=False) for e, s, l in jobs]
-    outs = llm.generate(prompts, SamplingParams(temperature=0.0, max_tokens=160), use_tqdm=False)
+    outs = llm.generate(prompts, SamplingParams(temperature=0.0, max_tokens=args.max_tokens), use_tqdm=False)
     items = defaultdict(list)
     acc = defaultdict(int)
     for (e, s, l), o in zip(jobs, outs):
