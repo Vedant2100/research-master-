@@ -9,7 +9,7 @@
 Learn a bounded memory rewrite policy for changing facts with downstream reader reward.
 
 ## Next decisive action
-Build timestamp-correct episode generator and fair symbolic/LLM baselines; measure oracle QA and GRPO runtime.
+See `HANDOFF.md` (work queue). Next: validation split + gate v2 (binding budget, conflict-heavy questions, paraphrase faithfulness check, LLM-extraction+rules / BM25 / prompted-32B baselines) before any further training.
 
 ## Experimental gate
 Oracle reader at least 90% EM and 20 percentage-point headroom over strongest nonprivileged baseline.
@@ -84,6 +84,9 @@ Held-out v1 test (300 episodes, paired bootstrap vs the same model untrained, pr
 Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** the gain is concentrated in slots with no conflict feature ("plain": 0.298 → 0.387 GRPO) and comes with shorter memories (149 → 119 tokens); unreliable-source (0.214 → 0.225 / 0.208) and out-of-order (0.218 → 0.235 / 0.222) slots barely move. Interpretation: 100 steps of RL mostly learned format/budget compliance, not conflict resolution. No GRPO-vs-RLOO claim.
 
 **Open validity issue (blocks extensive training):** the v1 gate passed only against a template-regex resolver. The missing strong non-privileged baseline is *LLM extraction + symbolic resolution* (an LLM turns each paraphrased line into (subject, relation, value, date, source) tuples; rules then do aliasing, dates and audit-based source exclusion). If it nears the oracle, RL's remaining advantage is small and mostly about parsing; the environment then needs reasoning that this pipeline cannot do, before more RL. Next: build and run this baseline (pilot), then decide.
+
+### 2026-11-12 — audit before gate v2
+`scripts/audit.py` (data invariants on 12,600 episodes across v0/v1_raw/v1; recomputation of every number above): **0 failures**; all recorded numbers reproduce. Manual check of 20 random v1 paraphrases: all faithful, but light rewrites close to the templates (an LLM extractor will likely recover most facts). Issues found: (1) no validation split exists; the gate and the pilot both used the v1 test set, so the v1 pilot is **exploratory** and gate v2 needs a fresh frozen test set; (2) paraphrase faithfulness is only spot-checked; (3) RLOO mean grad norm 0.054 vs GRPO 0.336 at equal lr; (4) vLLM sampling is not bit-reproducible.
 
 **Not yet built:** BM25, prompted Qwen3-32B writer, consistency-check defense, privileged resolver, keep/drop controller, RFT, injections, held-out readers.
 
