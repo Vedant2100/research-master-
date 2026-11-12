@@ -1,0 +1,222 @@
+"""StaleStream episode generator (v0).
+
+Builds multi-session episodes of dated, sourced natural-language statements from
+MQuAKE counterfactual edits. Ground truth is recomputed from event dates and the
+hidden source reliability, never from delivery order.
+
+Per episode:
+  * 6-10 slots (subject, relation) from MQuAKE requested rewrites, distinct subjects.
+  * True timeline per slot: target_true (old) -> target_new (new), and in 25% of slots a
+    third value from the same relation's pool. Current = latest-dated reliable value.
+  * Out-of-order delivery: each statement lands in a uniformly random session.
+  * Aliasing: half the subjects get an alias introduced in an early session; statements
+    in later sessions use the alias 70% of the time.
+  * Unreliable source: one of 4 sources (hidden, per episode) makes newer-dated false
+    claims on ~40% of slots. One of its claims, on a slot that is NOT asked, is flagged
+    by an Audit-Desk correction: in-stream evidence that the source is unreliable.
+  * Six questions ask current values, preferring hard slots.
+
+Everything under "hidden" is privileged and must never reach a non-privileged writer.
+
+  python -m stalestream.generator --mquake MQuAKE-CF-3k-v2.json --out DIR
+"""
+from __future__ import annotations
+
+import argparse
+import datetime as dt
+import hashlib
+import json
+import random
+from collections import defaultdict
+from pathlib import Path
+
+SOURCES = ["Source-A", "Source-B", "Source-C", "Source-D"]
+AUDIT = "Audit-Desk"
+
+STATEMENT_TEMPLATES = [
+    "[{source}, as of {date}] {fact}.",
+    "{source} reports (as of {date}): {fact}.",
+    "As of {date}, according to {source}, {fact}.",
+]
+ALIAS_TEMPLATES = [
+    "[{source}] Note: {alias} is another name used for {subject}.",
+    "{source} notes that {subject} is also referred to as {alias}.",
+]
+AUDIT_TEMPLATES = [
+    "[{audit}] Verified correction: the claim by {bad} that {fact} is false.",
+    "{audit} has verified that {bad}'s report that {fact} was incorrect.",
+]
+
+
+def fact_text(prompt: str, subject: str, value: str) -> str:
+    return prompt.replace("{}", subject).rstrip() + " " + value
+
+
+def _date(rng: random.Random, lo: dt.date, hi: dt.date) -> dt.date:
+    return lo + dt.timedelta(days=rng.randrange(max(1, (hi - lo).days + 1)))
+
+
+def load_slots(path: Path):
+    """Return (slots, value_pool_by_relation, value_aliases)."""
+    data = json.loads(Path(path).read_text())
+    slots, pool, aliases, seen = [], defaultdict(set), defaultdict(set), set()
+    for case in data:
+        hop_alias = defaultdict(set)
+        for hop in case.get("single_hops", []) + case.get("new_single_hops", []):
+            hop_alias[hop["answer"]].update(hop.get("answer_alias", []))
+        for rw in case["requested_rewrite"]:
+            key = (rw["subject"], rw["relation_id"])
+            old, new = rw["target_true"]["str"], rw["target_new"]["str"]
+            if key in seen or old == new or "{}" not in rw["prompt"]:
+                continue
+            seen.add(key)
+            slots.append({"subject": rw["subject"], "relation": rw["relation_id"],
+                          "prompt": rw["prompt"], "question": rw["question"], "old": old, "new": new})
+            pool[rw["relation_id"]].update([old, new])
+            for v in (old, new):
+                aliases[v].update(hop_alias.get(v, ()))
+    return slots, {k: sorted(v) for k, v in pool.items()}, {k: sorted(v) for k, v in aliases.items()}
+
+
+def split_subjects(slots, test_frac=0.15):
+    """Entity-disjoint split by a stable hash of the subject string."""
+    def bucket(s):
+        return int(hashlib.sha256(s.encode()).hexdigest(), 16) % 1000 / 1000
+    train = [s for s in slots if bucket(s["subject"]) >= test_frac]
+    test = [s for s in slots if bucket(s["subject"]) < test_frac]
+    assert not {s["subject"] for s in train} & {s["subject"] for s in test}
+    return train, test
+
+
+def make_alias(rng: random.Random, subject: str) -> str:
+    initials = "".join(w[0] for w in subject.split() if w[:1].isalpha()).upper() or "X"
+    return f"{initials}-{rng.randrange(10, 99)}"
+
+
+def build_episode(rng: random.Random, ep_id: str, slots, pool, n_sessions: int):
+    k = rng.randint(6, 10)
+    chosen, subjects = [], set()
+    for s in rng.sample(slots, min(len(slots), 200)):
+        if s["subject"] not in subjects and len(pool[s["relation"]]) >= 3:
+            chosen.append(s)
+            subjects.add(s["subject"])
+        if len(chosen) == k:
+            break
+    bad = rng.choice(SOURCES)
+    good = [x for x in SOURCES if x != bad]
+
+    events, truth, hard, alias_of = [], {}, {}, {}
+    for i, s in enumerate(chosen):
+        sid = f"s{i}"
+        d1 = _date(rng, dt.date(2019, 1, 1), dt.date(2022, 6, 30))
+        d2 = _date(rng, d1 + dt.timedelta(days=30), dt.date(2024, 6, 30))
+        timeline = [(s["old"], d1), (s["new"], d2)]
+        if rng.random() < 0.25:
+            others = [v for v in pool[s["relation"]] if v not in (s["old"], s["new"])]
+            timeline.append((rng.choice(others), _date(rng, d2 + dt.timedelta(days=30), dt.date(2025, 6, 30))))
+        for value, d in timeline:
+            events.append({"slot": sid, "value": value, "date": d, "source": rng.choice(good), "reliable": True})
+        truth[sid] = timeline[-1][0]
+        hard[sid] = set()
+        if rng.random() < 0.5:
+            alias_of[sid] = make_alias(rng, s["subject"])
+            hard[sid].add("alias")
+
+    sids = list(truth)
+    lie = [x for x in sids if rng.random() < 0.4]
+    if len(lie) < 2:
+        lie = rng.sample(sids, 2)
+    for sid in lie:
+        s = chosen[int(sid[1:])]
+        latest = max(e["date"] for e in events if e["slot"] == sid)
+        wrong = rng.choice([v for v in pool[s["relation"]] if v != truth[sid]])
+        events.append({"slot": sid, "value": wrong, "source": bad, "reliable": False,
+                       "date": _date(rng, latest + dt.timedelta(days=1), latest + dt.timedelta(days=400))})
+        hard[sid].add("unreliable")
+    audited = rng.choice(lie)
+
+    for e in events:
+        e["session"] = rng.randrange(n_sessions)
+    for sid in sids:
+        evs = sorted((e for e in events if e["slot"] == sid and e["reliable"]), key=lambda e: e["date"])
+        if any(a["session"] > b["session"] for a, b in zip(evs, evs[1:])):
+            hard[sid].add("out_of_order")
+
+    candidates = [x for x in sids if x != audited]
+    asked = sorted(candidates, key=lambda x: (-len(hard[x]), rng.random()))[:6]
+    if len(asked) < 6:  # only possible when k == 6
+        asked.append(audited)
+
+    sessions = [[] for _ in range(n_sessions)]
+    alias_intro = {x: rng.randrange(max(1, n_sessions - 1)) for x in alias_of}
+    for sid, sess in alias_intro.items():
+        sessions[sess].append((-1.0, rng.choice(ALIAS_TEMPLATES).format(
+            source=rng.choice(good), alias=alias_of[sid], subject=chosen[int(sid[1:])]["subject"])))
+    for e in events:
+        s = chosen[int(e["slot"][1:])]
+        name = s["subject"]
+        if e["slot"] in alias_of and e["session"] > alias_intro[e["slot"]] and rng.random() < 0.7:
+            name = alias_of[e["slot"]]
+        text = rng.choice(STATEMENT_TEMPLATES).format(
+            source=e["source"], date=e["date"].isoformat(), fact=fact_text(s["prompt"], name, e["value"]))
+        sessions[e["session"]].append((rng.random(), text))
+    claim = next(e for e in events if e["slot"] == audited and not e["reliable"])
+    s = chosen[int(audited[1:])]
+    sessions[rng.randrange(claim["session"], n_sessions)].append((rng.random(), rng.choice(AUDIT_TEMPLATES).format(
+        audit=AUDIT, bad=bad, fact=fact_text(s["prompt"], s["subject"], claim["value"]))))
+    sessions = [[t for _, t in sorted(sess)] for sess in sessions]
+
+    return {
+        "episode_id": ep_id,
+        "sessions": sessions,
+        "questions": [chosen[int(x[1:])]["question"] for x in asked],
+        "hidden": {
+            "answers": [truth[x] for x in asked],
+            "asked_slots": asked,
+            "truth": {x: {"subject": chosen[int(x[1:])]["subject"], "prompt": chosen[int(x[1:])]["prompt"],
+                          "relation": chosen[int(x[1:])]["relation"], "value": truth[x]} for x in sids},
+            "unreliable_source": bad,
+            "aliases": {alias_of[x]: chosen[int(x[1:])]["subject"] for x in alias_of},
+            "difficulty": {x: sorted(hard[x]) for x in asked},
+        },
+    }
+
+
+def validate(ep):
+    """Assert the labels are recomputable from the stream and nothing leaks."""
+    h = ep["hidden"]
+    assert len(ep["questions"]) == 6 == len(h["answers"]) == len(set(h["asked_slots"]))
+    joined = "\n".join(t for s in ep["sessions"] for t in s)
+    for sid, ans in zip(h["asked_slots"], h["answers"]):
+        assert ans == h["truth"][sid]["value"]
+        assert ans in joined, f"answer {ans!r} never stated in {ep['episode_id']}"
+    assert "reliab" not in joined.lower()
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--mquake", type=Path, required=True)
+    ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--n-train", type=int, default=2000)
+    ap.add_argument("--n-test", type=int, default=300)
+    ap.add_argument("--seed", type=int, default=2026)
+    args = ap.parse_args()
+    slots, pool, aliases = load_slots(args.mquake)
+    train, test = split_subjects(slots)
+    args.out.mkdir(parents=True, exist_ok=True)
+    rng = random.Random(args.seed)
+    for name, src, n, (lo, hi) in [("train_2s", train, args.n_train, (2, 2)), ("test", test, args.n_test, (3, 4))]:
+        with (args.out / f"{name}.jsonl").open("w") as f:
+            for i in range(n):
+                ep = build_episode(rng, f"{name}-{i:05d}", src, pool, rng.randint(lo, hi))
+                validate(ep)
+                f.write(json.dumps(ep) + "\n")
+    (args.out / "value_aliases.json").write_text(json.dumps(aliases))
+    meta = {"seed": args.seed, "slots": len(slots), "train_slots": len(train), "test_slots": len(test),
+            "train_subjects": len({s["subject"] for s in train}), "test_subjects": len({s["subject"] for s in test})}
+    (args.out / "meta.json").write_text(json.dumps(meta, indent=2))
+    print(json.dumps(meta))
+
+
+if __name__ == "__main__":
+    main()
