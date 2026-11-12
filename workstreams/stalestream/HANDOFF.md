@@ -41,20 +41,20 @@ Parallelism: A (gate v2) mostly needs GPU 1 (extraction model, 32B check); B7 (f
 timing) needs GPU 0. They can run at the same time.
 
 ### A. Before any more training (blocking)
-1. **Validation split.** Three-way entity-disjoint split (train/val/test) by subject hash, without
+1. **[DONE]** **Validation split.** Three-way entity-disjoint split (train/val/test) by subject hash, without
    moving current test subjects. Done when audit.py checks all three are disjoint.
-2. **Gate v2 environment.** Fresh episodes (new seed), frozen test set:
+2. **[DONE: v2, seed 2028; faithfulness 0.75% unfaithful]** **Gate v2 environment.** Fresh episodes (new seed), frozen test set:
    - Binding budget: the oracle uses ~99 of 160 tokens. Raise facts per episode or lower the budget
      until the oracle is near the cap and still ≥ 0.90.
    - Conflict-heavy questions: most asked slots have an unreliable, out-of-order or alias feature.
    - Paraphrase faithfulness check: an LLM judge on ≥ 300 random lines (paraphrase entails the original;
      same relation, value, date, source). Report the error rate; regenerate if > 2%.
-3. **LLM extraction + rules baseline.** An LLM (Qwen3-4B, no thinking) converts each line to
+3. **[DONE: `extract.py`; 4B 0.632 test EM; 32B-extractor check pending]** **LLM extraction + rules baseline.** An LLM (Qwen3-4B, no thinking) converts each line to
    (subject, relation, value, date, source) JSON; reuse `baselines.resolve` + audit-flag logic.
    Report extraction accuracy against the hidden labels on validation.
-4. **BM25 baseline** (`rank_bm25` is installed): retrieve top-k statements by question, budget-truncate, read.
-5. **Prompted Qwen3-32B writer.** Test that a 4-bit (AWQ) version fits one A30 with vLLM; thinking off.
-6. **Run gate v2** on the frozen test set with all non-trained arms. If extraction + rules is within
+4. **[DONE: 0.192 test]** **BM25 baseline** (`rank_bm25` is installed): retrieve top-k statements by question, budget-truncate, read.
+5. **[DONE: AWQ fits one A30 at 0.93 util (KV ~4.4k tokens, slow); 0.168 test]** **Prompted Qwen3-32B writer.** Test that a 4-bit (AWQ) version fits one A30 with vLLM; thinking off.
+6. **[DONE: PASS, gap 0.366 [0.339, 0.393]]** **Run gate v2** on the frozen test set with all non-trained arms. If extraction + rules is within
    20 points of the oracle, stop and redesign conflicts (e.g. reliability inferred from contradiction
    patterns instead of an explicit audit line, relative/implicit dates). Don't train on a failed gate.
 

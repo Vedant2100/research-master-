@@ -3,13 +3,13 @@
 **Area:** Memory & Continual Learning
 **Source:** https://github.com/Vedant2100/f26/tree/main/cs258/stalestream
 **Owner agent:** `stalestream`
-**Current agent state:** v1 gate PASS vs template baselines; 100-step GRPO/RLOO pilot +3 pts (format/budget, not conflict resolution). BLOCKED on strong LLM-extract+resolve baseline before more training.
+**Current agent state:** gate v2 PASS on a frozen test set (oracle 0.998 vs extraction+rules 0.632, gap 0.366); 32B-extractor check running. Full fine-tuning GRPO implemented and timed (21.4 s/step). Next: RFT/DPO sample bank, then main runs (HANDOFF section B).
 
 ## Research aim
 Learn a bounded memory rewrite policy for changing facts with downstream reader reward.
 
 ## Next decisive action
-See `HANDOFF.md` (work queue). Next: validation split + gate v2 (binding budget, conflict-heavy questions, paraphrase faithfulness check, LLM-extraction+rules / BM25 / prompted-32B baselines) before any further training.
+See `HANDOFF.md`. Gate v2 passed; next: 32B-extractor check result, KL decision, RFT/DPO sample bank, then GRPO/DPO/RFT main runs with model selection on val.
 
 ## Experimental gate
 Oracle reader at least 90% EM and 20 percentage-point headroom over strongest nonprivileged baseline.
@@ -95,6 +95,30 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Gate (thresholds unchanged):** on test, oracle ≥ 0.90 and oracle − strongest non-privileged arm ≥ 0.20, paired bootstrap. If extract_rules or the 32B writer is within 0.20 of the oracle, the gate FAILS and conflicts are redesigned before any training.
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
+
+### 2026-11-12 — gate v2 result: PASS (1 seed, 300 frozen test episodes)
+Commands: `scripts/gate_v2.sh` (driver log and outputs in `$S/runs/gate_v2/`). Data: `episodes_v2` (seed 2028), 2,000 train / 300 val / 300 test, all validated, splits pairwise subject-disjoint, 0 FactConsolidation-6K subjects. Paraphrase fallback 8.1% test / 7.6% val / 7.5% train.
+
+**Paraphrase faithfulness:** Qwen3-32B-AWQ judged 400 random paraphrased test lines: 3 unfaithful (0.75%, Wilson 95% [0.26%, 2.18%]), under the 2% bar. One real error (a source name turned into an alias); two turned "as of DATE" into "on DATE".
+
+**Extraction accuracy (Qwen3-4B, per fact line vs privileged metadata), val / test:** value 0.876 / 0.880, subject 0.933 / 0.949, relation valid 0.930 / 0.951, source 1.000 / 1.000, date 0.999 / 1.000.
+
+| arm | val EM | test EM |
+|---|---|---|
+| oracle (privileged) | 0.991 | 0.998 |
+| **extract_rules** (Qwen3-4B extraction + rules) | **0.602** | **0.632** |
+| prompted Qwen3-1.7B | 0.183 | 0.218 |
+| bm25 (question-aware) | 0.203 | 0.192 |
+| prompted Qwen3-4B | 0.177 | 0.174 |
+| prompted Qwen3-32B-AWQ | 0.171 | 0.168 |
+| write_all | 0.111 | 0.106 |
+| newest_wins | 0.079 | 0.084 |
+| symbolic (template regex) | 0.079 | 0.084 |
+| no_memory | 0.000 | 0.000 |
+
+**Gate (test):** strongest non-privileged = extract_rules; oracle − strongest = **0.366**, paired bootstrap 95% CI [0.339, 0.393] → **PASS** (oracle ≥ 0.90, headroom ≥ 0.20). Val agrees (0.389).
+
+**Readings and caveats:** (1) The prompted 32B writer is *worse* than the 1.7B at this budget: it spends tokens on alias lines and source tags and loses facts to truncation (answer-in-memory 0.19 on val vs 0.31 for 1.7B). Scale alone doesn't help. (2) extract_rules' remaining gap is mostly extraction error (12% wrong values with a 4B extractor); with perfect extraction, rules reach the oracle (v0). A stricter post-hoc check with a **32B extractor** is running and will be reported here; if it lands within 0.20 of the oracle, the gate verdict is revised. (3) One generator seed, one paraphrase seed; reader, paraphraser and extractor share the Qwen3 family.
 
 ### 2026-11-12 — full fine-tuning path (HANDOFF item 7): implemented + timed
 `stalestream/grpo_full.py` + `scripts/full_ft_timing.sh`. No LoRA: trainer on GPU 0 (fp32 master weights, bf16 autocast, 8-bit AdamW, lr 1e-6, gradient checkpointing); writer sampler = vLLM server on GPU 1 receiving bf16 weights over NCCL after every step (TRL `VLLMClient`); reader server also on GPU 1. 20 steps on v1 train (4 episodes × group 8, 2 sessions, β = 0): **21.4 s/step** (rollout 5.0, reward 1.4, backward 14.5, weight sync 0.5), peak 21.1 GB on GPU 0, no NaN, 2.5% zero-variance groups, mean pre-clip grad norm 3.9 (clip at 1.0 active). 300 steps ≈ 1.8 h. **KL (β > 0) not yet measured:** the bf16 reference model (+3.4 GB) likely does not fit beside 21.1 GB; options are the reference on GPU 1 with a smaller reader allocation, or β = 0. Timing only, no learning claim (reward 0.208 → 0.242, first vs last 5 steps).
