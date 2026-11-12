@@ -96,6 +96,13 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
 
+### 2026-11-12 — gate v3 preregistration (written before the v3 run; owner chose "harder conflicts")
+- **Change from v2 (dates only):** seed 2029, same split/exclusions/slots/conflict questions. Each session opens with `Session date: <date>`. Each statement's date is absolute (~40%), relative to the session date (~35%: "N days ago", "N weeks ago", "earlier today"), or **relative to an earlier statement in the same session** (~25%: "N days after Source-X's report on Y"; anchors are unique (source, name) pairs within the session). Explicit audit lines are unchanged. Labels: `scripts/check_v3_labels.py` re-derives all 15,600 asked-slot answers from the text: **0 mismatches, 0 ambiguous references.**
+- **Hypothesis:** per-line extraction cannot resolve cross-referenced dates, so extraction + rules falls below the oracle by ≥ 0.20 even with a 32B extractor; a writer that keeps state can resolve them.
+- **Arms.** val: oracle, no_memory, write_all, newest_wins, symbolic, bm25, extract_rules (4B, per line + session date), prompted 1.7B, 4B. **test (decides the gate):** the same plus **extract_rules_32b** (32B, per line + session date) and **extract_rules_32b_ctx** (32B, whole session shown as context for every line, so cross-references can be resolved), and prompted 32B. Reader, budget 160, thresholds unchanged.
+- **Gate:** test oracle ≥ 0.90 and oracle − strongest of ALL non-privileged arms (incl. both 32B extraction variants) ≥ 0.20. Faithfulness: 32B judge on 400 test lines, ≤ 2%.
+- **Limitation:** the session-context 32B extractor is close to a large prompted pipeline; if it closes the gap, v3's difficulty is again "parsing with context", and the owner decides the framing.
+
 ### 2026-11-12 — gate v2 REVISED: FAIL under the stricter 32B-extractor check
 Same pipeline as `extract_rules`, with Qwen3-32B-AWQ as the extractor (`extract.py --model Qwen/Qwen3-32B-AWQ`), on the frozen v2 test set. Extraction accuracy: value 0.954 (4B: 0.880), subject 0.938, relation valid 0.974, source 1.000, date 1.000. **Test EM 0.805.** Gate over all non-privileged arms: strongest = extract_rules_32b, oracle − strongest = **0.193**, paired bootstrap 95% CI [0.174, 0.214] → **FAIL** (threshold 0.20, unchanged). As stated before this check ran, the v2 verdict is revised to FAIL.
 

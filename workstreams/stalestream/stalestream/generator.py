@@ -27,7 +27,7 @@ import datetime as dt
 import hashlib
 import json
 import random
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 SOURCES = ["Source-A", "Source-B", "Source-C", "Source-D"]
@@ -124,7 +124,8 @@ CONFLICT_TAGS = {"alias", "unreliable", "out_of_order"}
 
 
 def build_episode(rng: random.Random, ep_id: str, slots, pool, n_sessions: int, date_style: str = "iso",
-                  k_range=(6, 10), conflict_questions: bool = False, rng_order: str = "v0"):
+                  k_range=(6, 10), conflict_questions: bool = False, rng_order: str = "v0",
+                  dates_v3: bool = False):
     """rng_order reproduces historical data: "v0" (and v2+) draws template before source/date;
     "v1" is the draw order that produced the existing v1 data (source/date before template)."""
     k = rng.randint(*k_range)
@@ -202,7 +203,9 @@ def build_episode(rng: random.Random, ep_id: str, slots, pool, n_sessions: int, 
         subj = chosen[int(sid[1:])]["subject"]
         sessions[sess].append((-1.0, tmpl.format(source=src, alias=alias_of[sid], subject=subj),
                                [src, alias_of[sid], subj]))
-    for e in events:
+    if dates_v3:
+        _v3_statements(rng, events, chosen, alias_of, alias_intro, sessions, n_sessions, date_style, hard)
+    for e in ([] if dates_v3 else events):
         s = chosen[int(e["slot"][1:])]
         name = s["subject"]
         if e["slot"] in alias_of and e["session"] > alias_intro[e["slot"]] and rng.random() < 0.7:
@@ -242,6 +245,61 @@ def build_episode(rng: random.Random, ep_id: str, slots, pool, n_sessions: int, 
     }
 
 
+def _v3_statements(rng, events, chosen, alias_of, alias_intro, sessions, n_sessions, date_style, hard):
+    """v3 dates. Each session opens with a dated header. Each statement's date is absolute (~40%),
+    relative to the session date (~35%: "N days ago", "N weeks ago", "earlier today"), or relative
+    to an EARLIER statement in the same session (~25%: "N days after Source-X's report on Y").
+    Cross-references can only be resolved with the other line in view: per-line extraction loses them."""
+    sdates, prev = [], None
+    for k in range(n_sessions):
+        mx = max([e["date"] for e in events if e["session"] <= k] or [dt.date(2019, 1, 1)])
+        d = mx + dt.timedelta(days=rng.randint(1, 45))
+        if prev is not None and d <= prev:
+            d = prev + dt.timedelta(days=rng.randint(1, 10))
+        sdates.append(d)
+        prev = d
+    for k, d in enumerate(sdates):
+        hdr = f"Session date: {format_date(rng, d, date_style)}"
+        sessions[k].append((-2.0, hdr, [hdr]))
+    keyed = sorted(((rng.random(), e) for e in events), key=lambda x: (x[1]["session"], x[0]))
+    # pass 1: surface names, templates and expression draws
+    plan = []
+    for key, e in keyed:
+        s = chosen[int(e["slot"][1:])]
+        name = s["subject"]
+        if e["slot"] in alias_of and e["session"] > alias_intro[e["slot"]] and rng.random() < 0.7:
+            name = alias_of[e["slot"]]
+        plan.append((key, e, s, name, rng.choice(STATEMENT_TEMPLATES), rng.random()))
+    # a cross-reference may only point at a (source, surface name) reported once in its session
+    counts = Counter((e["session"], e["source"], name) for _, e, _, name, _, _ in plan)
+    anchors = {k: [] for k in range(n_sessions)}
+    for key, e, s, name, tmpl, u in plan:
+        k = e["session"]
+        cand = [a for a in anchors[k] if a[0]["slot"] != e["slot"] and counts[(k, a[0]["source"], a[1])] == 1]
+        ago = (sdates[k] - e["date"]).days
+        if u < 0.25 and cand:
+            a, aname = rng.choice(cand)
+            delta = (e["date"] - a["date"]).days
+            ref = f"{a['source']}'s report on {aname}"
+            expr = (f"the same day as {ref}" if delta == 0 else
+                    f"{abs(delta)} days {'after' if delta > 0 else 'before'} {ref}")
+            kind = "xref_date"
+        elif u < 0.60 and 0 <= ago <= 400:
+            expr = ("earlier today" if ago == 0 else
+                    f"{ago // 7} weeks ago" if ago % 7 == 0 and ago <= 70 else f"{ago} days ago")
+            kind = "relative_date"
+        else:
+            expr = format_date(rng, e["date"], date_style)
+            kind = "absolute_date"
+        text = tmpl.format(source=e["source"], date=expr, fact=fact_text(s["prompt"], name, e["value"]))
+        sessions[k].append((key, text, [e["source"], expr, name, e["value"]]))
+        e["date_kind"] = kind
+        if kind != "xref_date":
+            anchors[k].append((e, name))
+        if kind != "absolute_date":
+            hard[e["slot"]].add(kind)
+
+
 def validate(ep):
     """Assert the labels are recomputable from the stream and nothing leaks."""
     h = ep["hidden"]
@@ -264,6 +322,7 @@ def main():
     ap.add_argument("--slots", type=int, nargs=2, default=[6, 10], metavar=("MIN", "MAX"))
     ap.add_argument("--conflict-questions", action="store_true")
     ap.add_argument("--split3", action="store_true", help="train/val/test (v2+)")
+    ap.add_argument("--dates-v3", action="store_true", help="session headers + relative/cross-referenced dates")
     ap.add_argument("--rng-order", choices=["v0", "v1"], default="v0",
                     help="v1 reproduces the existing v1 data (seed 2027, --date-style mixed)")
     ap.add_argument("--n-val", type=int, default=300)
@@ -285,7 +344,7 @@ def main():
         with (args.out / f"{name}.jsonl").open("w") as f:
             for i in range(n):
                 ep = build_episode(rng, f"{name}-{i:05d}", src, pool, rng.randint(lo, hi), args.date_style,
-                                   tuple(args.slots), args.conflict_questions, args.rng_order)
+                                   tuple(args.slots), args.conflict_questions, args.rng_order, args.dates_v3)
                 validate(ep)
                 f.write(json.dumps(ep) + "\n")
     (args.out / "value_aliases.json").write_text(json.dumps(aliases))
@@ -293,7 +352,7 @@ def main():
             "test_slots": len(test), "train_subjects": len({s["subject"] for s in train}),
             "val_subjects": len({s["subject"] for s in val}), "test_subjects": len({s["subject"] for s in test}),
             "slots_per_episode": args.slots, "conflict_questions": args.conflict_questions,
-            "date_style": args.date_style, "split3": args.split3}
+            "date_style": args.date_style, "split3": args.split3, "dates_v3": args.dates_v3}
     (args.out / "meta.json").write_text(json.dumps(meta, indent=2))
     print(json.dumps(meta))
 

@@ -31,10 +31,11 @@ PROMPT = """Convert the statement into JSON. Statement kinds:
    {{"type":"alias","alias":"<the short code or other name>","name":"<the full name>"}}
 3. A verified correction saying some source's claim was false ->
    {{"type":"correction","source":"<the source whose claim was false>"}}
-Copy names and values exactly as written. Write the date as YYYY-MM-DD.
+Copy names and values exactly as written. Write the date as an absolute YYYY-MM-DD date, computing it
+when the statement gives it relative to the session date or to another report.
 
 Relation labels: {labels}
-
+{context}
 Statement: {line}
 JSON:"""
 
@@ -102,6 +103,9 @@ def main():
     ap.add_argument("--model", default="Qwen/Qwen3-4B")
     ap.add_argument("--arm", default="extract_rules")
     ap.add_argument("--gpu-mem", type=float, default=0.85)
+    ap.add_argument("--context", choices=["header", "session"], default="header",
+                    help="header: the session's date line (if any) is shown with each line; "
+                         "session: the whole session's text is shown (resolves cross-references)")
     args = ap.parse_args()
     from vllm import LLM, SamplingParams
 
@@ -110,12 +114,24 @@ def main():
     label_to_rel = {v: k for k, v in labels.items()}
     label_text = "; ".join(f'"{v}"' for v in sorted(labels.values()))
     eps = [json.loads(l) for l in args.episodes.open()]
-    llm = LLM(model=args.model, gpu_memory_utilization=args.gpu_mem, max_model_len=4096, seed=0)
+    llm = LLM(model=args.model, gpu_memory_utilization=args.gpu_mem, max_model_len=4096, seed=0,
+              enable_prefix_caching=True)
     tok = llm.get_tokenizer()
-    jobs = [(e, s, l) for e, ep in enumerate(eps) for s, sess in enumerate(ep["sessions"]) for l in range(len(sess))]
+    def is_header(line):
+        return line.startswith("Session date:")
+
+    def context(sess):
+        if args.context == "session":
+            return "\nSession text (for resolving references):\n" + "\n".join(sess) + "\n"
+        hdr = [l for l in sess if is_header(l)]
+        return ("\n" + hdr[0] + "\n") if hdr else ""
+
+    jobs = [(e, s, l) for e, ep in enumerate(eps) for s, sess in enumerate(ep["sessions"])
+            for l in range(len(sess)) if not is_header(sess[l])]
+    # session context first in the prompt body so vLLM prefix caching reuses it across a session's lines
     prompts = [tok.apply_chat_template([{"role": "user", "content": PROMPT.format(
-        labels=label_text, line=eps[e]["sessions"][s][l])}], tokenize=False, add_generation_prompt=True,
-        enable_thinking=False) for e, s, l in jobs]
+        labels=label_text, context=context(eps[e]["sessions"][s]), line=eps[e]["sessions"][s][l])}],
+        tokenize=False, add_generation_prompt=True, enable_thinking=False) for e, s, l in jobs]
     outs = llm.generate(prompts, SamplingParams(temperature=0.0, max_tokens=160), use_tqdm=False)
     items = defaultdict(list)
     acc = defaultdict(int)
@@ -133,7 +149,7 @@ def main():
             try:
                 acc["fact_date_ok"] += norm_date(str(it.get("date"))) == norm_date(keep[1])
             except (ValueError, KeyError):
-                pass
+                pass  # relative / cross-referenced expressions are scored by downstream QA instead
             acc["fact_relation_valid"] += str(it.get("relation", "")).strip() in label_to_rel
     with args.out.open("w") as f:
         for e, ep in enumerate(eps):

@@ -70,6 +70,8 @@ def main():
         for s_i, sess in enumerate(ep["sessions"]):
             for l_i, line in enumerate(sess):
                 keep = ep["hidden"]["must_keep"][s_i][l_i]
+                if line.startswith("Session date:"):  # v3 session headers stay verbatim
+                    continue
                 forbidden = [v for v in values if v not in line and not any(v in k for k in keep)]
                 jobs.append((e_i, s_i, l_i, line, keep, forbidden))
     pending = list(range(len(jobs)))
