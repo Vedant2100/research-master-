@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Full fine-tuning GRPO timing test (HANDOFF item 7). Run from workstreams/stalestream.
+# GPU 1: writer sampler (weight transfer) + reader. GPU 0: trainer.
+set -euo pipefail
+source /scratch/vbork001/stalestream/env.sh
+export HF_HUB_OFFLINE=1 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+D=$S/data/episodes_v1
+R=$S/runs/full_ft_timing
+mkdir -p "$R"
+log() { echo "[$(date +%T)] $*"; }
+
+# Start the two GPU-1 servers one after the other: concurrent startup makes vLLM's memory
+# profiling count the other process's allocations and the second engine fails to get KV cache.
+wait_up() {  # port pid
+  until curl -sf http://127.0.0.1:$1/v1/models >/dev/null; do
+    kill -0 $2 2>/dev/null || { log "server on $1 died"; exit 1; }; sleep 3; done
+}
+WS=""
+if curl -sf http://127.0.0.1:8402/v1/models >/dev/null; then
+  log "reusing writer server already on 8402"
+else
+  VLLM_SERVER_DEV_MODE=1 CUDA_VISIBLE_DEVICES=1 vllm serve Qwen/Qwen3-1.7B --port 8402 \
+    --weight-transfer-config '{"backend": "nccl"}' --gpu-memory-utilization 0.30 --max-model-len 4096 \
+    >|"$R/writer_server.log" 2>&1 &
+  WS=$!
+fi
+trap 'kill ${WS:-} ${RS:-} 2>/dev/null || true' EXIT
+[ -n "$WS" ] && wait_up 8402 $WS
+CUDA_VISIBLE_DEVICES=1 vllm serve Qwen/Qwen3-4B --port 8401 --gpu-memory-utilization 0.50 \
+  --max-model-len 2048 >|"$R/reader_server.log" 2>&1 &
+RS=$!
+wait_up 8401 $RS
+log "servers up"
+
+CUDA_VISIBLE_DEVICES=0 python -m stalestream.grpo_full --episodes $D/train_2s.jsonl --aliases $D/value_aliases.json \
+  --steps ${STEPS:-20} --algo grpo --beta 0 --out $R/beta0 >|"$R/beta0.log" 2>&1
+log "beta0 done"
+CUDA_VISIBLE_DEVICES=0 python -m stalestream.grpo_full --episodes $D/train_2s.jsonl --aliases $D/value_aliases.json \
+  --steps 5 --algo grpo --beta 0.01 --out $R/beta001 >|"$R/beta001.log" 2>&1
+log "beta001 done"
+log "TIMING DONE"

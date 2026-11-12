@@ -64,6 +64,9 @@ timing) needs GPU 0. They can run at the same time.
    server-mode sync or equivalent), KL penalty to the reference model. Done when a 20-step run
    completes, with s/step recorded. The submitted proposal text may say "with LoRA"; tell the owner
    so the Google Doc gets a one-line note when this lands.
+   **Status: DONE for β = 0** (`grpo_full.py`, `scripts/full_ft_timing.sh`; 21.4 s/step, 21.1 GB peak).
+   Open: KL. The reference model does not fit beside the trainer on GPU 0. Either move it to GPU 1
+   (lower the reader to ~0.40) or run β = 0 and say so.
 8. **Sample bank → RFT + DPO.** Base writer samples G=8 per state; pairs share the same prompt
    (per-session shared-prefix states, finished greedily to score). Match GRPO's sampling budget
    (steps × 32 trajectories). DPO keeps pairs with a reward gap ≥ 2/6.
@@ -100,3 +103,8 @@ timing) needs GPU 0. They can run at the same time.
 - `pkill -f <pattern>` kills its own shell when the pattern is in the command line; killed runs can
   leave an orphan `VLLM::EngineCore` holding GPU memory (check `nvidia-smi`).
 - RLOO advantages are unnormalized: ~6× smaller gradients than GRPO at the same lr.
+- Two vLLM servers on one GPU must start one after the other (concurrent startup miscounts memory).
+- A killed driver script can leave the `vllm serve` process alive (parent re-assigned to PID 1).
+  Check `nvidia-smi --query-compute-apps=pid,used_memory --format=csv` before starting GPU work.
+- FactConsolidation-262K contains essentially every MQuAKE-CF-3k subject, so only the 6K version can
+  be made entity-disjoint from training (its 160 subjects are excluded from v2).

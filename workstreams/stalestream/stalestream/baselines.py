@@ -145,6 +145,8 @@ def arm_memory(arm: str, ep, grammar: Grammar) -> str:
         return ""
     if arm == "oracle":
         return truncate(render([(t["prompt"], t["subject"], t["value"]) for t in ep["hidden"]["truth"].values()]))
+    if arm == "bm25":
+        return bm25_memory(ep)
     if arm == "write_all":
         return truncate("\n".join(l for s in ep["sessions"] for l in s), keep="tail")
     claims, aliases, flagged = parse_stream(ep, grammar)
@@ -155,4 +157,21 @@ def arm_memory(arm: str, ep, grammar: Grammar) -> str:
     raise ValueError(arm)
 
 
-RULE_ARMS = ["oracle", "no_memory", "write_all", "newest_wins", "symbolic"]
+def bm25_memory(ep, k_per_question: int = 2) -> str:
+    """Retrieval baseline (as in Memory-R1's LoCoMo-RAG and Mem-alpha's RAG-Top2): BM25 over all raw
+    statements of the episode, queried by each question; union of top-k hits, budget-truncated.
+    Unlike the writers it sees the questions and the raw history at read time."""
+    from rank_bm25 import BM25Okapi
+    lines = [l for s in ep["sessions"] for l in s]
+    tokd = [re.findall(r"\w+", l.lower()) for l in lines]
+    bm = BM25Okapi(tokd)
+    picked = []
+    for q in ep["questions"]:
+        scores = bm.get_scores(re.findall(r"\w+", q.lower()))
+        for i in sorted(range(len(lines)), key=lambda i: -scores[i])[:k_per_question]:
+            if i not in picked:
+                picked.append(i)
+    return truncate("\n".join(lines[i] for i in picked))
+
+
+RULE_ARMS = ["oracle", "no_memory", "write_all", "newest_wins", "symbolic", "bm25"]

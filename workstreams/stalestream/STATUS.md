@@ -88,6 +88,20 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 ### 2026-11-12 — audit before gate v2
 `scripts/audit.py` (data invariants on 12,600 episodes across v0/v1_raw/v1; recomputation of every number above): **0 failures**; all recorded numbers reproduce. Manual check of 20 random v1 paraphrases: all faithful, but light rewrites close to the templates (an LLM extractor will likely recover most facts). Issues found: (1) no validation split exists; the gate and the pilot both used the v1 test set, so the v1 pilot is **exploratory** and gate v2 needs a fresh frozen test set; (2) paraphrase faithfulness is only spot-checked; (3) RLOO mean grad norm 0.054 vs GRPO 0.336 at equal lr; (4) vLLM sampling is not bit-reproducible.
 
+### 2026-11-12 — gate v2 preregistration (written before the gate v2 run)
+- **Why v2:** v1 gate passed only against template baselines; budget did not bind (oracle ~99/160 tokens); questions were not conflict-focused; no validation split; v1 test already used by the pilot.
+- **Environment v2:** seed 2028, mixed dates, **8–12 facts/episode** (oracle full-sentence memory mean 125, p90 150 tokens, budget 160), **conflict-focused questions** (asked slots must carry an alias / unreliable / out-of-order feature when available; 97% on a 200-episode draw), same paraphrase recipe as v1 (Qwen3-4B, seed 7). **3-way entity-disjoint split** (train/val/test = 1,728/346/346 subjects; test hash buckets identical to v1), with the 160 subjects in FactConsolidation-6K excluded from all splits. 2,000 train (2-session), 300 val, 300 test (3–4 sessions).
+- **Arms (all non-trained, all evaluated on val and on the frozen test set):** oracle (privileged), no_memory, write_all, newest_wins, symbolic (template regex), **bm25** (top-2 statements per question; sees questions and raw history), **extract_rules** (Qwen3-4B per-line JSON extraction with the public relation list + the same rules as symbolic), prompted writers **Qwen3-1.7B, Qwen3-4B, Qwen3-32B-AWQ**. Reader Qwen3-4B, budget 160, unchanged.
+- **Gate (thresholds unchanged):** on test, oracle ≥ 0.90 and oracle − strongest non-privileged arm ≥ 0.20, paired bootstrap. If extract_rules or the 32B writer is within 0.20 of the oracle, the gate FAILS and conflicts are redesigned before any training.
+- **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
+- **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
+
+### 2026-11-12 — full fine-tuning path (HANDOFF item 7): implemented + timed
+`stalestream/grpo_full.py` + `scripts/full_ft_timing.sh`. No LoRA: trainer on GPU 0 (fp32 master weights, bf16 autocast, 8-bit AdamW, lr 1e-6, gradient checkpointing); writer sampler = vLLM server on GPU 1 receiving bf16 weights over NCCL after every step (TRL `VLLMClient`); reader server also on GPU 1. 20 steps on v1 train (4 episodes × group 8, 2 sessions, β = 0): **21.4 s/step** (rollout 5.0, reward 1.4, backward 14.5, weight sync 0.5), peak 21.1 GB on GPU 0, no NaN, 2.5% zero-variance groups, mean pre-clip grad norm 3.9 (clip at 1.0 active). 300 steps ≈ 1.8 h. **KL (β > 0) not yet measured:** the bf16 reference model (+3.4 GB) likely does not fit beside 21.1 GB; options are the reference on GPU 1 with a smaller reader allocation, or β = 0. Timing only, no learning claim (reward 0.208 → 0.242, first vs last 5 steps).
+
+### 2026-11-12 — reproducibility note
+The v1 data on disk was produced by an uncommitted generator state with a different RNG draw order. `generator.py --rng-order v1` now reproduces v1_raw byte-identically (seed 2027, `--date-style mixed`); v0 still reproduces with the default order. v2 data uses the default order.
+
 **Not yet built:** BM25, prompted Qwen3-32B writer, consistency-check defense, privileged resolver, keep/drop controller, RFT, injections, held-out readers.
 
 ## Canonical CS258 project documents

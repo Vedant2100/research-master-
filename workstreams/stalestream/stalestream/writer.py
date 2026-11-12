@@ -65,13 +65,15 @@ def main():
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--lora", type=Path, default=None, help="trained LoRA adapter dir")
     ap.add_argument("--lora-r", type=int, default=16)
+    ap.add_argument("--gpu-mem", type=float, default=0.85)
+    ap.add_argument("--max-len", type=int, default=4096)
     args = ap.parse_args()
     from vllm import LLM, SamplingParams
     eps = [json.loads(l) for l in args.episodes.open()]
     if args.limit:
         eps = eps[: args.limit]
     lora_kw = dict(enable_lora=True, max_lora_rank=args.lora_r, max_loras=1) if args.lora else {}
-    llm = LLM(model=args.model, gpu_memory_utilization=0.85, max_model_len=4096, seed=0, **lora_kw)
+    llm = LLM(model=args.model, gpu_memory_utilization=args.gpu_mem, max_model_len=args.max_len, seed=0, **lora_kw)
     sp = SamplingParams(temperature=0.0, max_tokens=320)
     lora = None
     if args.lora:

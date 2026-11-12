@@ -78,14 +78,28 @@ def load_slots(path: Path):
     return slots, {k: sorted(v) for k, v in pool.items()}, {k: sorted(v) for k, v in aliases.items()}
 
 
+def _bucket(subject: str) -> float:
+    return int(hashlib.sha256(subject.encode()).hexdigest(), 16) % 1000 / 1000
+
+
 def split_subjects(slots, test_frac=0.15):
-    """Entity-disjoint split by a stable hash of the subject string."""
-    def bucket(s):
-        return int(hashlib.sha256(s.encode()).hexdigest(), 16) % 1000 / 1000
-    train = [s for s in slots if bucket(s["subject"]) >= test_frac]
-    test = [s for s in slots if bucket(s["subject"]) < test_frac]
+    """Entity-disjoint 2-way split by a stable hash of the subject string (v0/v1)."""
+    train = [s for s in slots if _bucket(s["subject"]) >= test_frac]
+    test = [s for s in slots if _bucket(s["subject"]) < test_frac]
     assert not {s["subject"] for s in train} & {s["subject"] for s in test}
     return train, test
+
+
+def split_subjects3(slots, test_frac=0.15, val_frac=0.15, exclude=frozenset()):
+    """3-way split (v2+): test buckets are identical to the 2-way split; val is carved out of
+    the old train range. Subjects in `exclude` (e.g. FactConsolidation entities) are dropped."""
+    keep = [s for s in slots if s["subject"] not in exclude]
+    test = [s for s in keep if _bucket(s["subject"]) < test_frac]
+    val = [s for s in keep if test_frac <= _bucket(s["subject"]) < test_frac + val_frac]
+    train = [s for s in keep if _bucket(s["subject"]) >= test_frac + val_frac]
+    a, b, c = ({x["subject"] for x in g} for g in (train, val, test))
+    assert not (a & b or a & c or b & c)
+    return train, val, test
 
 
 def make_alias(rng: random.Random, subject: str) -> str:
@@ -106,8 +120,14 @@ def format_date(rng: random.Random, d: dt.date, style: str) -> str:
     return rng.choice(forms)
 
 
-def build_episode(rng: random.Random, ep_id: str, slots, pool, n_sessions: int, date_style: str = "iso"):
-    k = rng.randint(6, 10)
+CONFLICT_TAGS = {"alias", "unreliable", "out_of_order"}
+
+
+def build_episode(rng: random.Random, ep_id: str, slots, pool, n_sessions: int, date_style: str = "iso",
+                  k_range=(6, 10), conflict_questions: bool = False, rng_order: str = "v0"):
+    """rng_order reproduces historical data: "v0" (and v2+) draws template before source/date;
+    "v1" is the draw order that produced the existing v1 data (source/date before template)."""
+    k = rng.randint(*k_range)
     chosen, subjects = [], set()
     for s in rng.sample(slots, min(len(slots), 200)):
         if s["subject"] not in subjects and len(pool[s["relation"]]) >= 3:
@@ -156,7 +176,15 @@ def build_episode(rng: random.Random, ep_id: str, slots, pool, n_sessions: int, 
             hard[sid].add("out_of_order")
 
     candidates = [x for x in sids if x != audited]
-    asked = sorted(candidates, key=lambda x: (-len(hard[x]), rng.random()))[:6]
+    if conflict_questions:  # v2: only ask about conflicted slots when there are enough of them
+        conflicted = [x for x in candidates if hard[x] & CONFLICT_TAGS]
+        rest = [x for x in candidates if not hard[x] & CONFLICT_TAGS]
+        rng.shuffle(conflicted)
+        rng.shuffle(rest)
+        candidates = conflicted + rest
+        asked = candidates[:6]
+    else:
+        asked = sorted(candidates, key=lambda x: (-len(hard[x]), rng.random()))[:6]
     if len(asked) < 6:  # only possible when k == 6
         asked.append(audited)
 
@@ -165,8 +193,13 @@ def build_episode(rng: random.Random, ep_id: str, slots, pool, n_sessions: int, 
     sessions = [[] for _ in range(n_sessions)]
     alias_intro = {x: rng.randrange(max(1, n_sessions - 1)) for x in alias_of}
     for sid, sess in alias_intro.items():
-        tmpl = rng.choice(ALIAS_TEMPLATES)  # draw order matches v0 for reproducibility
-        src, subj = rng.choice(good), chosen[int(sid[1:])]["subject"]
+        if rng_order == "v1":
+            src = rng.choice(good)
+            tmpl = rng.choice(ALIAS_TEMPLATES)
+        else:
+            tmpl = rng.choice(ALIAS_TEMPLATES)
+            src = rng.choice(good)
+        subj = chosen[int(sid[1:])]["subject"]
         sessions[sess].append((-1.0, tmpl.format(source=src, alias=alias_of[sid], subject=subj),
                                [src, alias_of[sid], subj]))
     for e in events:
@@ -174,8 +207,12 @@ def build_episode(rng: random.Random, ep_id: str, slots, pool, n_sessions: int, 
         name = s["subject"]
         if e["slot"] in alias_of and e["session"] > alias_intro[e["slot"]] and rng.random() < 0.7:
             name = alias_of[e["slot"]]
-        tmpl = rng.choice(STATEMENT_TEMPLATES)
-        date = format_date(rng, e["date"], date_style)
+        if rng_order == "v1":
+            date = format_date(rng, e["date"], date_style)
+            tmpl = rng.choice(STATEMENT_TEMPLATES)
+        else:
+            tmpl = rng.choice(STATEMENT_TEMPLATES)
+            date = format_date(rng, e["date"], date_style)
         text = tmpl.format(
             source=e["source"], date=date, fact=fact_text(s["prompt"], name, e["value"]))
         sessions[e["session"]].append((rng.random(), text, [e["source"], date, name, e["value"]]))
@@ -224,20 +261,39 @@ def main():
     ap.add_argument("--n-test", type=int, default=300)
     ap.add_argument("--seed", type=int, default=2026)
     ap.add_argument("--date-style", choices=["iso", "mixed"], default="iso")
+    ap.add_argument("--slots", type=int, nargs=2, default=[6, 10], metavar=("MIN", "MAX"))
+    ap.add_argument("--conflict-questions", action="store_true")
+    ap.add_argument("--split3", action="store_true", help="train/val/test (v2+)")
+    ap.add_argument("--rng-order", choices=["v0", "v1"], default="v0",
+                    help="v1 reproduces the existing v1 data (seed 2027, --date-style mixed)")
+    ap.add_argument("--n-val", type=int, default=300)
+    ap.add_argument("--exclude-subjects", type=Path, default=None, help="JSON list of subjects to drop")
     args = ap.parse_args()
     slots, pool, aliases = load_slots(args.mquake)
-    train, test = split_subjects(slots)
     args.out.mkdir(parents=True, exist_ok=True)
     rng = random.Random(args.seed)
-    for name, src, n, (lo, hi) in [("train_2s", train, args.n_train, (2, 2)), ("test", test, args.n_test, (3, 4))]:
+    if args.split3:
+        exclude = frozenset(json.loads(args.exclude_subjects.read_text())) if args.exclude_subjects else frozenset()
+        train, val, test = split_subjects3(slots, exclude=exclude)
+        plan = [("train_2s", train, args.n_train, (2, 2)), ("val", val, args.n_val, (3, 4)),
+                ("test", test, args.n_test, (3, 4))]
+    else:
+        train, test = split_subjects(slots)
+        val = []
+        plan = [("train_2s", train, args.n_train, (2, 2)), ("test", test, args.n_test, (3, 4))]
+    for name, src, n, (lo, hi) in plan:
         with (args.out / f"{name}.jsonl").open("w") as f:
             for i in range(n):
-                ep = build_episode(rng, f"{name}-{i:05d}", src, pool, rng.randint(lo, hi), args.date_style)
+                ep = build_episode(rng, f"{name}-{i:05d}", src, pool, rng.randint(lo, hi), args.date_style,
+                                   tuple(args.slots), args.conflict_questions, args.rng_order)
                 validate(ep)
                 f.write(json.dumps(ep) + "\n")
     (args.out / "value_aliases.json").write_text(json.dumps(aliases))
-    meta = {"seed": args.seed, "slots": len(slots), "train_slots": len(train), "test_slots": len(test),
-            "train_subjects": len({s["subject"] for s in train}), "test_subjects": len({s["subject"] for s in test})}
+    meta = {"seed": args.seed, "slots": len(slots), "train_slots": len(train), "val_slots": len(val),
+            "test_slots": len(test), "train_subjects": len({s["subject"] for s in train}),
+            "val_subjects": len({s["subject"] for s in val}), "test_subjects": len({s["subject"] for s in test}),
+            "slots_per_episode": args.slots, "conflict_questions": args.conflict_questions,
+            "date_style": args.date_style, "split3": args.split3}
     (args.out / "meta.json").write_text(json.dumps(meta, indent=2))
     print(json.dumps(meta))
 
