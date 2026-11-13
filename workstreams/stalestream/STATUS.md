@@ -3,7 +3,7 @@
 **Area:** Memory & Continual Learning
 **Source:** https://github.com/Vedant2100/f26/tree/main/cs258/stalestream
 **Owner agent:** `stalestream`
-**Current agent state:** gate v3 MARGINAL PASS (oracle 0.997 vs 32B session-context extraction+rules 0.783, gap 0.214, 95% CI [0.194, 0.234]). v2 failed the 32B check. Main run 1: GRPO +0.109 test EM over the untrained writer (gains on conflict slots); OPSD collapsed (moving self-teacher), frozen-teacher fix next. Full fine-tuning GRPO implemented and timed (21.4 s/step). Next: RFT/DPO sample bank, then main runs (HANDOFF section B).
+**Current agent state:** gate v3 MARGINAL PASS (oracle 0.997 vs 32B session-context extraction+rules 0.783, gap 0.214, 95% CI [0.194, 0.234]). v2 failed the 32B check. Run 1+2 (seed 0): GRPO +0.109 test EM over the untrained writer (gains on conflict slots); RFT, DPO and frozen-teacher OPSD ≈ untrained. Next: hinted-teacher diagnostic, small RFT/DPO tuning on val, GRPO seeds 1–2. Full fine-tuning GRPO implemented and timed (21.4 s/step). Next: RFT/DPO sample bank, then main runs (HANDOFF section B).
 
 ## Research aim
 Learn a bounded memory rewrite policy for changing facts with downstream reader reward.
@@ -95,6 +95,21 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Gate (thresholds unchanged):** on test, oracle ≥ 0.90 and oracle − strongest non-privileged arm ≥ 0.20, paired bootstrap. If extract_rules or the 32B writer is within 0.20 of the oracle, the gate FAILS and conflicts are redesigned before any training.
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
+
+### 2026-11-12 — main run 2 results (seed 0): only GRPO improves over the untrained writer
+| arm (seed 0, final ckpt) | val EM | test EM | Δ test vs prompted_1.7b [95% CI] | GRPO − arm (test) |
+|---|---|---|---|---|
+| prompted_1.7b (untrained) | 0.194 | 0.211 | — | +0.109 [+0.082, +0.137] |
+| RFT (best-of-8 SFT, 2 ep, lr 5e-6) | 0.212 | 0.211 | −0.001 [−0.023, +0.023] | +0.109 [+0.085, +0.136] |
+| DPO (559 pairs, β 0.1, lr 1e-6, 1 ep) | 0.210 | 0.223 | +0.012 [−0.008, +0.032] | +0.097 [+0.069, +0.126] |
+| OPSD, frozen teacher, derivable hints (300 steps) | 0.211 | 0.206 | −0.006 [−0.028, +0.018] | +0.114 [+0.088, +0.141] |
+| **GRPO (300 steps)** | **0.327** | **0.320** | **+0.109 [+0.082, +0.137]** | — |
+
+Per-tag (test): only GRPO moves the conflict tags (out_of_order 0.21 → 0.40, xref_date 0.20 → 0.32, relative_date 0.19 → 0.32, unreliable 0.19 → 0.27, alias 0.21 → 0.30); RFT, DPO and OPSD stay within ±0.04 of the untrained writer on every tag. Memory length is unchanged across arms (153–159 tokens).
+
+**Training notes.** OPSD-frozen was stable for 300 steps (no collapse guard; reward 0.19–0.23 throughout; KL 0.30 → ~0.21–0.25), so the frozen teacher fixed the collapse, but distilling toward the hinted teacher did not raise QA. RFT reached SFT loss 0.04 (98.8% token accuracy on its own samples). DPO loss moved only 0.69 → 0.66 in 35 steps (weak update).
+
+**Caveats, do not overclaim:** one seed per arm. RFT and DPO used one conservative hyperparameter setting each, untuned. The DPO update was very small, so "DPO does not help" is not established. Untested diagnostic for OPSD: whether the *hinted teacher itself* writes better memories than the student. If it does not, OPSD has no signal to distill and its null is uninformative about distillation.
 
 ### 2026-11-12 — main run 2 preregistration (written before the run)
 - **Frozen-teacher OPSD smoke test (10 steps):** teacher = frozen initial writer in-process on GPU 0 (bf16), paged 8-bit AdamW to make room; peak 21.1 GB, ~35 s/step, KL loss 0.27–0.33 (no drift to 0), reward 0.15–0.23, 205–227 tokens. A three-server variant (teacher on GPU 1) failed: the writer's 1 GB weight-transfer buffer did not fit on GPU 1 (OOM → 500 → trainer hang).
