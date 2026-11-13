@@ -96,6 +96,21 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
 
+### 2026-11-13 — size-matched extraction baselines (v3)
+Command: `scripts/size_matched_v3.sh` (outputs in `$S/runs/size_matched_v3/`). Same v3 val/test, same rules and Qwen3-4B reader as the gate. Not preregistered; added after the GRPO 3-seed result to answer "is GRPO's 1.7B writer beaten by a pipeline of the same size?".
+
+| arm | extraction date ok / relation valid (test) | val EM | test EM |
+|---|---|---|---|
+| extract_rules_1.7b (header context) | 0.681 / 0.633 | 0.283 | 0.259 |
+| extract_rules_1.7b_ctx (session context) | 0.650 / 0.569 | 0.216 | 0.192 |
+| extract_rules_4b_ctx (session context) | 0.720 / 0.928 | 0.557 | 0.538 |
+| *reference:* GRPO 1.7B writer, 3 seeds | | 0.299 ± 0.031 | 0.292 ± 0.026 |
+| *reference:* extract_rules (4B header) / 32B session ctx | | | 0.486 / 0.783 |
+
+**GRPO vs extract_rules_1.7b, paired bootstrap (test):** seed 0 +0.061 [+0.030, +0.091], seed 1 +0.009 [−0.022, +0.043], seed 2 +0.027 [−0.005, +0.058]; mean of seeds +0.032 [+0.004, +0.061]. Val: mean of seeds +0.015 [−0.010, +0.040].
+
+**Reading:** At equal size (1.7B), the GRPO writer is at best slightly ahead of extraction+rules: significant on test for the seed mean, not on val, and only 1 of 3 seeds individually. The 1.7B extractor fails mostly on relation mapping (57–63% valid vs 93% for 4B), and session context *hurts* it. Pipelines scale steeply with model size (0.26 → 0.54 → 0.78 for 1.7B → 4B → 32B with context), while prompted writers do not (0.21 / 0.18 / 0.15). Honest claim: RL closes the gap between an end-to-end writer and a size-matched pipeline, but does not beat larger pipelines. The informative next tests are a 4B RL writer, or RL applied to the extractor.
+
 ### 2026-11-13 — GRPO 3-seed result: robust gain over the untrained writer
 | GRPO seed | val EM | test EM | Δ test vs prompted_1.7b (0.211) [95% CI] | memory tokens |
 |---|---|---|---|---|
