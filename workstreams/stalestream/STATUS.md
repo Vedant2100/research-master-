@@ -3,7 +3,7 @@
 **Area:** Memory & Continual Learning
 **Source:** https://github.com/Vedant2100/f26/tree/main/cs258/stalestream
 **Owner agent:** `stalestream`
-**Current agent state:** gate v3 MARGINAL PASS (oracle 0.997 vs 32B session-context extraction+rules 0.783, gap 0.214, 95% CI [0.194, 0.234]). v2 failed the 32B check. Full-FT GRPO + OPSD implemented; owner decision pending on training with a marginal gate. Full fine-tuning GRPO implemented and timed (21.4 s/step). Next: RFT/DPO sample bank, then main runs (HANDOFF section B).
+**Current agent state:** gate v3 MARGINAL PASS (oracle 0.997 vs 32B session-context extraction+rules 0.783, gap 0.214, 95% CI [0.194, 0.234]). v2 failed the 32B check. Main run 1: GRPO +0.109 test EM over the untrained writer (gains on conflict slots); OPSD collapsed (moving self-teacher), frozen-teacher fix next. Full fine-tuning GRPO implemented and timed (21.4 s/step). Next: RFT/DPO sample bank, then main runs (HANDOFF section B).
 
 ## Research aim
 Learn a bounded memory rewrite policy for changing facts with downstream reader reward.
@@ -95,6 +95,19 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Gate (thresholds unchanged):** on test, oracle ≥ 0.90 and oracle − strongest non-privileged arm ≥ 0.20, paired bootstrap. If extract_rules or the 32B writer is within 0.20 of the oracle, the gate FAILS and conflicts are redesigned before any training.
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
+
+### 2026-11-12 — main run 1 results (1 seed): GRPO learns conflict resolution; OPSD collapsed
+**GRPO (full fine-tuning, 300 steps, v3, seed 0, final checkpoint):** train reward 0.243 (first 25 steps) → 0.366 (last 25). Held-out:
+
+| | val EM | test EM |
+|---|---|---|
+| grpo_300 | 0.327 | 0.320 |
+| prompted_1.7b (same model, untrained) | 0.194 | 0.211 |
+| Δ, paired bootstrap 95% CI | **+0.132 [+0.107, +0.159]** | **+0.109 [+0.082, +0.137]** |
+
+Preregistered learning-signal criterion **met**. By question type (test, untrained → GRPO): out_of_order 0.215 → **0.403**, relative_date 0.193 → 0.322, xref_date 0.200 → 0.322, alias 0.213 → 0.296, unreliable 0.190 → 0.270, plain 0.393 → 0.250. Memory length barely changed (154 → 159 tokens). **Unlike the 100-step pilot, the gains come from conflict resolution, not format**; plain slots lose, consistent with reallocating the budget toward conflicted facts. Still below the size-matched-or-larger pipelines: −0.166 [−0.203, −0.126] vs 4B extraction + rules, −0.463 vs 32B session-context extraction + rules. One seed: no claim about stability.
+
+**OPSD (derivable-hint self-teacher): collapsed, stopped at step ~50 of 300.** By 5-step blocks, reward 0.20 → 0.23 → 0.22 → 0.20 → 0.15 → 0.05 → 0.02 → 0.007 → 0.004; completions hit the 256-token cap from step ~20; the KL loss fell 0.29 → 0.004. Diagnosis: the teacher is the *current* policy, so as the student degenerates the teacher degenerates with it, and the KL becomes trivially small (the known moving self-teacher failure; cf. "OPSD with Teacher Evolution", E²-OPSD entropy overshoot). Run stopped to save ~2.5 GPU-hours; no checkpoint kept. **Fix (next):** a frozen teacher (initial weights with hints). Since a second model copy does not fit on GPU 0, serve the frozen base model on GPU 1 and use the per-token reverse-KL estimator on sampled tokens (teacher log-prob of the sampled token via vLLM sequence log-probs), as in on-policy distillation. This is a design change made after observing the failure, recorded here before the rerun.
 
 ### 2026-11-12 — main run 1 preregistration (written before the run; owner chose "train on v3")
 - **OPSD smoke test (10 steps, v3):** 36.5 s/step (teacher forward roughly doubles the backward phase), 21.1 GB peak, no NaN, KL loss 0.30 flat at 10 steps, completion length 220 → 230 tokens (watch: the teacher may favor longer memories, which the 160-token budget truncates).
