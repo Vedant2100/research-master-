@@ -59,7 +59,7 @@ timing) needs GPU 0. They can run at the same time.
    20 points of the oracle, stop and redesign conflicts (e.g. reliability inferred from contradiction
    patterns instead of an explicit audit line, relative/implicit dates). Don't train on a failed gate.
 
-6b. **[OPEN, owner decision] Harder conflicts (v3).** Rules over near-perfect extraction already reach
+6b. **[DONE: v3 (relative and cross-referenced dates), seed 2029; MARGINAL PASS, gap 0.214 [0.194, 0.234] vs 32B session-context extraction + rules]** **Harder conflicts (v3).** Rules over near-perfect extraction already reach
    0.80, so the remaining headroom is small. Make conflicts that per-line extraction plus fixed rules
    cannot resolve. Candidates:
    - Unreliable sources revealed only by contradiction patterns (e.g. a source repeatedly

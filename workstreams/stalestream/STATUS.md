@@ -3,7 +3,7 @@
 **Area:** Memory & Continual Learning
 **Source:** https://github.com/Vedant2100/f26/tree/main/cs258/stalestream
 **Owner agent:** `stalestream`
-**Current agent state:** gate v2 FAILS under the stricter 32B-extractor check (oracle 0.998 vs 32B extraction+rules 0.805, gap 0.193 < 0.20); passes vs all preregistered arms (gap 0.366 vs 4B extraction). Full fine-tuning GRPO implemented and timed (21.4 s/step). Next: RFT/DPO sample bank, then main runs (HANDOFF section B).
+**Current agent state:** gate v3 MARGINAL PASS (oracle 0.997 vs 32B session-context extraction+rules 0.783, gap 0.214, 95% CI [0.194, 0.234]). v2 failed the 32B check. Full-FT GRPO + OPSD implemented; owner decision pending on training with a marginal gate. Full fine-tuning GRPO implemented and timed (21.4 s/step). Next: RFT/DPO sample bank, then main runs (HANDOFF section B).
 
 ## Research aim
 Learn a bounded memory rewrite policy for changing facts with downstream reader reward.
@@ -95,6 +95,27 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Gate (thresholds unchanged):** on test, oracle ≥ 0.90 and oracle − strongest non-privileged arm ≥ 0.20, paired bootstrap. If extract_rules or the 32B writer is within 0.20 of the oracle, the gate FAILS and conflicts are redesigned before any training.
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
+
+### 2026-11-12 — gate v3 result: MARGINAL PASS (1 seed, 300 frozen test episodes)
+Commands: `scripts/gate_v3.sh`, then `scripts/gate_v3_rerun.sh` after the extraction-cap fix below. Data `episodes_v3` (seed 2029): labels re-derived from text with 0 mismatches; paraphrase fallback 8.6% test / 8.1% val / 8.0% train; **faithfulness 2/400 unfaithful (0.5%, Wilson [0.14%, 1.8%])**.
+
+| arm | val EM | test EM |
+|---|---|---|
+| oracle (privileged) | 0.998 | 0.997 |
+| **extract_rules_32b_ctx** (32B, whole session as context per line) | — | **0.783** |
+| extract_rules_32b (32B, per line + session date) | — | 0.681 |
+| extract_rules (4B, per line + session date) | 0.448 | 0.486 |
+| prompted Qwen3-1.7B | 0.194 | 0.211 |
+| bm25 | 0.177 | 0.197 |
+| prompted Qwen3-4B | 0.194 | 0.178 |
+| prompted Qwen3-32B-AWQ | — | 0.151 |
+| write_all | 0.096 | 0.092 |
+| newest_wins / symbolic | 0.053 | 0.048 |
+| no_memory | 0.000 | 0.000 |
+
+**Gate (test, all non-privileged arms):** strongest = extract_rules_32b_ctx; oracle − strongest = **0.214**, paired bootstrap 95% CI **[0.194, 0.234]**. PASS on the point estimate (the rule `headroom_gate.py` applies), but **the interval straddles 0.20**: a marginal pass.
+
+**Readings:** (1) Cross-referenced dates work as designed against per-line extraction: answer-in-memory for asked slots with a cross-referenced date is 0.677 (32B per line) vs 0.911 without; with whole-session context it recovers to 0.846. (2) Every structured conflict added so far (v1 paraphrase, v2 budget/conflicts, v3 dates) has been largely solvable by a large model that parses with full context plus fixed rules. The remaining headroom over the strongest pipeline is ~21 points. (3) Small prompted writers stay near 0.2 at every version, so headroom over size-matched baselines is large (≥ 0.5 over the prompted 1.7B/4B and the 4B pipeline). Whether to train now on a marginal gate is an owner decision.
 
 ### 2026-11-12 — gate v3 harness fix (before any v3 gate number was computed)
 The 32B per-line extractor parsed only 83.6% of v3 test lines. Diagnosis on 300 random test lines: with relative dates it writes date arithmetic before the JSON, and the extractor's 160-token output cap truncated it (49/300 unparseable at 160 tokens, **0/300 at 1,024**). This is a harness flaw that weakens the strongest baseline, so `extract.py` now caps output at 1,024 tokens for **all** extraction arms, and the 4B, 32B and 32B-context arms are rerun on v3 val/test. The diagnosis also shows the expected v3 effect: per-line extraction guesses cross-referenced dates (e.g. it assumes the referenced report is on the session date). No v3 reader score or gate had been computed when this fix was made.
