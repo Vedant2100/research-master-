@@ -91,6 +91,11 @@ timing) needs GPU 0. They can run at the same time.
    GRPO: 32 trajectories/step as 32 episodes × 1. Reader reward logged for monitoring and checkpoint
    selection only. Next: `ALGO=opsd DATA=$S/data/episodes_v3 TAG=_opsd STEPS=10 scripts/full_ft_timing.sh`
    once the gate passes. Possible later ablation: hints vs answers as privileged information.
+8b'. **[BUILT, not yet run] Frozen-teacher OPSD (`--algo opsd_frozen`).** The self-teacher OPSD (8b) collapsed at
+   ~50 steps (moving teacher, see STATUS). Fix: the teacher is the frozen initial writer served on GPU 1
+   (port 8403, `full_ft_timing.sh` starts it when ALGO=opsd_frozen) with the same derivable-hint prompt;
+   loss = per-token reverse-KL policy gradient on sampled tokens (A_t = log p_T − log p_S, clipped ±10).
+   Next: `ALGO=opsd_frozen DATA=$S/data/episodes_v3 TAG=_opsdf STEPS=10 scripts/full_ft_timing.sh`.
 8c. **[BUILT, not yet run: `grpo_full.py --local-frac F`]** **Shared-memory local groups for GRPO (Memory-R2's LoGo-GRPO, arXiv 2605.21768).** Once rollouts write
    different session-1 memories, their later rewards are not comparable (different effective
    environments), so plain trajectory-level GRPO gives biased credit. Add a local branch: from one

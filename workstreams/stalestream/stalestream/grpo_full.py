@@ -107,6 +107,61 @@ def opsd_backward(policy, tok, gens, max_new):
 
 
 
+def frozen_teacher_logprobs(url, model, tok, gens):
+    """Log-prob of each sampled completion token under the FROZEN teacher (initial weights) given the
+    hint-augmented teacher prompt. vLLM prompt_logprobs=0 always returns the actual token's log-prob."""
+    import requests
+    seqs, starts = [], []
+    for _, _, cid, tprompt in gens:
+        tid = tok(tprompt, add_special_tokens=False)["input_ids"]
+        seqs.append(tid + list(cid))
+        starts.append(len(tid))
+    out = [None] * len(seqs)
+
+    def call(lo, hi):
+        r = requests.post(f"{url}/v1/completions", timeout=900, json={
+            "model": model, "prompt": seqs[lo:hi], "max_tokens": 1, "temperature": 1.0, "prompt_logprobs": 0})
+        r.raise_for_status()
+        for k, ch in enumerate(sorted(r.json()["choices"], key=lambda c: c["index"])):
+            j = lo + k
+            plp = ch["prompt_logprobs"]
+            vals = []
+            for pos in range(starts[j], len(seqs[j])):
+                entry = plp[pos]
+                tok_id = str(seqs[j][pos])
+                vals.append(entry[tok_id]["logprob"] if entry and tok_id in entry else float("-inf"))
+            out[j] = vals
+
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(4) as ex:
+        list(ex.map(lambda lo: call(lo, min(lo + 16, len(seqs))), range(0, len(seqs), 16)))
+    return out
+
+
+def opsd_frozen_backward(policy, gens, t_lps, max_new, clip=10.0):
+    """On-policy distillation from a frozen teacher with the per-token reverse-KL estimator on sampled
+    tokens: advantage_t = log p_T(x_t) - log p_S(x_t) (detached, clipped), loss = -sum_t A_t log p_S(x_t)."""
+    total, n_tok = 0.0, 0
+    for (_, pid, cid, _), t_lp in zip(gens, t_lps):
+        if not cid:
+            continue
+        ids = torch.tensor(list(pid) + list(cid), device="cuda")[None]
+        keep = len(cid) + 1
+        with torch.autocast("cuda", dtype=torch.bfloat16):
+            logits = policy(input_ids=ids, logits_to_keep=keep).logits[:, :-1].float()
+        tgt = torch.tensor(cid, device="cuda")[None]
+        s_lp = (logits.gather(-1, tgt[..., None]).squeeze(-1) - torch.logsumexp(logits, -1))[0]
+        t = torch.tensor(t_lp, device="cuda", dtype=torch.float)
+        t = torch.where(torch.isfinite(t), t, torch.full_like(t, -30.0))
+        a = (t - s_lp.detach()).clamp(-clip, clip)
+        loss = -(a * s_lp).sum() / max_new / len(gens)
+        loss.backward()
+        total += loss.item()
+        n_tok += len(cid)
+        del logits
+    return total, n_tok
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--episodes", type=Path, required=True)
@@ -116,7 +171,9 @@ def main():
     ap.add_argument("--writer-url", default="http://127.0.0.1:8402")
     ap.add_argument("--reader-url", default="http://127.0.0.1:8401")
     ap.add_argument("--reader-model", default="Qwen/Qwen3-4B")
-    ap.add_argument("--algo", choices=["grpo", "rloo", "opsd"], default="grpo",
+    ap.add_argument("--teacher-url", default="http://127.0.0.1:8403",
+                    help="opsd_frozen: vLLM server with the FROZEN initial writer (no weight sync)")
+    ap.add_argument("--algo", choices=["grpo", "rloo", "opsd", "opsd_frozen"], default="grpo",
                     help="opsd: on-policy self-distillation, per-token reverse KL to the same model "
                          "prompted with derivable hints (hints.py); reward only logged")
     ap.add_argument("--steps", type=int, default=20)
@@ -183,13 +240,14 @@ def main():
             out = client.generate(prompts, n=1, temperature=args.temperature, top_p=1.0,
                                   max_tokens=args.max_new, logprobs=None)
             for i, pid, cid in zip(idx, out["prompt_ids"], out["completion_ids"]):
-                tprompt = build_teacher_prompt(tok, memories[i], trajs[i], s) if args.algo == "opsd" else None
+                tprompt = (build_teacher_prompt(tok, memories[i], trajs[i], s)
+                           if args.algo in ("opsd", "opsd_frozen") else None)
                 gens.append((i, pid, cid, tprompt))
                 memories[i] = truncate(clean(tok.decode(cid, skip_special_tokens=True)), BUDGET_TOKENS)
                 mem_hist[i].append(memories[i])
         # LoGo-style local branch: shared intermediate state -> G candidates for the last session
         local = []  # (episode index in batch, prompt ids, completion ids, final memory)
-        if args.local_frac > 0 and args.algo != "opsd":
+        if args.local_frac > 0 and args.algo in ("grpo", "rloo"):
             for b_i, ep in enumerate(batch):
                 if random.random() >= args.local_frac or len(ep["sessions"]) < 2:
                     continue
@@ -205,7 +263,7 @@ def main():
 
         rewards = reader_rewards(args.reader_url, args.reader_model, reader_tok, memories,
                                  [ep["questions"] for ep in trajs], [ep["hidden"]["answers"] for ep in trajs], aliases)
-        adv = advantages(rewards, args.group, args.algo) if args.algo != "opsd" else None
+        adv = advantages(rewards, args.group, args.algo) if args.algo in ("grpo", "rloo") else None
         local_rewards = []
         if local:
             local_rewards = reader_rewards(args.reader_url, args.reader_model, reader_tok, [m for *_, m in local],
@@ -223,6 +281,10 @@ def main():
         if args.algo == "opsd":
             total_loss, n_tok = opsd_backward(policy, tok, gens, args.max_new)
             active = gens
+        elif args.algo == "opsd_frozen":
+            t_lps = frozen_teacher_logprobs(args.teacher_url, args.model, tok, gens)
+            total_loss, n_tok = opsd_frozen_backward(policy, gens, t_lps, args.max_new)
+            active = gens
         else:
             active = [g for g in gens if abs(adv[g[0]]) > 1e-8]
             total_loss, total_kl, n_tok = pg_backward(policy, ref, tok, gens, active, adv, args)
@@ -234,7 +296,7 @@ def main():
 
         rec = {"step": step, "algo": args.algo, "full_ft": True, "beta": args.beta,
                "reward_mean": sum(rewards) / len(rewards), "reward_std": float(torch.tensor(rewards).std()),
-               "loss": total_loss, "kl": (total_kl / max(1, len(active)) if ref is not None and args.algo != "opsd" else None),
+               "loss": total_loss, "kl": (total_kl / max(1, len(active)) if ref is not None and args.algo in ("grpo", "rloo") else None),
                "grad_norm": gnorm, "nan": math.isnan(total_loss),
                "frac_zero_adv_groups": sum(1 for i in range(0, len(rewards), args.group)
                                            if len(set(rewards[i:i + args.group])) == 1) / args.episodes_per_step,
