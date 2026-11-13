@@ -129,6 +129,10 @@ def main():
     ap.add_argument("--micro-batch", type=int, default=2)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--save", action="store_true", help="save final weights (bf16) to OUT/final")
+    ap.add_argument("--local-frac", type=float, default=0.0,
+                    help="LoGo-style local groups (Memory-R2): for this fraction of episodes per step, roll out "
+                         "--group candidates for the LAST session from one shared intermediate memory and "
+                         "add their within-group advantages (GRPO/RLOO only)")
     args = ap.parse_args()
 
     import bitsandbytes as bnb
@@ -171,6 +175,7 @@ def main():
         batch = random.sample(eps, args.episodes_per_step)
         trajs = [ep for ep in batch for _ in range(args.group)]
         memories = [""] * len(trajs)
+        mem_hist = [[""] for _ in trajs]  # memory before each session
         gens = []  # (traj index, prompt ids, completion ids, teacher prompt text or None)
         for s in range(max(len(ep["sessions"]) for ep in batch)):
             idx = [i for i, ep in enumerate(trajs) if s < len(ep["sessions"])]
@@ -181,11 +186,36 @@ def main():
                 tprompt = build_teacher_prompt(tok, memories[i], trajs[i], s) if args.algo == "opsd" else None
                 gens.append((i, pid, cid, tprompt))
                 memories[i] = truncate(clean(tok.decode(cid, skip_special_tokens=True)), BUDGET_TOKENS)
+                mem_hist[i].append(memories[i])
+        # LoGo-style local branch: shared intermediate state -> G candidates for the last session
+        local = []  # (episode index in batch, prompt ids, completion ids, final memory)
+        if args.local_frac > 0 and args.algo != "opsd":
+            for b_i, ep in enumerate(batch):
+                if random.random() >= args.local_frac or len(ep["sessions"]) < 2:
+                    continue
+                last = len(ep["sessions"]) - 1
+                src = b_i * args.group + random.randrange(args.group)
+                shared = mem_hist[src][last]
+                out = client.generate([build_prompt(tok, shared, ep["sessions"][last], last)], n=args.group,
+                                      temperature=args.temperature, top_p=1.0, max_tokens=args.max_new, logprobs=None)
+                pid = out["prompt_ids"][0]  # one prompt, n completions
+                for cid in out["completion_ids"]:
+                    local.append((b_i, pid, cid, truncate(clean(tok.decode(cid, skip_special_tokens=True)), BUDGET_TOKENS)))
         t_roll = time.time()
 
         rewards = reader_rewards(args.reader_url, args.reader_model, reader_tok, memories,
                                  [ep["questions"] for ep in trajs], [ep["hidden"]["answers"] for ep in trajs], aliases)
         adv = advantages(rewards, args.group, args.algo) if args.algo != "opsd" else None
+        local_rewards = []
+        if local:
+            local_rewards = reader_rewards(args.reader_url, args.reader_model, reader_tok, [m for *_, m in local],
+                                           [batch[b]["questions"] for b, *_ in local],
+                                           [batch[b]["hidden"]["answers"] for b, *_ in local], aliases)
+            ladv = advantages(local_rewards, args.group, args.algo)
+            base = len(trajs)
+            for k, (b, pid, cid, _) in enumerate(local):
+                gens.append((base + k, pid, cid, None))
+            adv = adv + ladv
         t_rew = time.time()
 
         policy.train()
@@ -209,6 +239,7 @@ def main():
                "frac_zero_adv_groups": sum(1 for i in range(0, len(rewards), args.group)
                                            if len(set(rewards[i:i + args.group])) == 1) / args.episodes_per_step,
                "mean_completion_tokens": sum(len(g[2]) for g in gens) / len(gens),
+               "local_groups": len(local) // max(1, args.group), "local_reward_mean": (sum(local_rewards) / len(local_rewards)) if local_rewards else None,
                "t_rollout": round(t_roll - t0, 2), "t_reward": round(t_rew - t_roll, 2),
                "t_backward": round(t_bwd - t_rew, 2), "t_sync": round(t_end - t_bwd, 2),
                "t_step": round(t_end - t0, 2), "max_mem_gb": round(torch.cuda.max_memory_allocated() / 2**30, 2)}
