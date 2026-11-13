@@ -3,7 +3,7 @@
 **Area:** Memory & Continual Learning
 **Source:** https://github.com/Vedant2100/f26/tree/main/cs258/stalestream
 **Owner agent:** `stalestream`
-**Current agent state:** gate v3 MARGINAL PASS (oracle 0.997 vs 32B session-context extraction+rules 0.783, gap 0.214, 95% CI [0.194, 0.234]). v2 failed the 32B check. Run 1+2 (seed 0): GRPO +0.109 test EM over the untrained writer (gains on conflict slots); RFT, DPO and frozen-teacher OPSD ≈ untrained. Next: hinted-teacher diagnostic, small RFT/DPO tuning on val, GRPO seeds 1–2. Full fine-tuning GRPO implemented and timed (21.4 s/step). Next: RFT/DPO sample bank, then main runs (HANDOFF section B).
+**Current agent state:** gate v3 MARGINAL PASS (oracle 0.997 vs 32B session-context extraction+rules 0.783, gap 0.214, 95% CI [0.194, 0.234]). v2 failed the 32B check. GRPO 3 seeds: test 0.292 ± 0.026 vs untrained 0.211 (all CIs exclude 0); RFT, DPO and frozen-teacher OPSD (seed 0) ≈ untrained; OPSD's hinted teacher is no better than the student. Next: RFT/DPO tuning on val; OPSD with a better teacher; local groups ablation. Full fine-tuning GRPO implemented and timed (21.4 s/step). Next: RFT/DPO sample bank, then main runs (HANDOFF section B).
 
 ## Research aim
 Learn a bounded memory rewrite policy for changing facts with downstream reader reward.
@@ -95,6 +95,16 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Gate (thresholds unchanged):** on test, oracle ≥ 0.90 and oracle − strongest non-privileged arm ≥ 0.20, paired bootstrap. If extract_rules or the 32B writer is within 0.20 of the oracle, the gate FAILS and conflicts are redesigned before any training.
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
+
+### 2026-11-13 — GRPO 3-seed result: robust gain over the untrained writer
+| GRPO seed | val EM | test EM | Δ test vs prompted_1.7b (0.211) [95% CI] | memory tokens |
+|---|---|---|---|---|
+| 0 | 0.327 | 0.320 | +0.109 [+0.082, +0.137] | 159 |
+| 1 | 0.266 | 0.269 | +0.058 [+0.029, +0.084] | 120 |
+| 2 | 0.303 | 0.286 | +0.075 [+0.048, +0.102] | 141 |
+| **mean ± sd** | **0.299 ± 0.031** | **0.292 ± 0.026** | **+0.081** | |
+
+Preregistered criterion **met**: all three seeds' test CIs exclude 0. Per-tag (test) the location of the gain varies by seed. Seeds 0 and 2 gain mainly on conflict tags (out_of_order 0.21 → 0.40 in both); seed 1 gains mainly on plain slots (0.39 → 0.50) and little on out_of_order (0.23). Seed-averaged: alias 0.21 → 0.28, out_of_order 0.21 → 0.34, relative_date 0.19 → 0.28, unreliable 0.19 → 0.26, xref_date 0.20 → 0.28, plain 0.39 → 0.31. **Claim supported:** GRPO improves a 1.7B writer by +0.06 to +0.11 test EM (3/3 seeds), with conflict-slot gains on average. **Not supported:** that every seed learns conflict resolution, or any ranking against single-seed RFT/DPO/OPSD beyond "GRPO seed 0 beats each". Still far below 32B session-context extraction + rules (0.783) and below 4B extraction + rules (0.486).
 
 ### 2026-11-13 — GRPO seeds 1–2 preregistration (written before the runs; owner chose this for overnight)
 Identical to main run 1 GRPO (full fine-tuning, v3 `train_2s`, 300 steps, lr 1e-6, β 0, 4 × 8 trajectories/step, final checkpoint) except `--seed 1` and `--seed 2` (episode sampling and torch init; vLLM sampling is not seeded). `scripts/main_v3_grpo_seeds.sh`. Report each seed's val/test EM, Δ vs prompted_1.7b with paired bootstrap CI, the 3-seed mean ± sd, and per-tag results. The claim "GRPO beats the untrained writer" holds only if all three seeds' test CIs exclude 0.
