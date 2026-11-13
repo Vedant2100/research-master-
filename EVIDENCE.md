@@ -29,8 +29,8 @@
 **Interpretation limits:** Not a codebase or completed result; must check exact official competition rules and avoid overfitting.
 
 ## [Terminal DreamGym](projects/terminal-dreamgym.md)
-**Verified/source-reported:** Preregistered matched evaluation, 2026-11-12 (Qwen2.5-7B, 100 tasks × 3 seeds, equal attempts): handwritten skills − no skill = +0.060 strict success, 95% CI [−0.028, +0.151]; placebo − no skill +0.018; all 1,200 runs re-scored from sandboxes. Model-written skills (Qwen writes SKILL.md from its own failures, leave-one-family-out, 5 seeds, 2,000 runs): +0.000 [−0.088, +0.097]. The July demo's gain came with 3× the baseline's attempts; the "two-seed sweep" was unit-test mock data, not a model run.
-**Interpretation limits:** One 7B model; only the simplest self-improvement loop tested. Held-out tasks share repos with train tasks; low power (9 of 19 base tasks tie).
+**Verified/source-reported:** Preregistered matched evaluation, 2026-11-12 (Qwen2.5-7B, 100 tasks × 3 seeds, equal attempts): handwritten skills − no skill = +0.060 strict success, 95% CI [−0.028, +0.151]; placebo − no skill +0.018; all 1,200 runs re-scored from sandboxes. Model-written skills (Qwen writes SKILL.md from its own failures, leave-one-family-out, 5 seeds, 2,000 runs): +0.000 [−0.088, +0.097]. Same loop with qwen3-coder:30b as the writer (7B solver, 2,000 runs): +0.023 [−0.072, +0.118]. The July demo's gain came with 3× the baseline's attempts; the "two-seed sweep" was unit-test mock data, not a model run.
+**Interpretation limits:** One 7B solver; only the simplest self-improvement loop tested (7B and 30B skill writers). Held-out tasks share repos with train tasks; low power (9 of 19 base tasks tie).
 
 ## [Iterate AI Research Hack](projects/iterate.md)
 **Verified/source-reported:** Event Nov 14–15. DreamGym existing repository is candidate; no evidence of accepted registration, attendance or official submission.
