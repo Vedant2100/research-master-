@@ -96,6 +96,12 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
 
+### 2026-11-12 — main run 1 preregistration (written before the run; owner chose "train on v3")
+- **OPSD smoke test (10 steps, v3):** 36.5 s/step (teacher forward roughly doubles the backward phase), 21.1 GB peak, no NaN, KL loss 0.30 flat at 10 steps, completion length 220 → 230 tokens (watch: the teacher may favor longer memories, which the 160-token budget truncates).
+- **Runs:** full fine-tuning (no LoRA), Qwen3-1.7B, v3 `train_2s`, 300 steps, seed 0, lr 1e-6, β = 0 (no KL; a reference model does not fit on GPU 0), 32 trajectories/step. **GRPO** (global trajectory advantage, 4 episodes × group 8) and **OPSD** (32 episodes × 1, derivable hints). `scripts/main_v3_run1.sh`.
+- **Eval:** final checkpoint (no checkpoint selection), greedy writer, frozen Qwen3-4B reader, v3 val and frozen test.
+- **Criteria:** (1) learning signal = trained − prompted_1.7b (test 0.211) with paired bootstrap 95% CI excluding 0; (2) per-difficulty breakdown (xref_date, relative_date, unreliable, alias, out_of_order) to tell conflict resolution from format gains; (3) report the gap to extract_rules_32b_ctx (0.783) as reference, with no threshold. One seed: no GRPO-vs-OPSD ranking claim.
+
 ### 2026-11-12 — gate v3 result: MARGINAL PASS (1 seed, 300 frozen test episodes)
 Commands: `scripts/gate_v3.sh`, then `scripts/gate_v3_rerun.sh` after the extraction-cap fix below. Data `episodes_v3` (seed 2029): labels re-derived from text with 0 mismatches; paraphrase fallback 8.6% test / 8.1% val / 8.0% train; **faithfulness 2/400 unfaithful (0.5%, Wilson [0.14%, 1.8%])**.
 
