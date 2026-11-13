@@ -96,6 +96,14 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
 
+### 2026-11-13 — preregistration: GRPO on the extractor (written before the main run)
+**Question:** does RL inside a fixed structure beat both RL end-to-end (GRPO writer) and structure alone (extract_rules) at equal size (Qwen3-1.7B)?
+**Arm:** `stalestream/grpo_extract.py`. The policy is the line-level extractor (extract.PROMPT, header context, the stronger 1.7B context); rules and the Qwen3-4B reader are unchanged. Reward = the same episode reader EM the GRPO writer uses. Credit: line-level groups (G = 8 samples of one line, other lines at the current greedy extraction; K = 8 lines per episode, 4 episodes per step, lines chosen uniformly, no hidden labels). Full FT, lr 1e-6, 8-bit AdamW, β = 0. Train split `episodes_v3/train_2s`; step count fixed from the timing run so wall-clock ≈ the writer's 300 steps (~2 h).
+**Eval:** greedy extraction with `extract.py` (max 1024 tokens) on v3 val/test, same reader. Seeds 0, 1, 2.
+**Comparisons (paired bootstrap, test; val reported alongside):** vs extract_rules_1.7b (0.259) and vs the GRPO writer seeds (0.292 mean).
+**Success:** seed-mean gain over extract_rules_1.7b with CI excluding 0. **Beats the writer** only if the seed-mean difference vs the writer seed mean has CI excluding 0. Anything else is reported as is.
+**Known asymmetries:** the extractor makes ~35 generations per episode vs 2 for the writer; samples per step differ (256 single-line samples vs 32 trajectories), so the budget is matched on wall-clock, not samples.
+
 ### 2026-11-13 — size-matched extraction baselines (v3)
 Command: `scripts/size_matched_v3.sh` (outputs in `$S/runs/size_matched_v3/`). Same v3 val/test, same rules and Qwen3-4B reader as the gate. Not preregistered; added after the GRPO 3-seed result to answer "is GRPO's 1.7B writer beaten by a pipeline of the same size?".
 

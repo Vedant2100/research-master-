@@ -95,6 +95,30 @@ def resolve_extracted(items, label_to_rel, rel_prompt):
     return truncate(render([(rel_prompt[r], s, c["value"]) for (s, r), c in best.items()]), BUDGET_TOKENS)
 
 
+def is_header(line):
+    return line.startswith("Session date:")
+
+
+def line_context(sess, mode):
+    if mode == "session":
+        return "\nSession text (for resolving references):\n" + "\n".join(sess) + "\n"
+    hdr = [l for l in sess if is_header(l)]
+    return ("\n" + hdr[0] + "\n") if hdr else ""
+
+
+def line_prompt(tok, label_text, sess, line, mode):
+    return tok.apply_chat_template([{"role": "user", "content": PROMPT.format(
+        labels=label_text, context=line_context(sess, mode), line=line)}],
+        tokenize=False, add_generation_prompt=True, enable_thinking=False)
+
+
+def grammar(mquake):
+    """(label_text, label_to_rel, rel_prompt) from the public relation grammar."""
+    slots, _, _ = load_slots(mquake)
+    labels, rel_prompt = relation_labels(slots)
+    return "; ".join(f'"{v}"' for v in sorted(labels.values())), {v: k for k, v in labels.items()}, rel_prompt
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--episodes", type=Path, required=True)
@@ -111,29 +135,16 @@ def main():
     args = ap.parse_args()
     from vllm import LLM, SamplingParams
 
-    slots, _, _ = load_slots(args.mquake)
-    labels, rel_prompt = relation_labels(slots)
-    label_to_rel = {v: k for k, v in labels.items()}
-    label_text = "; ".join(f'"{v}"' for v in sorted(labels.values()))
+    label_text, label_to_rel, rel_prompt = grammar(args.mquake)
     eps = [json.loads(l) for l in args.episodes.open()]
     llm = LLM(model=args.model, gpu_memory_utilization=args.gpu_mem, max_model_len=4096, seed=0,
               enable_prefix_caching=True)
     tok = llm.get_tokenizer()
-    def is_header(line):
-        return line.startswith("Session date:")
-
-    def context(sess):
-        if args.context == "session":
-            return "\nSession text (for resolving references):\n" + "\n".join(sess) + "\n"
-        hdr = [l for l in sess if is_header(l)]
-        return ("\n" + hdr[0] + "\n") if hdr else ""
-
     jobs = [(e, s, l) for e, ep in enumerate(eps) for s, sess in enumerate(ep["sessions"])
             for l in range(len(sess)) if not is_header(sess[l])]
     # session context first in the prompt body so vLLM prefix caching reuses it across a session's lines
-    prompts = [tok.apply_chat_template([{"role": "user", "content": PROMPT.format(
-        labels=label_text, context=context(eps[e]["sessions"][s]), line=eps[e]["sessions"][s][l])}],
-        tokenize=False, add_generation_prompt=True, enable_thinking=False) for e, s, l in jobs]
+    prompts = [line_prompt(tok, label_text, eps[e]["sessions"][s], eps[e]["sessions"][s][l], args.context)
+               for e, s, l in jobs]
     outs = llm.generate(prompts, SamplingParams(temperature=0.0, max_tokens=args.max_tokens), use_tqdm=False)
     items = defaultdict(list)
     acc = defaultdict(int)
