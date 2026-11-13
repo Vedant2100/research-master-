@@ -96,6 +96,12 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
 
+### 2026-11-12 — main run 2 preregistration (written before the run)
+- **Frozen-teacher OPSD smoke test (10 steps):** teacher = frozen initial writer in-process on GPU 0 (bf16), paged 8-bit AdamW to make room; peak 21.1 GB, ~35 s/step, KL loss 0.27–0.33 (no drift to 0), reward 0.15–0.23, 205–227 tokens. A three-server variant (teacher on GPU 1) failed: the writer's 1 GB weight-transfer buffer did not fit on GPU 1 (OOM → 500 → trainer hang).
+- **Sample bank (`bank.py`, base writer, 600 v3 train episodes × 2 shared states × 8 = 9,600 samples):** mean reward 0.213; 1,098 RFT examples (mean reward 0.378), 559 DPO pairs (mean gap 0.416).
+- **Runs (seed 0, full fine-tuning, final checkpoint, no selection):** RFT (SFT on best-of-group, lr 5e-6, 2 epochs), DPO (β 0.1, lr 1e-6, 1 epoch, precomputed reference), OPSD-frozen (300 steps, 32 episodes × 1, derivable hints, full-vocab reverse KL to the frozen teacher; collapse guard stops it if 10 steps sit at the length cap with reward < 0.05). `scripts/main_v3_run2.sh`.
+- **Criteria:** as in run 1: Δ vs prompted_1.7b with paired bootstrap CI excluding 0; per-tag breakdown; comparison to grpo_300 (0.320 test), with no ranking claim from one seed.
+
 ### 2026-11-12 — main run 1 results (1 seed): GRPO learns conflict resolution; OPSD collapsed
 **GRPO (full fine-tuning, 300 steps, v3, seed 0, final checkpoint):** train reward 0.243 (first 25 steps) → 0.366 (last 25). Held-out:
 

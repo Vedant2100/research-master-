@@ -78,10 +78,12 @@ def pg_backward(policy, ref, tok, gens, active, adv, args):
     return total_loss, total_kl, n_tok
 
 
-def opsd_backward(policy, tok, gens, max_new):
+def opsd_backward(policy, tok, gens, max_new, teacher=None):
     """On-policy self-distillation: for each student rollout, per-token full-vocabulary reverse
-    KL(student || teacher), where the teacher is the same (current) model, gradient-free, prompted
-    with derivable hints. Normalized like the PG loss (constant max_new per sequence)."""
+    KL(student || teacher), teacher prompted with derivable hints and gradient-free. The teacher is
+    the current model (opsd, self-teacher; collapses, see STATUS) or a frozen copy of the initial
+    writer (opsd_frozen). Normalized like the PG loss (constant max_new per sequence)."""
+    teacher = teacher if teacher is not None else policy
     total, n_tok = 0.0, 0
     for _, pid, cid, tprompt in gens:
         if not cid:
@@ -92,7 +94,7 @@ def opsd_backward(policy, tok, gens, max_new):
         t_ids = torch.cat([torch.tensor(tid, device="cuda")[None], c], 1)
         keep = len(cid) + 1
         with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16):
-            t_logits = policy(input_ids=t_ids, logits_to_keep=keep).logits[:, :-1].float()
+            t_logits = teacher(input_ids=t_ids, logits_to_keep=keep).logits[:, :-1].float()
         with torch.autocast("cuda", dtype=torch.bfloat16):
             s_logits = policy(input_ids=s_ids, logits_to_keep=keep).logits[:, :-1].float()
         s_lp = torch.log_softmax(s_logits, -1)
@@ -107,61 +109,6 @@ def opsd_backward(policy, tok, gens, max_new):
 
 
 
-def frozen_teacher_logprobs(url, model, tok, gens):
-    """Log-prob of each sampled completion token under the FROZEN teacher (initial weights) given the
-    hint-augmented teacher prompt. vLLM prompt_logprobs=0 always returns the actual token's log-prob."""
-    import requests
-    seqs, starts = [], []
-    for _, _, cid, tprompt in gens:
-        tid = tok(tprompt, add_special_tokens=False)["input_ids"]
-        seqs.append(tid + list(cid))
-        starts.append(len(tid))
-    out = [None] * len(seqs)
-
-    def call(lo, hi):
-        r = requests.post(f"{url}/v1/completions", timeout=900, json={
-            "model": model, "prompt": seqs[lo:hi], "max_tokens": 1, "temperature": 1.0, "prompt_logprobs": 0})
-        r.raise_for_status()
-        for k, ch in enumerate(sorted(r.json()["choices"], key=lambda c: c["index"])):
-            j = lo + k
-            plp = ch["prompt_logprobs"]
-            vals = []
-            for pos in range(starts[j], len(seqs[j])):
-                entry = plp[pos]
-                tok_id = str(seqs[j][pos])
-                vals.append(entry[tok_id]["logprob"] if entry and tok_id in entry else float("-inf"))
-            out[j] = vals
-
-    from concurrent.futures import ThreadPoolExecutor
-    with ThreadPoolExecutor(4) as ex:
-        list(ex.map(lambda lo: call(lo, min(lo + 16, len(seqs))), range(0, len(seqs), 16)))
-    return out
-
-
-def opsd_frozen_backward(policy, gens, t_lps, max_new, clip=10.0):
-    """On-policy distillation from a frozen teacher with the per-token reverse-KL estimator on sampled
-    tokens: advantage_t = log p_T(x_t) - log p_S(x_t) (detached, clipped), loss = -sum_t A_t log p_S(x_t)."""
-    total, n_tok = 0.0, 0
-    for (_, pid, cid, _), t_lp in zip(gens, t_lps):
-        if not cid:
-            continue
-        ids = torch.tensor(list(pid) + list(cid), device="cuda")[None]
-        keep = len(cid) + 1
-        with torch.autocast("cuda", dtype=torch.bfloat16):
-            logits = policy(input_ids=ids, logits_to_keep=keep).logits[:, :-1].float()
-        tgt = torch.tensor(cid, device="cuda")[None]
-        s_lp = (logits.gather(-1, tgt[..., None]).squeeze(-1) - torch.logsumexp(logits, -1))[0]
-        t = torch.tensor(t_lp, device="cuda", dtype=torch.float)
-        t = torch.where(torch.isfinite(t), t, torch.full_like(t, -30.0))
-        a = (t - s_lp.detach()).clamp(-clip, clip)
-        loss = -(a * s_lp).sum() / max_new / len(gens)
-        loss.backward()
-        total += loss.item()
-        n_tok += len(cid)
-        del logits
-    return total, n_tok
-
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--episodes", type=Path, required=True)
@@ -171,8 +118,6 @@ def main():
     ap.add_argument("--writer-url", default="http://127.0.0.1:8402")
     ap.add_argument("--reader-url", default="http://127.0.0.1:8401")
     ap.add_argument("--reader-model", default="Qwen/Qwen3-4B")
-    ap.add_argument("--teacher-url", default="http://127.0.0.1:8403",
-                    help="opsd_frozen: vLLM server with the FROZEN initial writer (no weight sync)")
     ap.add_argument("--algo", choices=["grpo", "rloo", "opsd", "opsd_frozen"], default="grpo",
                     help="opsd: on-policy self-distillation, per-token reverse KL to the same model "
                          "prompted with derivable hints (hints.py); reward only logged")
@@ -211,7 +156,14 @@ def main():
     if args.beta > 0:
         ref = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=torch.bfloat16).cuda().eval()
         ref.requires_grad_(False)
-    opt = bnb.optim.AdamW8bit(policy.parameters(), lr=args.lr, betas=(0.9, 0.99), weight_decay=0.0)
+    teacher = None
+    if args.algo == "opsd_frozen":
+        # frozen initial writer as teacher, in-process on GPU 0; a paged 8-bit optimizer frees room for it
+        teacher = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=torch.bfloat16).cuda().eval()
+        teacher.requires_grad_(False)
+        opt = bnb.optim.PagedAdamW8bit(policy.parameters(), lr=args.lr, betas=(0.9, 0.99), weight_decay=0.0)
+    else:
+        opt = bnb.optim.AdamW8bit(policy.parameters(), lr=args.lr, betas=(0.9, 0.99), weight_decay=0.0)
 
     client = VLLMClient(base_url=args.writer_url, connection_timeout=900)
     client.init_communicator(device=0)
@@ -226,6 +178,7 @@ def main():
     sync()  # sampler starts from exactly the trainer's weights
     print(json.dumps({"initial_sync_s": round(time.time() - t_sync0, 2)}), flush=True)
     log = (args.out / "train_log.jsonl").open("a")
+    recent = []  # collapse guard: 10 steps at the length cap with reward < 0.05 -> stop
 
     for step in range(args.steps):
         t0 = time.time()
@@ -282,8 +235,7 @@ def main():
             total_loss, n_tok = opsd_backward(policy, tok, gens, args.max_new)
             active = gens
         elif args.algo == "opsd_frozen":
-            t_lps = frozen_teacher_logprobs(args.teacher_url, args.model, tok, gens)
-            total_loss, n_tok = opsd_frozen_backward(policy, gens, t_lps, args.max_new)
+            total_loss, n_tok = opsd_backward(policy, tok, gens, args.max_new, teacher=teacher)
             active = gens
         else:
             active = [g for g in gens if abs(adv[g[0]]) > 1e-8]
@@ -308,6 +260,12 @@ def main():
         log.write(json.dumps(rec) + "\n")
         log.flush()
         print(json.dumps(rec), flush=True)
+        recent.append(rec)
+        last = recent[-10:]
+        if (len(last) == 10 and all(r["mean_completion_tokens"] >= args.max_new - 1 for r in last)
+                and sum(r["reward_mean"] for r in last) / 10 < 0.05):
+            print(json.dumps({"collapse_guard": True, "step": step}), flush=True)
+            break
     if args.save:
         policy.to(torch.bfloat16).save_pretrained(args.out / "final")
         tok.save_pretrained(args.out / "final")

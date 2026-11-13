@@ -17,7 +17,6 @@ wait_up() {  # port pid
     kill -0 $2 2>/dev/null || { log "server on $1 died"; exit 1; }; sleep 3; done
 }
 WMEM=0.30; RMEM=0.50
-[ "$ALGO" = opsd_frozen ] && { WMEM=0.28; RMEM=0.42; }
 WS=""
 if curl -sf http://127.0.0.1:8402/v1/models >/dev/null; then
   log "reusing writer server already on 8402"
@@ -33,14 +32,6 @@ CUDA_VISIBLE_DEVICES=1 vllm serve Qwen/Qwen3-4B --port 8401 --gpu-memory-utiliza
   --max-model-len 2048 >|"$R/reader_server.log" 2>&1 &
 RS=$!
 wait_up 8401 $RS
-TS=""
-if [ "$ALGO" = opsd_frozen ]; then  # frozen teacher = initial writer weights, never synced
-  CUDA_VISIBLE_DEVICES=1 vllm serve Qwen/Qwen3-1.7B --port 8403 --gpu-memory-utilization 0.18 \
-    --max-model-len 4096 --max-logprobs 20 >|"$R/teacher_server.log" 2>&1 &
-  TS=$!
-  wait_up 8403 $TS
-fi
-trap 'kill ${WS:-} ${RS:-} ${TS:-} 2>/dev/null || true' EXIT
 log "servers up"
 
 # OPSD: same 32 trajectories per step as GRPO, as 32 episodes x 1 sample (no groups needed)
