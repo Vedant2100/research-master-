@@ -57,13 +57,14 @@ def clean(text: str) -> str:
     return re.sub(r"<think>.*?</think>", "", text, flags=re.S).strip()
 
 
-def run_writer(llm, sp, episodes, budget: int = BUDGET_TOKENS, lora_request=None):
+def run_writer(llm, sp, episodes, budget: int = BUDGET_TOKENS, lora_request=None, teacher_hints: bool = False):
     tok = llm.get_tokenizer()
     memories = [""] * len(episodes)
     max_s = max(len(ep["sessions"]) for ep in episodes)
     for s in range(max_s):
         idx = [i for i, ep in enumerate(episodes) if s < len(ep["sessions"])]
-        prompts = [build_prompt(tok, memories[i], episodes[i]["sessions"][s], s, budget) for i in idx]
+        prompts = [build_teacher_prompt(tok, memories[i], episodes[i], s, budget) if teacher_hints
+                   else build_prompt(tok, memories[i], episodes[i]["sessions"][s], s, budget) for i in idx]
         outs = llm.generate(prompts, sp, use_tqdm=False, lora_request=lora_request)
         for i, o in zip(idx, outs):
             memories[i] = truncate(clean(o.outputs[0].text), budget)
@@ -80,6 +81,8 @@ def main():
     ap.add_argument("--lora", type=Path, default=None, help="trained LoRA adapter dir")
     ap.add_argument("--lora-r", type=int, default=16)
     ap.add_argument("--gpu-mem", type=float, default=0.85)
+    ap.add_argument("--teacher-hints", action="store_true",
+                    help="diagnostic: write with the OPSD teacher prompt (derivable hints; privileged)")
     ap.add_argument("--max-len", type=int, default=4096)
     args = ap.parse_args()
     from vllm import LLM, SamplingParams
@@ -93,7 +96,7 @@ def main():
     if args.lora:
         from vllm.lora.request import LoRARequest
         lora = LoRARequest("eval", 1, str(args.lora))
-    mems = run_writer(llm, sp, eps, lora_request=lora)
+    mems = run_writer(llm, sp, eps, lora_request=lora, teacher_hints=args.teacher_hints)
     with args.out.open("w") as f:
         for ep, m in zip(eps, mems):
             f.write(json.dumps({"episode_id": ep["episode_id"], "arm": args.arm, "memory": m}) + "\n")
