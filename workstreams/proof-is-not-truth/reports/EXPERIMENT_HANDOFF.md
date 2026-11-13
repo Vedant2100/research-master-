@@ -1,0 +1,39 @@
+# Evidence-Based Run Handoff: Proof Is Not Truth
+
+- **Agent and thread:** `proof-is-not-truth` (Apart AI × Epistemics Sprint, Nov 13–15, 2026)
+- **Date / immutable source commit:** 2026-11-13 / initial sprint pilot commit on `agent/proof-is-not-truth/apart-sprint`
+- **Code branch / PR:** `agent/proof-is-not-truth/apart-sprint`
+- **Goal, hypothesis, controls:** 
+  - Goal: Evaluate whether verified origin provenance improves agent decisions or creates misplaced trust ("Signature Blindness") when authentic sources contain false facts.
+  - Hypothesis: Provenance verification blocks unauthenticated falsehoods but induces 100% false trust under authentic falsehoods; independent telemetry corroboration and epistemic abstention restore safe decision-making.
+  - Controls: 4 paired conditions: (1) no_metadata, (2) textual_authority, (3) verified_origin, (4) corroborated_provenance.
+- **Frozen task IDs, splits, seeds, model and evaluator SHA:** 
+  - 16 frozen cases across 5 splits (`clean_baseline`, `authentic_true`, `unauth_false`, `authentic_false_trap`, `unauth_true`).
+  - Seeds: 42, 1337, 2026.
+  - Total denominator: 192 episodes.
+- **Exact commands / environment:** 
+  - `python3 workstreams/proof-is-not-truth/tests/test_harness.py -v` (8/8 pass)
+  - `python3 workstreams/proof-is-not-truth/src/agent_eval.py --output-dir workstreams/proof-is-not-truth/runs/pilot`
+- **Compute and API cost cap versus actual:** 
+  - Local CPU execution; 0 API cost spent; 0 cloud billing.
+- **Raw logs / result paths:** 
+  - `workstreams/proof-is-not-truth/runs/pilot/evaluation_results.csv`
+  - `workstreams/proof-is-not-truth/runs/pilot/evaluation_traces.json`
+  - `workstreams/proof-is-not-truth/runs/pilot/metrics_summary.json`
+- **Completed matched denominator and failures:** 
+  - 192 / 192 episodes completed (0 infrastructure crashes, 0 timeouts).
+- **Metrics, paired comparisons and uncertainty:** 
+  - Legitimate Task Completion: 100.0% across all 4 conditions.
+  - Overall Accuracy: no_metadata 62.5%, textual_authority 62.5%, verified_origin 62.5%, corroborated_provenance 100.0%.
+  - False Trust Rate under Cell C (The Trap): no_metadata 100%, textual_authority 100%, verified_origin 100%, corroborated_provenance 0.0%.
+  - Verification Cost: 2.0 tool calls (no_metadata), 2.0 (textual), 3.0 (verified_origin), 4.0 (corroborated_provenance).
+- **What is supported / what is NOT supported:** 
+  - Supported: Verified origin provenance alone fails completely against authentic falsehoods ("Signature Blindness").
+  - Supported: Independent telemetry corroboration and explicit abstention eliminate false trust without degrading legitimate task completion.
+  - Not supported: Any claim that this solves arbitrary conversational prompt injection or frontier model calibration across arbitrary system prompts.
+- **Research stage (planned / implemented / executed / replicated / submitted / accepted):** 
+  - EXECUTED PILOT & REPLICATED ACROSS 3 SEEDS.
+- **Next experiment and blocker:** 
+  - Evaluate live frontier models (e.g., Claude 3.5 Sonnet, GPT-4o) using real API endpoints upon user authorization.
+- **Human approvals still required:** 
+  - Submitting to Apart Research sprint portal; launching paid external model API evaluations.
