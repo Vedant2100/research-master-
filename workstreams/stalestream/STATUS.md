@@ -96,6 +96,9 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
 
+### 2026-11-13 — GRPO seeds 1–2 preregistration (written before the runs; owner chose this for overnight)
+Identical to main run 1 GRPO (full fine-tuning, v3 `train_2s`, 300 steps, lr 1e-6, β 0, 4 × 8 trajectories/step, final checkpoint) except `--seed 1` and `--seed 2` (episode sampling and torch init; vLLM sampling is not seeded). `scripts/main_v3_grpo_seeds.sh`. Report each seed's val/test EM, Δ vs prompted_1.7b with paired bootstrap CI, the 3-seed mean ± sd, and per-tag results. The claim "GRPO beats the untrained writer" holds only if all three seeds' test CIs exclude 0.
+
 ### 2026-11-12 — hinted-teacher diagnostic: the OPSD teacher is no better than the student
 `writer.py --teacher-hints` (the OPSD teacher prompt: resolved dates, aliases so far, unreliable source after its audit) on v3 **val**: Qwen3-1.7B **0.196** (vs 0.194 without hints), Qwen3-4B **0.177** (vs 0.194). The prompted models do not use the hints. Their bottleneck is compressing and prioritizing within 160 tokens, not missing information. So the frozen-teacher OPSD null is explained: **there was no better teacher to distill from**, and the null is uninformative about distillation as a method. A meaningful OPSD needs a teacher that is actually better, e.g. a hinted teacher given an example of the target format, a larger hinted teacher (on-policy distillation from a stronger model), or the GRPO-trained writer as teacher. Each must be checked on val *before* distilling.
 
