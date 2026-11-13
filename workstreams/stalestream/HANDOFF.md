@@ -79,10 +79,10 @@ timing) needs GPU 0. They can run at the same time.
    **Status: DONE for β = 0** (`grpo_full.py`, `scripts/full_ft_timing.sh`; 21.4 s/step, 21.1 GB peak).
    Open: KL. The reference model does not fit beside the trainer on GPU 0. Either move it to GPU 1
    (lower the reader to ~0.40) or run β = 0 and say so.
-8. **Sample bank → RFT + DPO.** Base writer samples G=8 per state; pairs share the same prompt
+8. **[BUILT, not yet run: `bank.py` gen/score/build, `train_offline.py --mode rft|dpo`]** **Sample bank → RFT + DPO.** Base writer samples G=8 per state; pairs share the same prompt
    (per-session shared-prefix states, finished greedily to score). Match GRPO's sampling budget
    (steps × 32 trajectories). DPO keeps pairs with a reward gap ≥ 2/6.
-8b. **OPSD arm (owner decision 2026-11-12; implemented, not yet smoke-tested).** On-policy self-distillation
+8b. **[SMOKE-TESTED 10 steps: 36.5 s/step, 21.1 GB; main run 1 in progress]** **OPSD arm (owner decision 2026-11-12).** On-policy self-distillation
    (Zhao et al., arXiv 2601.18734): `grpo_full.py --algo opsd`. The student is the writer; the teacher is the
    same current model (gradient-free) prompted with **derivable hints only** (`hints.py`): resolved absolute
    dates for the current session's statements, aliases introduced so far, and the unreliable source only
@@ -91,13 +91,13 @@ timing) needs GPU 0. They can run at the same time.
    GRPO: 32 trajectories/step as 32 episodes × 1. Reader reward logged for monitoring and checkpoint
    selection only. Next: `ALGO=opsd DATA=$S/data/episodes_v3 TAG=_opsd STEPS=10 scripts/full_ft_timing.sh`
    once the gate passes. Possible later ablation: hints vs answers as privileged information.
-8c. **Shared-memory local groups for GRPO (Memory-R2's LoGo-GRPO, arXiv 2605.21768).** Once rollouts write
+8c. **[BUILT, not yet run: `grpo_full.py --local-frac F`]** **Shared-memory local groups for GRPO (Memory-R2's LoGo-GRPO, arXiv 2605.21768).** Once rollouts write
    different session-1 memories, their later rewards are not comparable (different effective
    environments), so plain trajectory-level GRPO gives biased credit. Add a local branch: from one
    sampled intermediate memory, roll out G candidates for the next session, finish greedily, and compute
    group-relative advantages within that shared state, alongside the global trajectory advantage.
    Reuse the shared-state machinery of the DPO bank (item 8). Ablate global-only vs global+local.
-8d. **Session-length curriculum.** Train 2 → 3 → 4 sessions (Memory-R2: without a horizon curriculum,
+8d. **[OPEN: needs 3- and 4-session train splits from the generator]** **Session-length curriculum.** Train 2 → 3 → 4 sessions (Memory-R2: without a horizon curriculum,
    long-horizon training collapsed). Select each stage's checkpoint on val.
 8e. **Per-session verifiable reward (ablation, not default).** After each session, the fraction of
    currently valid facts (truth as of that session, from hidden labels) whose correct value appears in
