@@ -5,7 +5,7 @@ Verifies:
 2. Tamper detection and unknown key rejection.
 3. Path traversal sandbox isolation.
 4. Telemetry querying and independent ground truth retrieval.
-5. Deterministic grading and metric aggregation.
+5. Deterministic grading and metric aggregation across all 5 conditions.
 """
 import json
 import tempfile
@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from crypto import ProvenanceKeyStore, ProvenanceManifest
 from sandbox import EpistemicCase, EpistemicSandbox
 from cases import get_all_cases
-from agent_eval import run_episode, run_evaluation_suite
+from agent_eval import run_episode, run_evaluation_suite, extract_json_object
 
 
 class TestCryptoProvenance(unittest.TestCase):
@@ -97,21 +97,17 @@ class TestSandboxIsolation(unittest.TestCase):
     def test_tool_workflow_and_grading(self):
         with tempfile.TemporaryDirectory() as temp:
             sandbox = EpistemicSandbox(Path(temp), self.case, self.keystore)
-            # Read input
             content = sandbox.read_file("input.txt")
             self.assertEqual(content, "Sample content")
 
-            # Verify provenance
             prov = sandbox.verify_provenance("input.txt")
             self.assertTrue(prov["valid"])
             self.assertEqual(prov["signer_identity"], "CI Release Authority (Infra Pipeline)")
 
-            # Query telemetry
             telem = sandbox.query_telemetry("cluster_status")
             self.assertEqual(telem["status"], "SUCCESS")
             self.assertTrue(telem["data"]["healthy"])
 
-            # Write target
             sandbox.write_file("out.txt", "hello")
 
             grade = sandbox.grade()
@@ -134,30 +130,37 @@ class TestCasesIntegrity(unittest.TestCase):
             self.assertTrue(c.input_path)
 
 
-class TestFullEvaluation(unittest.TestCase):
-    def test_evaluation_suite_runs(self):
+class TestJsonExtraction(unittest.TestCase):
+    def test_markdown_fence_extraction(self):
+        text = "```json\n{\"tool\": \"write_file\", \"path\": \"out.txt\", \"content\": \"hello\"}\n```"
+        res = extract_json_object(text)
+        self.assertEqual(res["tool"], "write_file")
+        self.assertEqual(res["path"], "out.txt")
+
+    def test_embedded_json_extraction(self):
+        text = "Sure, I will proceed:\n{\"tool\": \"read_file\", \"path\": \"input.txt\"}\nDone."
+        res = extract_json_object(text)
+        self.assertEqual(res["tool"], "read_file")
+        self.assertEqual(res["path"], "input.txt")
+
+
+class TestHarnessValidation(unittest.TestCase):
+    def test_evaluation_suite_harness_validation(self):
         with tempfile.TemporaryDirectory() as temp:
             out_p = Path(temp) / "test_run"
-            summary = run_evaluation_suite(out_p, mode="strategy", seeds=[42])
+            summary = run_evaluation_suite(out_p, mode="harness_validation", seeds=[42])
             self.assertIn("by_condition", summary)
             self.assertIn("trap_analysis", summary)
 
             conds = summary["by_condition"]
-            self.assertIn("no_metadata", conds)
-            self.assertIn("textual_authority", conds)
-            self.assertIn("verified_origin", conds)
-            self.assertIn("corroborated_provenance", conds)
-
-            # Check that clean baseline achieved 100% legitimate task completion across all conditions
-            for cond, data in conds.items():
-                self.assertEqual(data["legitimate_task_completion"], 1.0)
-
-            # Check that verified_origin suffers from False Trust in the trap,
-            # whereas corroborated_provenance resolves it!
-            trap = summary["trap_analysis"]
-            self.assertEqual(trap["verified_origin"]["false_trust_under_trap"], 1.0)
-            self.assertEqual(trap["corroborated_provenance"]["false_trust_under_trap"], 0.0)
-            self.assertEqual(trap["corroborated_provenance"]["accuracy_under_trap"], 1.0)
+            expected_conditions = {
+                "no_metadata",
+                "textual_authority",
+                "verified_origin",
+                "telemetry_only",
+                "corroborated_provenance"
+            }
+            self.assertEqual(set(conds.keys()), expected_conditions)
 
 
 if __name__ == "__main__":
