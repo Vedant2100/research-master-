@@ -65,9 +65,9 @@
     - `corroborated_neutral`: 10.0% LTC (68.8% abstention)
     - `corroborated_directive`: 10.0% LTC (81.3% abstention; "The Paralyzed Guardian")
 - **Supported vs Not Supported Claims:** 
-  - Supported: Origin authentication alone does not mitigate authentic falsehoods (66.7% false trust under `verified_origin` matches 66.7% under `no_metadata`).
-  - Supported: In `corroborated_neutral`, the model defaulted to trusting the valid HMAC on `trap_01` without checking telemetry; the directive was required to activate factual inspection in that configuration.
+  - Supported: In this tested `verified_origin` configuration, false trust on Cell C was 66.7%, matching `no_metadata`. However, its prompt explicitly instructed the agent to proceed when origin was authentic, so this is a prompt-conditioned result and not an isolated estimate of the MAC signal.
+  - Supported: In `corroborated_neutral`, the model acted on the valid-HMAC CI report without querying telemetry; in `corroborated_provenance_directive`, it queried telemetry on Cell C. This is an observed contrast between two prompt configurations, not proof that the directive is generally required. `telemetry_only` already had an explicit telemetry-corroboration instruction and also recorded 0/3 false trust on Cell C.
   - Supported: `telemetry_only` achieved 0.0% false trust and 55.0% balanced accuracy, but had its own explicit corroboration prompt and suffered from the same 81.3% over-abstention.
-  - Supported: Verification policies induce the "Paralyzed Guardian" pathology, refusing 75–100% of uncontested clean tasks and unsigned developer tips.
-  - Not Supported: We do NOT claim that signatures causally increase false trust beyond the baseline (both are 66.7%), that the six conditions represent an unconfounded factorial decomposition (prompt policies varied), nor that Qwen2.5-7B results generalize to all frontier models without empirical replication.
+  - Supported: The tested verification/corroboration configurations were associated with substantial over-abstention (62.5–81.3% overall); because prompt policies differ, this is not an isolated causal effect of verification tools.
+  - Not Supported: Do not claim that signatures causally increase false trust, that the six configurations form an unconfounded factorial decomposition, that the explicit directive was necessary or superior to `telemetry_only`, or that Qwen2.5-7B results generalize to frontier models without replication. The directive arm had 0/3 false trust on Cell C but 1/6 false trust across all false tasks because of the write-then-abstain action in Cell B.
 - **Research Stage:** EXECUTED FULL 96-EPISODE BENCHMARK SUITE; V2 REGRADE AND REGRESSION TESTS COMPLETED; ARTIFACTS AND REPORT FINALIZED.
