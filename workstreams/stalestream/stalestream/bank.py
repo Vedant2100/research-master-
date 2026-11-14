@@ -89,7 +89,8 @@ def build(args):
         rw = r["rewards"]
         best = max(range(len(rw)), key=lambda i: rw[i])
         worst = min(range(len(rw)), key=lambda i: rw[i])
-        if rw[best] > 0 and rw[best] >= sum(rw) / len(rw):
+        mean = sum(rw) / len(rw)
+        if rw[best] > 0 and (rw[best] > mean + 1e-9 if args.strict else rw[best] >= mean):
             rft.append({"prompt": r["prompt"], "completion": r["candidates"][best], "reward": rw[best],
                         "episode_id": r["episode_id"], "state": r["state"]})
         if rw[best] - rw[worst] >= args.min_gap - 1e-9:
@@ -126,6 +127,8 @@ def main():
     b.add_argument("--bank", type=Path, required=True)
     b.add_argument("--out-dir", type=Path, required=True)
     b.add_argument("--min-gap", type=float, default=2 / 6)
+    b.add_argument("--strict", action="store_true",
+                   help="RFT only from groups whose best beats the group mean (extractor banks: most groups tie)")
     args = ap.parse_args()
     {"gen": gen, "score": score, "build": build}[args.cmd](args)
 

@@ -96,6 +96,11 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
 
+### 2026-11-13 — preregistration: extractor round 2 (written before the run)
+`scripts/extractor_round2.sh`, `stalestream/bank_extract.py`.
+**(A) RFT and DPO on the extractor** (the DPO comparison requested by the instructor, now on the stronger arm). Bank from the BASE 1.7B extractor with the same line-level groups as GRPO: 800 train episodes (= one GRPO-extractor seed: 200 steps × 4) × all lines × 8 samples, header context, reader-EM reward. RFT: best candidate of each group whose best strictly beats the group mean (`--strict`; most extractor groups tie). DPO: best vs worst with gap ≥ 1/6. Same hyperparameters as the writer RFT/DPO (RFT lr 5e-6, 2 epochs; DPO β 0.1, lr 1e-6, 1 epoch), 1 seed each. Compare to the untrained 1.7B extractor (0.259 test) and to GRPO extractor seeds (0.691). Report Δ with paired bootstrap; no ranking claim from one seed beyond CIs.
+**(B) GRPO extractor with session context** (date fix): identical to the header-context run except `--context session`, so cross-referenced dates are resolvable from the prompt. Seeds 0 1 2, 200 steps. Hypothesis: xref_date and relative_date tags improve over the header-context GRPO extractor (0.57 / 0.69 test). Primary: seed-mean test EM vs the header GRPO extractor (paired bootstrap); secondary: per-tag and fact_date_ok. Untrained 1.7B with session context is 0.192 (worse than header), so failure is a live possibility.
+
 ### 2026-11-13 — GRPO on the extractor: result (3 seeds) — preregistered success criterion met
 `scripts/main_v3_grpo_extract.sh` (outputs `$S/runs/main_v3_grpo_extract/`); 200 steps × 3 seeds, ~69 min each (≈ the writer's per-seed wall-clock). Train reward (sampled line variants on the greedy pipeline, train episodes) 0.32 → ~0.70 for seed 0.
 
