@@ -22,3 +22,6 @@ More directly probes autonomous experimentation and recursive self-improvement t
 4. Sponsor-confirmed Valkyrie benchmark-service integration; no scoring/official entry claimed yet.
 
 **Budget rule:** No API/GPU spending or external submission without explicit authorized scope. See [workstream status](../workstreams/vals-eval/STATUS.md) and [evaluation design](../workstreams/vals-eval/RESEARCH_BRIEF.md).
+
+
+**Current research decision (Nov 14):** See [Vals Eval next steps](../workstreams/vals-eval/NEXT_STEPS_2026-11-14.md) for the HackBench/Huang et al. overlap, the distinction from continual learning, the narrowed promotion-decision contribution, and the real-model pilot go/no-go plan.
