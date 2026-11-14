@@ -6,7 +6,7 @@
 **Current agent state:** C++ REWARD ADAPTER IMPLEMENTED, 14/14 CPU TESTS PASSED; NO MODEL/LEADERBOARD RUN
 
 ## Research aim
-Achieve a measured, reproducible score improvement on the official hidden C++ code-solving benchmark using a Tinker post-trained model.
+Achieve a measured, reproducible improvement on the **organizer-confirmed Vals Track 2 benchmarks** using a Tinker post-trained model. The approved-attendee Luma listing states **three Vals benchmarks**, while the public Vals website currently specifies a **hidden C++ problem set**; final rules remain in conflict.
 
 ## Current source and workstream isolation
 - **Upstream private source:** `Vedant2100/role-work-forge-artifacts`
@@ -23,7 +23,7 @@ Achieve a measured, reproducible score improvement on the official hidden C++ co
 - **Colab access restored:** account reconnected; CPU-only preflight completed, no GPU used.
 - No paid compute, API calls, model weights, official evaluator access, hidden samples, training checkpoints, or competition submissions. 
 
-**Compatibility gap partially addressed:** Official Tinker Code RL cookbook grades Python, but Vals requires C++. Implemented a C++17 compile/run adapter, ModalSandboxPool-compatible grading API, and Tinker tool/reward/environment integration wrapping the original RL loop. Tested only the local trusted-code grader and API request shape; real Modal/Tinker integration and official judge compatibility remain unverified.\n\n**Missing access:** Colab CPU previously reported no `TINKER_API_KEY` or Modal tokens in its environment. No assertion about credentials available elsewhere. Public Vals page has not disclosed the official C++ starter, eligible models, training/submission API or scoring protocol.\n\n## Experimental gates
+**Conditional C++ adapter:** Official Tinker Code RL cookbook grades Python, while the public Vals website mentions C++; the approved-attendee Luma description instead specifies three unspecified Vals benchmarks. Implemented a C++17 compile/run adapter, ModalSandboxPool-compatible grading API, and Tinker tool/reward/environment integration wrapping the original RL loop. Tested only the local trusted-code grader and API request shape; real Modal/Tinker integration and official judge compatibility remain unverified.\n\n**Missing access:** Colab CPU previously reported no `TINKER_API_KEY` or Modal tokens in its environment. No assertion about credentials available elsewhere. Public Vals page has not disclosed the official C++ starter, eligible models, training/submission API or scoring protocol.\n\n## Experimental gates
 1. Kickoff: confirm organizer-allowed models/data, exact C++ tool use, hidden test scoring, inference and checkpoint submission rules.
 2. Establish actual official baseline before training; preserve raw scoring output.
 3. After authorization and environment access, run a tiny genuine training smoke using upstream Tinker Code RL recipe and approved sandbox.
@@ -51,3 +51,10 @@ Achieve a measured, reproducible score improvement on the official hidden C++ co
 - Official Vals FAQ confirms Tinker credits + Modal compute credits and automatic hidden set scoring, but no amounts or redemption details. Organizer email says Slack updates and `$20K` in **prize credits**; not a per-team operating budget.
 - Organizers' Luma listing says three Vals benchmarks while current Vals site says C++ hidden set; ask at kickoff which official scoring protocol governs.
 - Public materials do not confirm model eligibility, pre-event code rules, scorer API, per-team credits or overage charges.
+
+## Critical scope correction — November 13, 2026
+- Directly verified via approved-attendee Luma event details: "Post-Training with Tinker: Post-train a small model and score it on three Vals benchmarks, using Tinker."
+- Current vals.ai/hackathon page separately claims a hidden set of C++ competitive-programming problems. The descriptions contradict; **do not treat C++ as the final or sole scoring target**.
+- C++17 grader and Tinker adapter remain optional scaffold, with 14 local CPU tests, **not** competition result or proof of relevant training.
+- Next step before any training: obtain official names, weights, evaluator starter, model/tool limits for the three Vals benchmarks, and clarify whether the C++ challenge replaces or supplements them.
+- Corrected branch README and `TRACK_REQUIREMENTS.md` in the private source repo. Neither event staff nor the current public sources establish a definitive benchmark list yet.
