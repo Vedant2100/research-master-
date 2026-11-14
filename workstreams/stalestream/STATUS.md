@@ -96,6 +96,23 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
 
+### 2026-11-13 — GRPO on the extractor: result (3 seeds) — preregistered success criterion met
+`scripts/main_v3_grpo_extract.sh` (outputs `$S/runs/main_v3_grpo_extract/`); 200 steps × 3 seeds, ~69 min each (≈ the writer's per-seed wall-clock). Train reward (sampled line variants on the greedy pipeline, train episodes) 0.32 → ~0.70 for seed 0.
+
+| arm (all Qwen3-4B reader, same rules) | val EM | test EM |
+|---|---|---|
+| extract_rules_1.7b (untrained, header) | 0.283 | 0.259 (rerun 0.252: vLLM batch nondeterminism, prompts verified identical) |
+| GRPO writer 1.7B, 3 seeds | 0.299 ± 0.031 | 0.292 ± 0.026 |
+| extract_rules_4b_ctx | 0.557 | 0.538 |
+| **GRPO extractor 1.7B, 3 seeds** | **0.696 ± 0.029** (0.704 / 0.664 / 0.720) | **0.691 ± 0.011** (0.688 / 0.681 / 0.703) |
+| extract_rules_32b_ctx | — | 0.783 |
+
+**Paired bootstrap, seed mean (test; val):** vs untrained 1.7B extractor +0.431 [+0.406, +0.457]; +0.413 [+0.385, +0.439]. Every seed individually excludes 0 (test +0.42 to +0.44). vs GRPO writer +0.399 [+0.376, +0.421]; +0.397 [+0.375, +0.420]. vs 4B session-ctx extraction +0.153 [+0.124, +0.182]; +0.139 [+0.107, +0.169]. vs 32B session-ctx extraction −0.092 [−0.115, −0.068] (test only).
+
+**Where the gain comes from (test extraction diagnostics, untrained → trained):** relation label valid 0.63 → 0.97, value 0.90 → 0.95, subject 0.91 → 0.95, date 0.68 → 0.70. The gain is mostly learning to map statements onto the public relation grammar; date resolution barely moved. Per tag (test EM, untrained → GRPO extractor, 32B ctx for reference): plain 0.36 → **0.88** (0.79), alias 0.24 → 0.69 (0.78), out_of_order 0.27 → 0.69 (0.80), unreliable 0.25 → 0.68 (0.80), relative_date 0.29 → 0.69 (0.82), xref_date 0.22 → 0.57 (0.74). The remaining gap to 32B is in conflict/date tags; xref_date is the weakest.
+
+**Claims supported:** at 1.7B, RL inside the fixed pipeline beats both structure alone (+0.43) and RL end-to-end (+0.40), and beats a 2.4× larger untrained extractor with more context (+0.15); 3/3 seeds. **Not supported:** that it matches 32B extraction (−0.09), or that it learned date arithmetic (date accuracy +0.02). **Caveats:** the extractor's advantage partly reflects that relation-label mapping is a learnable, near-deterministic skill that the writer arm does not need; one data seed; reader/extractor share the Qwen3 family; line-level groups use the current greedy extraction for the other lines (on-policy, but credit is local).
+
 ### 2026-11-13 — preregistration: GRPO on the extractor (written before the main run)
 **Question:** does RL inside a fixed structure beat both RL end-to-end (GRPO writer) and structure alone (extract_rules) at equal size (Qwen3-1.7B)?
 **Arm:** `stalestream/grpo_extract.py`. The policy is the line-level extractor (extract.PROMPT, header context, the stronger 1.7B context); rules and the Qwen3-4B reader are unchanged. Reward = the same episode reader EM the GRPO writer uses. Credit: line-level groups (G = 8 samples of one line, other lines at the current greedy extraction; K = 8 lines per episode, 4 episodes per step, lines chosen uniformly, no hidden labels). Full FT, lr 1e-6, 8-bit AdamW, β = 0. Train split `episodes_v3/train_2s`; step count fixed from the timing run so wall-clock ≈ the writer's 300 steps (~2 h).
