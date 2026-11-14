@@ -29,8 +29,8 @@
 **Interpretation limits:** Not a codebase or completed result; must check exact official competition rules and avoid overfitting.
 
 ## [Terminal DreamGym](projects/terminal-dreamgym.md)
-**Verified/source-reported:** Live Qwen2.5-7B demo baseline train/heldout/adv 2/8,1/6,2/6; reflection 4/8,2/6,1/6; gated 6/8,3/6,4/6. Later two-seed sweep reports zero deltas and 100% false promotion under its metric.
-**Interpretation limits:** Single positive demo and null sweep are not same protocol; cannot claim robust self-improvement. Mock runs not evidence of model learning.
+**Verified/source-reported:** Preregistered matched evaluation, 2026-11-12 (Qwen2.5-7B, 100 tasks × 3 seeds, equal attempts): handwritten skills − no skill = +0.060 strict success, 95% CI [−0.028, +0.151]; placebo − no skill +0.018; all 1,200 runs re-scored from sandboxes. Model-written skills (Qwen writes SKILL.md from its own failures, leave-one-family-out, 5 seeds, 2,000 runs): +0.000 [−0.088, +0.097]. Same loop with qwen3-coder:30b as the writer (7B solver, 2,000 runs): +0.023 [−0.072, +0.118]. New benchmark v2 (52 calibrated tasks in 16 new repos, 1,040 runs, 97.5% repo-cluster CIs): handwritten −0.035 [−0.129, +0.053]; 30B skills −0.100 [−0.187, −0.018]; placebo − no skill −0.065 [−0.157, +0.033]. The July demo's gain came with 3× the baseline's attempts; the "two-seed sweep" was unit-test mock data, not a model run.
+**Interpretation limits:** One 7B solver; only the simplest self-improvement loop tested (7B and 30B skill writers). Original benchmark: held-out tasks share repos with train tasks, 9 of 19 base tasks tie. v2 fixes these; intervals remain about ±0.09, and the v2 harm is confounded with prompt length (placebo also lower).
 
 ## [Iterate AI Research Hack](projects/iterate.md)
 **Verified/source-reported:** Event Nov 14–15. DreamGym existing repository is candidate; no evidence of accepted registration, attendance or official submission.
