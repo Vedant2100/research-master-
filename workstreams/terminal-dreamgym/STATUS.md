@@ -3,7 +3,7 @@
 **Area:** Autonomous Research & Self-Improvement
 **Source:** https://github.com/Vedant2100/terminal_dreamgym
 **Owner agent:** `terminal-dreamgym`
-**Current state (2026-11-13):** three preregistered experiments EXECUTED, all null: handwritten skills (3 seeds, replicated with 5), model-written skills (5 seeds), and skills from a 30B writer (5 seeds). Source changes in terminal_dreamgym PRs [#1](https://github.com/Vedant2100/terminal_dreamgym/pull/1), [#2](https://github.com/Vedant2100/terminal_dreamgym/pull/2) and [#3](https://github.com/Vedant2100/terminal_dreamgym/pull/3) (stacked, none merged).
+**Current state (2026-11-13):** four preregistered experiments EXECUTED, none shows a gain: handwritten skills (3 seeds, replicated with 5), model-written skills (5 seeds), skills from a 30B writer (5 seeds), and a rerun of handwritten and 30B skills on a new benchmark (v2: 52 calibrated tasks in 16 new repos), where 30B skills showed a small harm. Source changes in terminal_dreamgym PRs [#1](https://github.com/Vedant2100/terminal_dreamgym/pull/1), [#2](https://github.com/Vedant2100/terminal_dreamgym/pull/2), [#3](https://github.com/Vedant2100/terminal_dreamgym/pull/3) and [#4](https://github.com/Vedant2100/terminal_dreamgym/pull/4) (stacked, none merged).
 
 ## Research aim
 Establish held-out and adversarial transfer beyond naive reflection.
@@ -46,15 +46,27 @@ Establish held-out and adversarial transfer beyond naive reflection.
 - **Verification:** all 2,000 runs re-scored from saved sandboxes, all match; 0 identifier leaks.
 - **Deviation:** first smoke job (2× RTX 2080 Ti) timed out loading the 30B writer and wrote nothing; timeout, warm-up and GPU changed before the counted run (recorded in the protocol).
 
+## Evidence handoff: benchmark v2 (2026-11-13)
+
+- **Source:** branch `feat/benchmark-v2` (PR #4); benchmark and protocol `docs/benchmark_v2_protocol.md` committed before any model run (`98b6e7b`); calibration `c126638`; results `eceb473`.
+- **Benchmark:** 16 new small Python repos, 140 injected bugs (one task each), validated so that only the target test fails and at least 3 others pass; trap bugs ship a tempting wrong fix that breaks another test. Repos and bugs written by Claude agents.
+- **Calibration:** no_skill, seeds 101–105, 700 runs (job 311913). Preregistered keep rule (solved 1–4 of 5): 52 of 140 kept, all 16 repos.
+- **Run:** `no_skill`, `handwritten_skills`, `strong_skill` (qwen3-coder:30b, written from 7B failures on the *original* repos, one per seed), `placebo`; 52 tasks × seeds 1–5 = 1,040 runs (job 312042, 2 h 48 min, 0 infrastructure errors). Strict success 0.488 / 0.454 / 0.389 / 0.423.
+- **Co-primary (97.5%, repo-cluster bootstrap):** handwritten − no_skill −0.035 [−0.129, +0.053], null; strong − no_skill −0.100 [−0.187, −0.018], harm by the preregistered rule, negative on all 5 seeds.
+- **Secondary:** placebo − no_skill −0.065 [−0.157, +0.033]; strong − placebo −0.035 [−0.162, +0.073]. The harm cannot be separated from an effect of extra prompt text.
+- **Verification:** all 1,040 runs re-scored from saved sandboxes, all match. Re-scoring script changed after the run (tasks-file argument, timeout counted as failure); recorded as a deviation.
+- **Limit:** v2 fixes validity (new repos, non-empty pass-to-pass, no all-tie tasks) but intervals are about as wide as before (±0.09).
+
 ## What is supported / not supported
 - Supported: fixed handwritten skill prompts give no detectable gain on this benchmark for Qwen2.5-7B.
 - Supported: in its simplest form (a model-written skill from its own failures), self-improvement gave no detectable gain for Qwen2.5-7B on this benchmark.
 - Supported: a stronger writer (30B) on the same failures also gave no detectable gain, so the null is not explained by the 7B writer alone.
+- Supported: on new repos (v2), handwritten skills gave no detectable gain, and 30B skills learnt on other repos lowered strict success slightly (−0.100); a placebo also scored lower, so the cause may be extra prompt text.
 - Not supported: any claim of self-improvement, or that RL on this loop would help.
-- Limits: held-out tasks share repos with train tasks; the pass-to-pass check is empty for 14 of 19 base tasks; 9 of 19 base tasks tie across all conditions, so power is low.
+- Limits (original benchmark): held-out tasks share repos with train tasks; the pass-to-pass check is empty for 14 of 19 base tasks; 9 of 19 base tasks tie across all conditions. v2 removes these but is no more precise (±0.09).
 
 ## Next decisive action
-Coordinator decision: deprioritize this workstream, or rebuild the benchmark so it can show a difference (held-out tasks in new repos, pass-to-pass tests at baseline, drop tasks every condition ties on) before testing any further skill variant. RL on this loop is not justified by current evidence.
+Recommendation for the coordinator: deprioritize this workstream. Four experiments found no gain from prompt-level skills on a 7B solver, on the original repos or new ones. If it continues, the cheapest informative step is separating extra-text effects from skill content (several placebo lengths), or skills written from failures on the same v2 repos. RL on this loop is not justified by current evidence.
 
 ## Do not overclaim
-Three null results on one 7B solver and one small benchmark (20 base tasks, held-out sharing repos with train) do not show that skills never help; they show no detectable gain here.
+Four results on one 7B solver and two small benchmarks do not show that skills never help; they show no detectable gain here, with intervals of about ±0.09. The v2 harm is one comparison and is confounded with prompt length.
