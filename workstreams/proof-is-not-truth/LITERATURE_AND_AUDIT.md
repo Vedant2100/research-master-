@@ -44,24 +44,24 @@ We examine four foundational preprints establishing the state of the art in mode
 - **Gap:** The framework focuses exclusively on *access control authorization* (i.e., "Is this source permitted to execute action $X$?"). It completely overlooks the epistemic dimension: what happens when an authorized, authentic source asserts an instruction or fact that is *factually incorrect or poisoned*?
 
 ### 2.4 ProvenanceGuard: Source-Aware Factuality Verification for Tool-Using Agents (arXiv:2606.18037)
-- **Focus:** Factuality verification and post-generation defense layer for Model Context Protocol (MCP) tool agents, specifically targeting *cross-source conflation* (attributing a claim to the wrong source).
+- **Focus:** Factuality verification and post-generation defense layer for Model Context Protocol (MCP) tool agents, specifically targeting *cross-source conflation* (attributing a claim to the wrong source) across 281 medical-domain traces.
 - **Key Findings:** By decomposing agent answers into atomic claims and checking NLI alignment against routed tool outputs, ProvenanceGuard successfully prevents hallucinated or misattributed citations.
-- **Critical Epistemic Vulnerability:** ProvenanceGuard implicitly assumes that if a claim is verifiably sourced from an authentic, approved tool output or cryptographic manifest, **it is safe to accept as truth**. It treats provenance verification as a proxy for factual veracity, leaving agents completely exposed to authentic misinformation.
+- **Epistemic Scope & Boundary:** ProvenanceGuard explicitly targets source attribution and preserving source ownership on top of support estimation. The paper explicitly notes that attribution checks do not establish domain truth. The accurate distinction is that ProvenanceGuard addresses source attribution, while this project tests whether cryptographic origin authentication changes an agent's consequential operational action when an authentic source is factually wrong.
 
 ---
 
 ## 3. Novelty Assessment: "Proof Is Not Truth"
 
 ### 3.1 What Remains Unanswered?
-Across all existing literature and industrial frameworks (C2PA, Sigstore, SLSA, ProvenanceGuard), "provenance" is operationalized as **origin authenticity**: *Did this artifact come from key $K$ or entity $E$ without transit tampering?*
+Across existing literature and industrial provenance frameworks (C2PA, Sigstore, SLSA), "provenance" is operationalized as **origin authenticity and content integrity**: *Did this artifact originate from identified key $K$ or entity $E$ without transit tampering?* In cryptographic terms, our current implementation utilizes keyed HMAC-SHA256 message authentication codes (MACs), verifying origin authenticity and content integrity for holders of the verified secret.
 
-This leaves a critical unanswered question in AI safety and epistemology:
-> **Does providing tool-using agents with genuine cryptographic provenance verification tools actually improve factual decisions, or does it induce "Signature Blindness"—a state of epistemic complacency where agents blindly trust authentic but factually false information?**
+This leaves a critical operational question in AI safety and epistemology:
+> **When tool-using agents consume machine-verifiable origin authentication, do they distinguish origin authenticity from factual correctness when taking consequential actions, and can independent factual corroboration improve those actions without collapsing into blanket abstention?**
 
-### 3.2 The "Proof Is Not Truth" Hypothesis
-1. **Hypothesis 1 (Origin Benefit in Benign Regimes):** In environments where source authenticity correlates with factual accuracy, verified provenance signals significantly improve agent decision accuracy compared to unverified contexts.
-2. **Hypothesis 2 (Signature Blindness / Epistemic Complacency):** In the presence of authentic but false sources (e.g., compromised credentials, buggy automated telemetry, or stale signed certificates), agents with origin-verification capabilities exhibit *higher false trust* and *worse factual accuracy* than agents lacking metadata, because they confuse cryptographic authenticity with factual truth.
-3. **Hypothesis 3 (Factual Corroboration & Epistemic Abstention):** To achieve robust epistemic safety, an agent must decouple *provenance verification* from *factuality verification*. Equipping the agent with independent factual corroboration tools and a formal mechanism for *epistemic abstention* prevents signature blindness and restores calibrated decision-making without utility degradation on benign tasks.
+### 3.2 The "Proof Is Not Truth" Hypotheses and Hypothesized Regimes
+1. **Origin Authentication in Benign Regimes:** In operational environments where source origin correlates with factual veracity, verified origin signals enable agents to filter unauthenticated or spoofed inputs.
+2. **Authentic-False Failure Mode ("Signature Blindness"):** In the presence of authentic but factually false sources (e.g., automated CI crashes silently logging success, frozen sensor feeds, or stale emergency exemptions), agents equipped solely with origin verification may execute dangerous state modifications because machine-verified origin is treated as factual truth. We evaluate whether this failure mode occurs and whether origin verification increases or fails to mitigate false actions compared to unverified baselines.
+3. **Decoupled Epistemic Corroboration:** To prevent authentic-false actions without collapsing into blanket over-abstention, agents require decoupled verification: validating origin authenticity *and* independently corroborating claims against live environmental telemetry.
 
 This hypothesis constitutes a distinct, timely, and publishable contribution directly aligned with the Apart Sprint theme and judging rubric.
 

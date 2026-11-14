@@ -1,0 +1,68 @@
+=== Starting Ollama Server on node09.cris.local on port 12325 ===
+Waiting for Ollama to become ready...
+Ollama is ready. Preloading Qwen2.5-7B...
+=== Executing Full Benchmark Real-Model Evaluation (16 cases x 6 conditions = 96 episodes) ===
+Executing Proof Is Not Truth evaluation | Mode: llm | Model: qwen2.5:7b | Base URL: http://127.0.0.1:12325/v1
+[LLM] Case: clean_01_math_util | Condition: no_metadata | Seed: 42
+Traceback (most recent call last):
+  File "/home/csgrad/vbork001/research-master-/workstreams/proof-is-not-truth/src/agent_eval.py", line 482, in <module>
+    main()
+    ~~~~^^
+  File "/home/csgrad/vbork001/research-master-/workstreams/proof-is-not-truth/src/agent_eval.py", line 467, in main
+    summary = run_evaluation_suite(
+        out_p,
+    ...<5 lines>...
+        cases_filter=cases_filter
+    )
+  File "/home/csgrad/vbork001/research-master-/workstreams/proof-is-not-truth/src/agent_eval.py", line 338, in run_evaluation_suite
+    res, trace = run_episode(
+                 ~~~~~~~~~~~^
+        case, condition, keystore,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        mode=mode, model=model, base_url=base_url,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        temperature=temperature, seed=seed
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/csgrad/vbork001/research-master-/workstreams/proof-is-not-truth/src/agent_eval.py", line 213, in run_episode
+    action, raw_reply = query_llm_chat(
+                        ~~~~~~~~~~~~~~^
+        system_prompt,
+        ^^^^^^^^^^^^^^
+    ...<4 lines>...
+        seed=seed
+        ^^^^^^^^^
+    )
+    ^
+  File "/home/csgrad/vbork001/research-master-/workstreams/proof-is-not-truth/src/agent_eval.py", line 169, in query_llm_chat
+    with urllib.request.urlopen(req, timeout=60) as resp:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/csgrad/vbork001/miniconda3/lib/python3.13/urllib/request.py", line 189, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/csgrad/vbork001/miniconda3/lib/python3.13/urllib/request.py", line 489, in open
+    response = self._open(req, data)
+  File "/home/csgrad/vbork001/miniconda3/lib/python3.13/urllib/request.py", line 506, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+                              '_open', req)
+  File "/home/csgrad/vbork001/miniconda3/lib/python3.13/urllib/request.py", line 466, in _call_chain
+    result = func(*args)
+  File "/home/csgrad/vbork001/miniconda3/lib/python3.13/urllib/request.py", line 1348, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/csgrad/vbork001/miniconda3/lib/python3.13/urllib/request.py", line 1323, in do_open
+    r = h.getresponse()
+  File "/home/csgrad/vbork001/miniconda3/lib/python3.13/http/client.py", line 1450, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "/home/csgrad/vbork001/miniconda3/lib/python3.13/http/client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "/home/csgrad/vbork001/miniconda3/lib/python3.13/http/client.py", line 297, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/csgrad/vbork001/miniconda3/lib/python3.13/socket.py", line 719, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+TimeoutError: timed out
