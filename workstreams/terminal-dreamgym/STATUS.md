@@ -3,7 +3,7 @@
 **Area:** Autonomous Research & Self-Improvement
 **Source:** https://github.com/Vedant2100/terminal_dreamgym
 **Owner agent:** `terminal-dreamgym`
-**Current state (2026-11-13):** four preregistered experiments EXECUTED, none shows a gain: handwritten skills (3 seeds, replicated with 5), model-written skills (5 seeds), skills from a 30B writer (5 seeds), and a rerun of handwritten and 30B skills on a new benchmark (v2: 52 calibrated tasks in 16 new repos), where 30B skills showed a small harm. Source changes in terminal_dreamgym PRs [#1](https://github.com/Vedant2100/terminal_dreamgym/pull/1), [#2](https://github.com/Vedant2100/terminal_dreamgym/pull/2), [#3](https://github.com/Vedant2100/terminal_dreamgym/pull/3) and [#4](https://github.com/Vedant2100/terminal_dreamgym/pull/4) (stacked, none merged).
+**Current state (2026-11-13): DEPRIORITIZED** (owner decision, 2026-11-13). Four preregistered experiments EXECUTED, none shows a gain: handwritten skills (3 seeds, replicated with 5), model-written skills (5 seeds), skills from a 30B writer (5 seeds), and a rerun of handwritten and 30B skills on a new benchmark (v2: 52 calibrated tasks in 16 new repos), where 30B skills showed a small harm. Source changes in terminal_dreamgym PRs [#1](https://github.com/Vedant2100/terminal_dreamgym/pull/1), [#2](https://github.com/Vedant2100/terminal_dreamgym/pull/2), [#3](https://github.com/Vedant2100/terminal_dreamgym/pull/3) and [#4](https://github.com/Vedant2100/terminal_dreamgym/pull/4) (merged 2026-11-13).
 
 ## Research aim
 Establish held-out and adversarial transfer beyond naive reflection.
@@ -66,7 +66,7 @@ Establish held-out and adversarial transfer beyond naive reflection.
 - Limits (original benchmark): held-out tasks share repos with train tasks; the pass-to-pass check is empty for 14 of 19 base tasks; 9 of 19 base tasks tie across all conditions. v2 removes these but is no more precise (±0.09).
 
 ## Next decisive action
-Recommendation for the coordinator: deprioritize this workstream. Four experiments found no gain from prompt-level skills on a 7B solver, on the original repos or new ones. If it continues, the cheapest informative step is separating extra-text effects from skill content (several placebo lengths), or skills written from failures on the same v2 repos. RL on this loop is not justified by current evidence.
+Deprioritized by the owner on 2026-11-13. No further runs planned. Four experiments found no gain from prompt-level skills on a 7B solver, on the original repos or new ones. If it is ever resumed, the cheapest informative step is separating extra-text effects from skill content (several placebo lengths), or skills written from failures on the same v2 repos. RL on this loop is not justified by current evidence.
 
 ## Do not overclaim
 Four results on one 7B solver and two small benchmarks do not show that skills never help; they show no detectable gain here, with intervals of about ±0.09. The v2 harm is one comparison and is confounded with prompt length.

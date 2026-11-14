@@ -9,7 +9,7 @@ All four research tracks stay ACTIVE. We scale code and GPU investment by defens
 - **ProvenanceTrap / micro1: CONDITIONAL.** Improve task completion then retest under same scoring; AGENTVERIFY/AGENT or later reliability venue only if evidence matures.
 - **RewardHackLab / Lexsi: CONDITIONAL—fix execution first.** Repair tool-call execution to get nonzero baseline, then try real RL; submit honest Lexsi Stage 1 packet by Nov 15 AoE if feasible.
 - **Vals AI Benchmaxxing: HIGH time-boxed.** Prepare benchmark and training environment, attend if practical, run baseline→training→eval, preserve code and evidence; avoid spawning an unrelated permanent repo.
-- **Terminal DreamGym: HIGH if replicated.** Reconcile test splits/prompts/protocol and repeat matched multiple seeds; compare no-skill, reflection, naive gate, heldout gate; then prepare genuine demo/paper.
+- **Terminal DreamGym: DEPRIORITIZED (2026-11-13).** Was "HIGH if replicated"; the gain did not replicate. Four preregistered experiments (handwritten, 7B-written, 30B-written skills; rerun on a new 16-repo benchmark) found no gain from skill text. See [STATUS](workstreams/terminal-dreamgym/STATUS.md).
 - **Iterate AI Research Hack: CONDITIONAL time-boxed.** Check approval and event rules; attend only if logistics permit or continue the same research outside the hack.
 
 **Research identity:** RL post-training, continued learning from experience, robust agent evaluation and verifiable autonomous improvement. A negative result can be a useful research contribution with rigorous diagnosis.

@@ -3,7 +3,7 @@
 **Track:** Autonomous Research & Self-Improvement  
 **Source:** https://github.com/Vedant2100/terminal_dreamgym  
 **State:** four preregistered experiments executed 2026-11-12/13, no gain (handwritten, model-written, 30B-written skills; rerun on new benchmark v2 shows a small 30B-skill harm)  
-**Decision:** HIGH if replicated
+**Decision:** DEPRIORITIZED (2026-11-13); was "HIGH if replicated", not replicated
 
 ## Research question
 Can failure-conditioned generated practice tasks and skill promotion yield sustained held-out/adversarial transfer beyond naive reflection?
@@ -18,6 +18,6 @@ Real model suggests patches after pytest failures; generate curriculum worlds an
 Only the simplest self-improvement loop (one model-written skill) was tested, on one 7B model. On the original benchmark, held-out tasks share repos with train tasks, the regression check is weak and 9 of 19 base tasks tie; benchmark v2 fixes these but intervals stay about ±0.09.
 
 ## Next decisive action
-Recommended: deprioritize. A stronger writer and a rebuilt benchmark (v2) were both tried with no gain. RL on this loop not justified.
+Deprioritized 2026-11-13; no further runs planned. A stronger writer and a rebuilt benchmark (v2) were both tried with no gain. RL on this loop not justified.
 
 See [evidence ledger](../EVIDENCE.md), [investment assessment](../DECISIONS.md) and [venues](../VENUES.md).
