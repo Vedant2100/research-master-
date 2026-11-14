@@ -96,6 +96,18 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
 
+### 2026-11-14 — extractor round 2 (A): RFT and DPO on the extractor (1 seed each)
+Bank (base 1.7B extractor, header context): 800 train episodes, 26,044 line groups, 208,352 samples, 9,504 unique memories scored, 8.8% of groups with reward variance → 2,294 RFT examples (mean reward 0.40) and 2,294 DPO pairs (mean gap 0.19). (The first launch crashed in `bank build` on a missing `state` field at 21:25 on 11-13; fixed and resumed from the saved bank on 11-14.)
+
+| arm (1.7B extractor, header ctx) | relation valid (test) | val EM | test EM |
+|---|---|---|---|
+| untrained | 0.63 | 0.283 | 0.259 |
+| RFT | 0.79 | 0.393 | 0.380 |
+| DPO | 0.91 | 0.470 | 0.469 |
+| GRPO (3 seeds) | 0.97 | 0.696 | 0.691 |
+
+Paired bootstrap (test; val): RFT vs untrained +0.121 [+0.094, +0.146]; +0.109 [+0.081, +0.136]. DPO vs untrained +0.209 [+0.178, +0.241]; +0.187 [+0.158, +0.215]. vs GRPO seed mean: RFT −0.311 [−0.336, −0.283]; DPO −0.222 [−0.249, −0.196] (val agrees). **Reading:** on the extractor, all three methods help, with ordering GRPO > DPO > RFT, consistent on val and test. Unlike the writer arm (where RFT/DPO were flat), the offline methods learn here, mostly via relation-label validity. Caveats: offline methods are 1 seed each with the writer arm's untuned hyperparameters (lr 5e-6/1e-6, 1–2 epochs); the bank uses the same sample budget as one GRPO seed but is off-policy (base model only), so the gap mixes on- vs off-policy and the algorithm. A tuned DPO (more epochs / higher lr, or iterated on-policy DPO) could close part of it.
+
 ### 2026-11-13 — preregistration: extractor round 2 (written before the run)
 `scripts/extractor_round2.sh`, `stalestream/bank_extract.py`.
 **(A) RFT and DPO on the extractor** (the DPO comparison requested by the instructor, now on the stronger arm). Bank from the BASE 1.7B extractor with the same line-level groups as GRPO: 800 train episodes (= one GRPO-extractor seed: 200 steps × 4) × all lines × 8 samples, header context, reader-EM reward. RFT: best candidate of each group whose best strictly beats the group mean (`--strict`; most extractor groups tie). DPO: best vs worst with gap ≥ 1/6. Same hyperparameters as the writer RFT/DPO (RFT lr 5e-6, 2 epochs; DPO β 0.1, lr 1e-6, 1 epoch), 1 seed each. Compare to the untrained 1.7B extractor (0.259 test) and to GRPO extractor seeds (0.691). Report Δ with paired bootstrap; no ranking claim from one seed beyond CIs.
