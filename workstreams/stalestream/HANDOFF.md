@@ -1,5 +1,9 @@
 # StaleStream — agent handoff (2026-11-12)
 
+## Current priority — 2026-11-14
+Before taking another action, read [NEXT_STEPS_2026-11-14.md](./NEXT_STEPS_2026-11-14.md). It supersedes this historical queue where they conflict and sets the current order: finish the preregistered session-context run, make the DPO comparison fair using the same downstream reader reward, verify conflict/date gains and cross-reader transfer, then export auditable traces. The consolidated evidence and trace inventory is in [EXPERIMENT_EVIDENCE_ARTIFACT.md](./EXPERIMENT_EVIDENCE_ARTIFACT.md). Do not treat that evidence artifact as the raw per-episode trace dump; raw outputs remain on BCC scratch until exported.
+
+
 Read this, then `STATUS.md` (evidence log), `README.md` (commands), `CS258_Design_Doc.md`
 (design). This file is the work queue. Keep it current: tick items, add evidence to STATUS.
 
