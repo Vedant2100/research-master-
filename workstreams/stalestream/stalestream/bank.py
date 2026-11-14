@@ -92,10 +92,10 @@ def build(args):
         mean = sum(rw) / len(rw)
         if rw[best] > 0 and (rw[best] > mean + 1e-9 if args.strict else rw[best] >= mean):
             rft.append({"prompt": r["prompt"], "completion": r["candidates"][best], "reward": rw[best],
-                        "episode_id": r["episode_id"], "state": r["state"]})
+                        "episode_id": r["episode_id"], "state": r.get("state", r.get("line"))})
         if rw[best] - rw[worst] >= args.min_gap - 1e-9:
             dpo.append({"prompt": r["prompt"], "chosen": r["candidates"][best], "rejected": r["candidates"][worst],
-                        "gap": rw[best] - rw[worst], "episode_id": r["episode_id"], "state": r["state"]})
+                        "gap": rw[best] - rw[worst], "episode_id": r["episode_id"], "state": r.get("state", r.get("line"))})
     for name, data in [("rft.jsonl", rft), ("dpo.jsonl", dpo)]:
         with (args.out_dir / name).open("w") as f:
             for d in data:

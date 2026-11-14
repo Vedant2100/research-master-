@@ -21,10 +21,10 @@ evaluate() {  # gpu model arm context
 }
 
 if [ "${SKIP_A:-0}" != 1 ]; then
-  CUDA_VISIBLE_DEVICES=0 python -m stalestream.bank_extract gen --episodes $D/train_2s.jsonl --mquake $MQ \
+  [ -s $R/bank_raw.jsonl ] || CUDA_VISIBLE_DEVICES=0 python -m stalestream.bank_extract gen --episodes $D/train_2s.jsonl --mquake $MQ \
     --out $R/bank_raw.jsonl >|"$R/bank_gen.log" 2>&1
   log "bank gen: $(tail -1 $R/bank_gen.log)"
-  CUDA_VISIBLE_DEVICES=0 python -m stalestream.bank_extract score --bank $R/bank_raw.jsonl --episodes $D/train_2s.jsonl \
+  [ -s $R/bank_scored.jsonl ] || CUDA_VISIBLE_DEVICES=0 python -m stalestream.bank_extract score --bank $R/bank_raw.jsonl --episodes $D/train_2s.jsonl \
     --mquake $MQ --aliases $D/value_aliases.json --out $R/bank_scored.jsonl >|"$R/bank_score.log" 2>&1
   log "bank score: $(tail -1 $R/bank_score.log)"
   python -m stalestream.bank build --bank $R/bank_scored.jsonl --out-dir $R/bank --min-gap 0.16 --strict >|"$R/bank_build.log" 2>&1
