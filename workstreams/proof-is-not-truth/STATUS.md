@@ -49,16 +49,12 @@ Measure whether tool-using agents distinguish origin authenticity from factual c
 - Research report: `workstreams/proof-is-not-truth/reports/APART_RESEARCH_REPORT.md`
 - Run handoff: `workstreams/proof-is-not-truth/reports/EXPERIMENT_HANDOFF.md`
 
-## Next action
+## Remaining action — Apart submission
 
-All post-run validity audit steps, action-ordering regrading, regression tests, and report corrections are complete. Commit and push branch to GitHub.
+The 96-episode run, v2 offline regrade, action-ordering regression tests, and report/handoff corrections are complete. The original run artifacts remain immutable; v2 outputs are stored separately. The raw trace set contains 96 unique case/configuration pairs (16 × 6).
 
-## Next action
+1. Complete a final consistency check across the report, handoff, v2 CSV, v2 metrics summary, and reproduction instructions.
+2. Confirm the official Apart submission form and artifact requirements.
+3. Submit the evidence with the single-model/single-seed and prompt-confound limitations stated clearly.
 
-Follow NEXT_STEPS_2026-11-14.md (post-run section) in order:
-1. Regrade all 96 existing traces offline; preserve original CSV/summary and write versioned v2 outputs.
-2. Add regression tests for write-then-abstain and related action-ordering cases.
-3. Correct the report and handoff: separate Cell C from all-false-task denominators, disclose prompt confounds, and report the safety–utility trade-off.
-4. Verify tests, trace/result count, artifact consistency, and official submission requirements; submit only claims supported by corrected evidence.
-
-The 96-episode model run is complete. Do not rerun model inference or expand the benchmark by default; prioritize offline analysis before any additional compute.
+The commit reports 11/11 Python tests passing. The GitHub Actions run associated with the latest commit validates portfolio-agent structure; it is not a CI run of this Python test suite. No further model run is planned before submission.
