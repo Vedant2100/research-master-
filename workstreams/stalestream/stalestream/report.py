@@ -6,8 +6,9 @@ seed-mean per-episode EM against a reference arm.
 
 Fact check (does not use the reader): for each asked slot, a memory line that mentions the
 subject (canonical name or any stream alias) is looked for. correct = such a line contains the
-gold current value (or a value alias); wrong = subject present but no gold value; missing = no
-line mentions the subject. This separates "memory holds the right fact" from "reader got it".
+gold current value (or a value alias); stale = it instead holds another value the stream gave for
+that subject (superseded or from the unreliable source); other = subject present, neither; missing =
+no line mentions the subject. This separates "memory holds the right fact" from "reader got it".
 
   python -m stalestream.report --episodes $D/test.jsonl --aliases $D/value_aliases.json \
       --arm hdr=$R1/eval_s0_test.jsonl,$R1/eval_s1_test.jsonl --arm ctx=... --ref hdr
@@ -43,13 +44,18 @@ def fact_check(ep, memory, val_aliases):
     for slot, gold in zip(h["asked_slots"], h["answers"]):
         subj = h["truth"][slot]["subject"]
         golds = [gold] + val_aliases.get(gold, [])
-        subj_lines = [l for l in lines if any(contains(l, n) for n in names.get(subj, [subj]))]
+        subj_names = names.get(subj, [subj])
+        subj_lines = [l for l in lines if any(contains(l, n) for n in subj_names)]
+        others = {k[3] for sess in h["must_keep"] for k in sess
+                  if len(k) == 4 and k[2] in subj_names and k[3] not in golds}
         if not subj_lines:
             out.append("missing")
         elif any(contains(l, g) for l in subj_lines for g in golds):
             out.append("correct")
+        elif any(contains(l, v) for l in subj_lines for v in others):
+            out.append("stale")
         else:
-            out.append("wrong")
+            out.append("other")
     return out
 
 
@@ -79,7 +85,7 @@ def summarize(name, seeds, eps, val_aliases, budget):
     ids = list(eps)
     em = [st.mean(s[i]["qa_exact_match"] for i in ids) for s in seeds]
     tag_hits = {t: [] for t in TAGS}
-    facts = {"correct": 0, "wrong": 0, "missing": 0}
+    facts = {"correct": 0, "stale": 0, "other": 0, "missing": 0}
     tag_fact = {t: [] for t in TAGS}
     toks = []
     for s in seeds:
