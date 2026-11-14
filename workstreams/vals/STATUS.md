@@ -43,3 +43,11 @@ Achieve a measured, reproducible score improvement on the official hidden C++ co
 - **14/14 tests executed and passed** in an authorized CPU Colab runtime, including actual `g++` compilation of trusted correct, incorrect, and syntactically invalid example programs; the Tinker-specific Python modules were syntax-checked only.
 - **No live Tinker API requests, no cloud Modal sandbox, no trained checkpoint, no hidden test scores.** Model-generated C++ must run only in an isolated approved sandbox.
 - Next step: obtain official starter/protocol, validate Tinker dependencies and real Modal sandbox under approved event credits, then freeze official base model + before-score and begin authorized small training.
+
+## Repo consolidation and official resources — November 13
+- Source code is in the existing private `Vedant2100/role-work-forge-artifacts`, isolated at `hackathons/2026-11/vals_tinker/` on branch `agent/vals-tinker/code-rl-preflight`.
+- Draft PR (not merged): https://github.com/Vedant2100/role-work-forge-artifacts/pull/2
+- Official rules and credit checklist: `hackathons/2026-11/vals_tinker/TRACK_REQUIREMENTS.md`.
+- Official Vals FAQ confirms Tinker credits + Modal compute credits and automatic hidden set scoring, but no amounts or redemption details. Organizer email says Slack updates and `$20K` in **prize credits**; not a per-team operating budget.
+- Organizers' Luma listing says three Vals benchmarks while current Vals site says C++ hidden set; ask at kickoff which official scoring protocol governs.
+- Public materials do not confirm model eligibility, pre-event code rules, scorer API, per-team credits or overage charges.
