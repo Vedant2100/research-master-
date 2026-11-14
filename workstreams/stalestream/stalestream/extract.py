@@ -119,6 +119,17 @@ def grammar(mquake):
     return "; ".join(f'"{v}"' for v in sorted(labels.values())), {v: k for k, v in labels.items()}, rel_prompt
 
 
+def json_schema(labels):
+    """Output schema for constrained decoding: the three statement kinds, relation restricted to the
+    public label list. Only the output format is constrained; values, names and dates stay free text."""
+    def obj(kind, **props):
+        return {"type": "object", "properties": {"type": {"const": kind}, **props},
+                "required": ["type", *props], "additionalProperties": False}
+    s = {"type": "string"}
+    return {"anyOf": [obj("fact", subject=s, relation={"enum": sorted(labels)}, value=s, date=s, source=s),
+                      obj("alias", alias=s, name=s), obj("correction", source=s)]}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--episodes", type=Path, required=True)
@@ -132,8 +143,11 @@ def main():
     ap.add_argument("--context", choices=["header", "session"], default="header",
                     help="header: the session's date line (if any) is shown with each line; "
                          "session: the whole session's text is shown (resolves cross-references)")
+    ap.add_argument("--constrained", action="store_true",
+                    help="JSON-schema constrained decoding with the relation field limited to the label list")
     args = ap.parse_args()
     from vllm import LLM, SamplingParams
+    from vllm.sampling_params import StructuredOutputsParams
 
     label_text, label_to_rel, rel_prompt = grammar(args.mquake)
     eps = [json.loads(l) for l in args.episodes.open()]
@@ -145,7 +159,9 @@ def main():
     # session context first in the prompt body so vLLM prefix caching reuses it across a session's lines
     prompts = [line_prompt(tok, label_text, eps[e]["sessions"][s], eps[e]["sessions"][s][l], args.context)
                for e, s, l in jobs]
-    outs = llm.generate(prompts, SamplingParams(temperature=0.0, max_tokens=args.max_tokens), use_tqdm=False)
+    so = StructuredOutputsParams(json=json_schema(label_to_rel)) if args.constrained else None
+    outs = llm.generate(prompts, SamplingParams(temperature=0.0, max_tokens=args.max_tokens, structured_outputs=so),
+                        use_tqdm=False)
     items = defaultdict(list)
     acc = defaultdict(int)
     for (e, s, l), o in zip(jobs, outs):
