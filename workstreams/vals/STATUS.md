@@ -3,7 +3,7 @@
 **Area:** RL Post-Training & Reward Design
 **Source:** https://www.vals.ai/hackathon
 **Owner agent:** `vals`
-**Current agent state:** CPU PREFLIGHT EXECUTED (7/7 TESTS + C++ COMPILE SMOKE); NO MODEL/LEADERBOARD RUN
+**Current agent state:** C++ REWARD ADAPTER IMPLEMENTED, 14/14 CPU TESTS PASSED; NO MODEL/LEADERBOARD RUN
 
 ## Research aim
 Achieve a measured, reproducible score improvement on the official hidden C++ code-solving benchmark using a Tinker post-trained model.
@@ -11,7 +11,7 @@ Achieve a measured, reproducible score improvement on the official hidden C++ co
 ## Current source and workstream isolation
 - **Upstream private source:** `Vedant2100/role-work-forge-artifacts`
 - **Isolated source branch:** `agent/vals-tinker/code-rl-preflight`
-- **Preflight files:** `hackathons/2026-11/vals_tinker/{README.md,preflight.py,tests/test_preflight.py}`
+- **Implementation files:** `hackathons/2026-11/vals_tinker/{README.md,preflight.py,cpp_runner.py,cpp_judge.py,cpp_data.py,cpp_rl.py,train_cpp.py,tests/}`
 - **Master coordination branch:** `agent/vals/tinker-preflight`
 - **Reference recipe:** https://tinker-docs.thinkingmachines.ai/cookbook/recipes/code-rl/
 
@@ -23,7 +23,7 @@ Achieve a measured, reproducible score improvement on the official hidden C++ co
 - **Colab access restored:** account reconnected; CPU-only preflight completed, no GPU used.
 - No paid compute, API calls, model weights, official evaluator access, hidden samples, training checkpoints, or competition submissions. 
 
-**Critical compatibility gap:** official Tinker Code RL cookbook grades **Python** (`code.py`, `python run.py`, Python-specific tool descriptions), whereas Vals requires **C++**. The cookbook training command cannot be treated as an official Vals C++ pipeline. Obtain official starter/judge and adapt compile/execute/reward handling before any genuine training.\n\n**Missing access:** Colab CPU reported no `TINKER_API_KEY` or Modal tokens in its environment. No assertion about credentials available elsewhere.\n\n## Experimental gates
+**Compatibility gap partially addressed:** Official Tinker Code RL cookbook grades Python, but Vals requires C++. Implemented a C++17 compile/run adapter, ModalSandboxPool-compatible grading API, and Tinker tool/reward/environment integration wrapping the original RL loop. Tested only the local trusted-code grader and API request shape; real Modal/Tinker integration and official judge compatibility remain unverified.\n\n**Missing access:** Colab CPU previously reported no `TINKER_API_KEY` or Modal tokens in its environment. No assertion about credentials available elsewhere. Public Vals page has not disclosed the official C++ starter, eligible models, training/submission API or scoring protocol.\n\n## Experimental gates
 1. Kickoff: confirm organizer-allowed models/data, exact C++ tool use, hidden test scoring, inference and checkpoint submission rules.
 2. Establish actual official baseline before training; preserve raw scoring output.
 3. After authorization and environment access, run a tiny genuine training smoke using upstream Tinker Code RL recipe and approved sandbox.
@@ -37,3 +37,9 @@ Achieve a measured, reproducible score improvement on the official hidden C++ co
 
 ## Evidence handoff
 **Stage:** preparation. No model outcome, official benchmark score, or submission. Do not mislabel source/test existence as execution.
+
+## Latest CPU-only advancement — 2026-11-13
+- New sources committed to private upstream branch `agent/vals-tinker/code-rl-preflight`: `cpp_runner.py`, `cpp_judge.py`, `cpp_data.py`, `cpp_rl.py`, `train_cpp.py`, `tests/test_cpp_judge.py`, `tests/test_cpp_data.py`.
+- **14/14 tests executed and passed** in an authorized CPU Colab runtime, including actual `g++` compilation of trusted correct, incorrect, and syntactically invalid example programs; the Tinker-specific Python modules were syntax-checked only.
+- **No live Tinker API requests, no cloud Modal sandbox, no trained checkpoint, no hidden test scores.** Model-generated C++ must run only in an isolated approved sandbox.
+- Next step: obtain official starter/protocol, validate Tinker dependencies and real Modal sandbox under approved event credits, then freeze official base model + before-score and begin authorized small training.
