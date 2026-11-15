@@ -63,12 +63,12 @@
     },
     {
       "id": "vals",
-      "title": "Vals AI Benchmaxxing",
+      "title": "TrustVal (Vals Build Your Own Eval)",
       "track": "post-training",
-      "source": "https://www.vals.ai/hackathon",
-      "stage": "registration approved, event not run",
-      "priority": "HIGH time-boxed",
-      "next": "Prepare benchmark and training environment, attend if practical, run baseline→training→eval, preserve code and evidence; avoid spawning an unrelated permanent repo."
+      "source": "https://github.com/Vedant2100/research-master-/tree/main/workstreams/vals",
+      "stage": "implemented 4-task Harbor benchmark, not yet run on Valkyrie",
+      "priority": "HIGH time-boxed (Nov 14–15)",
+      "next": "Push trustval/stateful-tool-recovery@v1 to Valkyrie and run claude_code-v1.0.0 with claude-sonnet-4-6 on all four tasks; analyze traces honestly."
     },
     {
       "id": "terminal-dreamgym",

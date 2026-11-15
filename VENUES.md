@@ -7,7 +7,7 @@
 | [AGENTVERIFY](https://agentverify2027.github.io/index.html) | Nov 13 | ProvenanceTrap | Check possible Nov 1 abstract gate |
 | [FORGE](https://conf.researchr.org/track/forge-2027/forge-2027-data-and-benchmarking-track) | Nov 15 | FrontierMemory | Draft, submission not verified |
 | [Lexsi](https://hackathon.lexsi.ai/) | Nov 15 11:59 PM AoE | RewardHackLab | Extended deadline, submission unverified |
-| [Vals](https://www.vals.ai/hackathon) | Event Nov 14–15 | Vals | Approved registration |
+| [Vals](https://www.vals.ai/hackathon) | Event Nov 14–15 | Vals (TrustVal, Build Your Own Eval) | Approved registration; not yet submitted |
 | [Iterate](https://luma.com/sht6n8du) | Event Nov 14–15 | DreamGym | Approval unverified |
 | [AGENT ICSE workshop](https://conf.researchr.org/track/icse-2027/agent-2027-papers) | Nov 20 extended | ContagionBench, ProvenanceTrap, DreamGym | Candidate |
 | [Apart Agent Attribution](https://apartresearch.com/sprints/agent-attribution-2026) | Dec 11–13 | ContagionBench **new attribution extension** | Instinct email sent; no signup proof |

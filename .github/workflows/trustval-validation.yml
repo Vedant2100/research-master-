@@ -1,0 +1,63 @@
+name: TrustVal validation
+
+on:
+  pull_request:
+    paths:
+      - "workstreams/vals/**"
+      - ".github/workflows/trustval-validation.yml"
+  push:
+    branches: [main]
+    paths:
+      - "workstreams/vals/**"
+      - ".github/workflows/trustval-validation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate task manifests, fixtures, and Python syntax
+        working-directory: workstreams/vals
+        run: |
+          bash scripts/smoke_test.sh
+          python scripts/write_manifest.py
+          python - <<'PY'
+          import tomllib
+          from pathlib import Path
+          manifest = tomllib.loads(Path("tasks/dataset.toml").read_text())
+          assert manifest["dataset"]["name"] == "trustval/stateful-tool-recovery"
+          assert len(manifest["tasks"]) == 4
+          print("Valkyrie manifest OK")
+          PY
+      - name: Validate Compose files and build task images
+        working-directory: workstreams/vals
+        run: |
+          for task in tasks/*; do
+            [[ -d "$task" ]] || continue
+            name="$(basename "$task")"
+            cat > "$task/environment/.ci-base-compose.yaml" <<'YAML'
+          services:
+            main:
+              build:
+                context: .
+              command: ["sh", "-c", "sleep infinity"]
+          YAML
+            docker compose -p "trustval-$name" \
+              -f "$task/environment/.ci-base-compose.yaml" \
+              -f "$task/environment/docker-compose.yaml" config --quiet
+            docker build -f "$task/environment/Dockerfile" \
+              -t "trustval-$name-agent:ci" "$task/environment"
+            docker build -f "$task/environment/state_service/Dockerfile" \
+              -t "trustval-$name-api:ci" "$task/environment/state_service"
+            rm "$task/environment/.ci-base-compose.yaml"
+          done
+
+      - name: Exercise recovery APIs and hidden verifiers
+        working-directory: workstreams/vals
+        run: bash scripts/compose_smoke_test.sh

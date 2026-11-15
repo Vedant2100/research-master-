@@ -24,9 +24,9 @@
 **Verified/source-reported:** Tiny Aya Global 4-bit QLoRA trained 16 steps on 84 examples; HF adapter published; 0/6 verified successes baseline and 0/6 after; all 12 evaluations left state untouched.
 **Interpretation limits:** SFT NOT GRPO/RL. Decreasing loss is not useful state improvement; no proxy-vs-verified RL experiment yet.
 
-## [Vals AI Benchmaxxing](projects/vals.md)
-**Verified/source-reported:** Ticket confirmed Nov 9 for Nov 14–15 at 660 Alabama St, San Francisco; no model/eval/award yet.
-**Interpretation limits:** Not a codebase or completed result; must check exact official competition rules and avoid overfitting.
+## [TrustVal (Vals Build Your Own Eval)](projects/vals.md)
+**Verified/source-reported:** Ticket confirmed Nov 9 for Nov 14–15. Four Harbor tasks with hidden-state verifiers implemented in `workstreams/vals/` (imported from role-work-forge-artifacts @ `be8f2eb`); structure smoke test passes. No Valkyrie upload or model run yet.
+**Interpretation limits:** Synthetic environment, four variants of one capability; difficulty unproven until real traces exist. CI is not a model result.
 
 ## [Terminal DreamGym](projects/terminal-dreamgym.md)
 **Verified/source-reported:** Preregistered matched evaluation, 2026-11-12 (Qwen2.5-7B, 100 tasks × 3 seeds, equal attempts): handwritten skills − no skill = +0.060 strict success, 95% CI [−0.028, +0.151]; placebo − no skill +0.018; all 1,200 runs re-scored from sandboxes. Model-written skills (Qwen writes SKILL.md from its own failures, leave-one-family-out, 5 seeds, 2,000 runs): +0.000 [−0.088, +0.097]. Same loop with qwen3-coder:30b as the writer (7B solver, 2,000 runs): +0.023 [−0.072, +0.118]. New benchmark v2 (52 calibrated tasks in 16 new repos, 1,040 runs, 97.5% repo-cluster CIs): handwritten −0.035 [−0.129, +0.053]; 30B skills −0.100 [−0.187, −0.018]; placebo − no skill −0.065 [−0.157, +0.033]. The July demo's gain came with 3× the baseline's attempts; the "two-seed sweep" was unit-test mock data, not a model run.
