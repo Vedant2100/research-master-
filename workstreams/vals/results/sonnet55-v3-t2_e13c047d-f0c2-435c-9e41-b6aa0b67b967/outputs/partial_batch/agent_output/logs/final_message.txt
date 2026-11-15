@@ -1,0 +1,11 @@
+All three items are reserved exactly once, with the requested quantities:
+
+| Item | Qty | Reservation ID |
+|---|---|---|
+| SKU-A | 3 | `r_0775a8d8eb` |
+| SKU-B | 2 | `r_4cc0e333e5` |
+| SKU-C | 4 | `r_c26a8ad0a5` |
+
+- **Batch timeout:** `reserve-batch` returned an HTTP 504 gateway timeout. The server had already applied SKU-A and SKU-B before that. I didn't retry the batch, because writes aren't idempotent and a retry would have double-reserved them. I reserved only SKU-C separately with `reserve`.
+- **Stock check:** Stock now reads A 5, B 3, C 5, which is the starting 8/5/9 minus the reserved amounts. SKU-Z is untouched at 7.
+- **Unresolved:** Nothing is outstanding.

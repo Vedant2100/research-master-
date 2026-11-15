@@ -1,0 +1,13 @@
+All three items are now reserved once each, with the requested quantities.
+
+| SKU | Qty | Reference | Reservation ID |
+|---|---|---|---|
+| SKU-A | 3 | reserve-A | `r_dd6f1e24ce` |
+| SKU-B | 2 | reserve-B | `r_809f4e739f` |
+| SKU-C | 4 | reserve-C | `r_a3546a0c4d` |
+
+**What happened:** I first sent the whole request file with `reserve-batch`, and it came back with an HTTP 504 (gateway timeout). The API doesn't remove duplicate requests, so sending the batch again could have reserved items twice. Instead I checked the reservations list: SKU-A and SKU-B had gone through, but SKU-C had not. I then reserved SKU-C on its own with the single-item `reserve` command.
+
+**Final check:** The reservations list shows exactly these three records, with no duplicates. Stock went from 8/5/9 to 5/3/5 for A/B/C, which matches the reserved amounts. SKU-Z is unchanged at 7.
+
+**Unresolved:** Nothing. I didn't change the database, environment files or task files.

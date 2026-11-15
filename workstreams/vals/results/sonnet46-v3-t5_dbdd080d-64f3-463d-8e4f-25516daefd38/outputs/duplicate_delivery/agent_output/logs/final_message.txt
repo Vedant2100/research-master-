@@ -1,0 +1,10 @@
+Both accounts were successfully committed despite nina's 502 response (the write went through). Both customers now have exactly one account each.
+
+**Provisioning complete:**
+
+| Customer | Email | Plan | Account ID |
+|----------|-------|------|------------|
+| nina | nina@example.test | pro | `acct_69f1b66f18` |
+| omar | omar@example.test | starter | `acct_41c73b01bf` |
+
+Nina's request returned HTTP 502, but the operations log confirms the write was committed (`op_45243221ed`). No duplicate was created. No unresolved issues.

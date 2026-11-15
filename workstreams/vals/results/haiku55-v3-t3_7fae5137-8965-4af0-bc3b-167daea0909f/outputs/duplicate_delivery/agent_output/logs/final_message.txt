@@ -1,0 +1,10 @@
+Both requested customers now have exactly one account on their requested plan. Nothing is unresolved.
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_fa44121310` |
+| omar@example.test | starter | `acct_d0f0403454` |
+
+Nina's first `provision` call returned `HTTP 502: connection reset by upstream` and exited with an error. The write had still gone through: `accounts` and `operations` showed her account as committed, under the reference `provision-nina`. I did not retry, which avoided a duplicate. Omar's provision succeeded on the first call.
+
+The pre-existing account `acct_existing` (existing@example.test, starter) was left untouched. I did not modify the database, environment files, or task files.

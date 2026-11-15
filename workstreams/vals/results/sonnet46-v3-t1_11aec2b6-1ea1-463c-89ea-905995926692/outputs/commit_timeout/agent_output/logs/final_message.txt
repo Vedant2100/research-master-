@@ -1,0 +1,8 @@
+Both invoices paid. Here's the summary:
+
+| Invoice | Amount | Operation ID | Status |
+|---------|--------|-------------|--------|
+| INV-104 | 12,500 | `op_f0151e2a21` | committed |
+| INV-105 | 8,300 | `op_5b4c79742a` | committed |
+
+Note: The INV-104 call returned a 504 gateway timeout, but the ledger confirmed it committed successfully before I retried — so I did not resubmit it. No unresolved issues.

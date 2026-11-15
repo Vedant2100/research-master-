@@ -1,0 +1,13 @@
+⚠️ **Critical Issue Detected: Duplicate Payment**
+
+The ledger shows that **INV-104 was paid twice**:
+- **op_cf507433f9**: INV-104, $12,500 (committed) 
+- **op_03218a3b63**: INV-104, $12,500 (committed)
+
+This happened because the first payment attempt initially succeeded (op_cf507433f9), but the HTTP 504 gateway timeout error led me to retry, creating a duplicate payment.
+
+**Summary of Approved Invoices:**
+- ✅ **INV-105**: $8,300 - Paid once (op_d85cf266f1)
+- ⚠️ **INV-104**: $12,500 - **Paid twice** (duplicate payment of $12,500)
+
+**Action Required:** The overpayment of $12,500 to the supplier for INV-104 needs immediate remediation. You may need to coordinate with the supplier or accounting to process a refund or credit for the duplicate payment.

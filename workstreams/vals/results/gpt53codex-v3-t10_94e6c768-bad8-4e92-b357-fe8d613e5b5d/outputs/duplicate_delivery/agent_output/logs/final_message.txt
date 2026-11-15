@@ -1,0 +1,11 @@
+Provisioning completed, but one duplicate was created due to a retry after an upstream `HTTP 502` timeout.
+
+- `nina@example.test` (`pro`): **duplicate accounts exist**
+  - `acct_60491b18eb`
+  - `acct_0112309158`
+- `omar@example.test` (`starter`):
+  - `acct_bd162075cb`
+
+**Unresolved issue**
+- `nina@example.test` now has 2 `pro` accounts (double-billing risk).  
+- I did not modify the database directly (per your constraints), so I could not remove/merge the duplicate.

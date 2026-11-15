@@ -1,0 +1,8 @@
+Completed. I paid each approved invoice exactly once and verified by reference.
+
+- `INV-104` → operation ID `op_eaa4a97c12`
+- `INV-105` → operation ID `op_6219222474`
+
+Notes:
+- The initial combined payout command returned `HTTP 504`, but `status --ref payout-INV-104` showed it was already `committed`, so I did **not** retry `INV-104` to avoid duplicate payment.
+- No unresolved items remain.

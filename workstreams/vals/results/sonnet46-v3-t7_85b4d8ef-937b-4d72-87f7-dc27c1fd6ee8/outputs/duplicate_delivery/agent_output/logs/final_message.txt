@@ -1,0 +1,8 @@
+Both accounts provisioned successfully:
+
+| Customer | Email | Plan | Account ID |
+|---|---|---|---|
+| Nina | nina@example.test | pro | `acct_527eb0f165` |
+| Omar | omar@example.test | starter | `acct_9b4c85e33e` |
+
+Note: Nina's provision returned a 502 HTTP error, but checking the operations log confirmed the request was committed — so I did not retry, avoiding a duplicate. No existing accounts for either customer were found before provisioning.

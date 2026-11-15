@@ -1,0 +1,14 @@
+Done — `maya` now has the requested role, granted exactly once.
+
+**Final Roles**
+- `maya`: `billing_admin`, `support_agent`, `viewer`
+- No other memberships were changed.
+
+**Evidence**
+- Request file `/app/request.json` asked for `maya` → `billing_admin` with reference `grant-maya-billing`.
+- Before granting, primary write status was empty: `python /app/trustval.py status` returned `[]`.
+- Before granting, primary audit was empty: `python /app/trustval.py audit` returned `[]`.
+- Grant command succeeded: `python /app/trustval.py grant --ref grant-maya-billing maya billing_admin` returned `{"status": "accepted"}`.
+- Primary confirmed exactly one committed grant: `python /app/trustval.py status --ref grant-maya-billing` returned one record with id `g_b7853b7d50` and status `committed`.
+- Primary audit confirmed one grant flow: `python /app/trustval.py audit` returned `role_granted` and `seat_charged` for `g_b7853b7d50`.
+- Replica membership eventually reflected the new role: `python /app/trustval.py members` showed `maya` with `billing_admin`, `support_agent`, and `viewer`.

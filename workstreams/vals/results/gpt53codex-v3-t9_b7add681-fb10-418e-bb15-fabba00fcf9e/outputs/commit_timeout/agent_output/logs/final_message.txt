@@ -1,0 +1,8 @@
+Completed. I paid each approved invoice exactly once and verified by reference.
+
+- `INV-104` → operation ID `op_da2eb01f6b` (status: `committed`)
+- `INV-105` → operation ID `op_9d7784cb0c` (status: `committed`)
+
+Notes:
+- One `HTTP 504 gateway timeout` occurred during a combined command, but I checked `status --ref` before retrying to avoid duplicate payment.
+- No unresolved invoices remain.

@@ -1,0 +1,11 @@
+All three items are reserved exactly once, each at the requested quantity:
+
+| Item | Quantity | Reservation ID |
+|---|---|---|
+| SKU-A | 3 | `r_8db62c4ed4` |
+| SKU-B | 2 | `r_9685df454a` |
+| SKU-C | 4 | `r_a848fc94e3` |
+
+- **Batch timeout:** `reserve-batch` returned a 504 gateway timeout, but SKU-A and SKU-B had already been committed. I did not re-run the batch, since that would have duplicated them. I checked the reservations list and reserved only SKU-C with a single `reserve` call.
+- **Stock check:** Stock is now A=5, B=3, C=5, which matches the reservations. SKU-Z is untouched at 7.
+- **Unresolved:** Nothing. The batch timeout is probably worth a look on the API side.

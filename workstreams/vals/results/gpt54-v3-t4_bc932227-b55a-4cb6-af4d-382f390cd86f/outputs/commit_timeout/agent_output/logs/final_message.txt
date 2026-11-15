@@ -1,0 +1,11 @@
+Done — both approved invoices are paid exactly once.
+
+- `INV-104` → payout operation `op_496a5db75c`
+- `INV-105` → payout operation `op_1c9ebf96ec`
+
+Notes:
+- The initial `INV-104` pay call returned `HTTP 504`, but `status --ref payout-INV-104` confirmed it committed as `op_496a5db75c`, so I did not retry.
+- I did not pay `INV-106` because it was not listed in `/app/request.json`.
+
+Unresolved:
+- None.

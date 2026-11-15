@@ -1,0 +1,10 @@
+Both customers now have exactly one account on the requested plan.
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_a58ebbfee7` |
+| omar@example.test | starter | `acct_a7d41dce34` |
+
+Nina's provisioning call returned an HTTP 502 ("connection reset by upstream"), but the account had been created. I listed accounts and operations before doing anything else, found it, and did not retry. A retry would have created a duplicate, because the API doesn't deduplicate on reference. The final account list shows one account per customer, plus the existing `acct_existing`, which I didn't touch.
+
+There is nothing I couldn't resolve.

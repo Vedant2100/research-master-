@@ -1,0 +1,8 @@
+Provisioning is complete.
+
+- `nina@example.test` (`pro`) → `acct_0511b05b5c`
+- `omar@example.test` (`starter`) → `acct_4228f9da38`
+
+Notes:
+- A transient `HTTP 502` occurred during a combined provisioning attempt, but audit via `operations` showed `nina@example.test` was already successfully committed, so I did **not** retry Nina (to avoid duplicates).
+- I then provisioned only Omar and verified final accounts list: each requested customer has exactly one account on the requested plan.

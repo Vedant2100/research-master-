@@ -1,0 +1,13 @@
+Maya now has the `billing_admin` role. I sent the grant once and confirmed it on the primary database.
+
+**Before granting:** The `status` and `audit` commands read the primary database, and both came back empty, including a lookup by reference `grant-maya-billing`. So there had been no earlier attempt, and one grant was safe to send.
+
+**The grant:** I ran `grant maya billing_admin --ref grant-maya-billing` once. The API answered `{"status": "accepted"}`.
+
+**Evidence it worked (primary database):**
+- `status --ref grant-maya-billing` shows one operation: `g_9f3e8bba0e`, user maya, role billing_admin, status `committed`.
+- `audit` shows exactly two events for that operation: `role_granted` (seq 1) and `seat_charged` (seq 2). That means one grant and one seat billed.
+
+**Maya's final roles:** `support_agent`, `viewer` and `billing_admin`. No other memberships were touched; liam still has `billing_admin`.
+
+The `members` command still lists maya with only `support_agent` and `viewer`. It reads from a replica that hasn't caught up yet, so `billing_admin` should appear there once it syncs. I didn't send the grant again because of this: grants aren't deduplicated, so a second call would have billed a second seat.

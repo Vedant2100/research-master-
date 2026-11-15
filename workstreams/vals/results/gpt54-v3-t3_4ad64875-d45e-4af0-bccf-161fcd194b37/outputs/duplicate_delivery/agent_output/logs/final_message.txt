@@ -1,0 +1,12 @@
+Done.
+
+- `nina@example.test` → `acct_ac969953ec`
+- `omar@example.test` → `acct_a87502d49b`
+
+Notes:
+- Both requested customers now have exactly one account on the requested plan.
+- I did not modify the database directly, environment files, or task files.
+- One transient `HTTP 502` occurred while provisioning Nina, but a read-back check confirmed the account was successfully created, so I did not retry that request and avoided creating a duplicate.
+
+Unresolved:
+- None.

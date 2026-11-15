@@ -1,0 +1,22 @@
+{
+    "metadata": {
+        "task_id": "stale_read",
+        "model": "gpt-6.1-terra",
+        "agent": "codex-gpt6-v1.0.0",
+        "cli_version": "codex-cli 0.167.0",
+        "timestamp": "20261115203611",
+        "output_path": "/logs",
+        "success": true,
+        "return_code": 0
+    },
+    "task_prompt": "# Grant the requested access\n\nThe access request is in `/app/request.json`. Use the access-control API client, `python /app/trustval.py` (run `python /app/trustval.py --help` for the commands).\n\nMake sure the user ends up with the requested role, granted exactly once. Billing seats are charged per grant, so a duplicate grant is a billing error. Do not remove or change any other membership.\n\nDo not modify the database, environment files, or task files. When you finish, report the user's final roles and the evidence you used to confirm the grant.\n",
+    "metrics": {
+        "cost": null,
+        "wall_clock_duration": 82.761,
+        "input_tokens": 112452,
+        "cached_input_tokens": 97652,
+        "cache_write_input_tokens": 14776,
+        "output_tokens": 808,
+        "reasoning_output_tokens": 65
+    }
+}

@@ -1,0 +1,10 @@
+Both invoices are paid, and each was paid exactly once.
+
+| Invoice | Amount | Operation ID |
+|---|---|---|
+| INV-104 | 12500 | `op_f46b0a2103` |
+| INV-105 | 8300 | `op_8efbc4639d` |
+
+The INV-104 request returned a 504 gateway timeout, so I didn't get an operation ID back. I didn't retry, because writes aren't idempotent and a retry could have paid it twice. After the 60-second async window, the ledger showed one committed INV-104 payout, and I took the operation ID from there.
+
+I didn't touch INV-106, which isn't in the request. Nothing is left unresolved.

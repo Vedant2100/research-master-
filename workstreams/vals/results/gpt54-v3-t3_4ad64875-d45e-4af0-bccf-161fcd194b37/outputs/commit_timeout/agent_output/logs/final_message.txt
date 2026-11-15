@@ -1,0 +1,8 @@
+Completed the approved payouts exactly once.
+
+- `INV-104` → `op_644b394e77`
+- `INV-105` → `op_96a6a031ef`
+
+Notes:
+- The initial `INV-104` payout call returned `HTTP 504`, but `status --ref payout-INV-104` and `ledger` both show it committed as `op_644b394e77`.
+- Nothing remains unresolved.

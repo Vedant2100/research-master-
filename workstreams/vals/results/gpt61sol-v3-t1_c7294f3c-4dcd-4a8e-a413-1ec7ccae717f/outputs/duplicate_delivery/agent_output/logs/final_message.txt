@@ -1,0 +1,8 @@
+Verified exactly one account per requested customer:
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_ca4a6f9ca6` |
+| omar@example.test | starter | `acct_e09d8065ae` |
+
+Nina’s request returned an error, but reads confirmed it committed successfully. No retry was needed. Existing accounts were unchanged. Nothing remains unresolved.

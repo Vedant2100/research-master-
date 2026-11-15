@@ -1,0 +1,12 @@
+Done.
+
+- `nina@example.test` → `acct_12d18385fa`
+- `omar@example.test` → `acct_fbd3b43e15`
+
+**Notes**
+- Both requested customers now have exactly one account on the requested plan.
+- I did not modify the database directly, environment files, or task files.
+- One transient error occurred while provisioning Nina: the API returned `HTTP 502` with `connection reset by upstream`, but verification showed the account was successfully committed, so I did not retry that request and avoided creating a duplicate.
+
+**Unresolved**
+- None.

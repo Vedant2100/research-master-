@@ -1,0 +1,9 @@
+Done.
+
+**Payouts**
+- `INV-104` → `op_4577a70425`
+- `INV-105` → `op_5a2c16c2df`
+
+**Notes**
+- The initial `INV-104` `pay` call returned `HTTP 504`, but `python /app/trustval.py status --ref payout-INV-104` shows it committed as `op_4577a70425`, so I did not retry it.
+- Nothing remains unresolved.

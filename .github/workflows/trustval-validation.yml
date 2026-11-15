@@ -35,6 +35,10 @@ jobs:
           assert len(manifest["tasks"]) == 4
           print("Valkyrie manifest OK")
           PY
+      - name: Naive policy fails and reference solution passes (local sidecars, no Docker)
+        working-directory: workstreams/vals
+        run: python scripts/local_policy_test.py
+
       - name: Validate Compose files and build task images
         working-directory: workstreams/vals
         run: |
@@ -58,6 +62,6 @@ jobs:
             rm "$task/environment/.ci-base-compose.yaml"
           done
 
-      - name: Exercise recovery APIs and hidden verifiers
+      - name: Naive policy fails and reference solution passes (real containers)
         working-directory: workstreams/vals
         run: bash scripts/compose_smoke_test.sh

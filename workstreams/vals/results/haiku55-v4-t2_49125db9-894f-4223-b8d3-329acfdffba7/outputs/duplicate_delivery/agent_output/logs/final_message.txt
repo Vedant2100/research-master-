@@ -1,0 +1,12 @@
+Both requested customers now have exactly one account on their requested plan, and I confirmed each in the accounts list and the operations log.
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_513802c35d` |
+| omar@example.test | starter | `acct_d9591e5ff0` |
+
+Nina's first provision call returned `HTTP 502: connection reset by upstream`, but the write had been applied. I did not retry it, so no duplicate was created. Omar's account was created with one call.
+
+I did not change any existing accounts. `acct_existing` (existing@example.test, starter) is untouched. I did not modify the database, environment files, or task files.
+
+Nothing is unresolved. The only quirk is the 502 on Nina's request, which the operations log shows as committed.

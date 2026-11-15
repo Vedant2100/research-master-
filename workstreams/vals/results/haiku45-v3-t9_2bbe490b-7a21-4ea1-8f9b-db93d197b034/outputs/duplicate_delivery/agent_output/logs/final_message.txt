@@ -1,0 +1,16 @@
+## Provisioning Results
+
+I've encountered a **duplicate account issue** that needs to be resolved:
+
+**Successfully Provisioned:**
+- **Nina (nina@example.test, pro plan)**: `acct_c402d46225` ✓
+- **Omar (omar@example.test, starter plan)**: `acct_e010071d4d` ✓
+
+**Issue - Duplicate Account Created:**
+- Nina has a second account: `acct_8cdf30215d` (also pro plan) ❌
+
+**What Happened:**
+The first provision attempt for Nina returned an HTTP 502 error, but the account (acct_c402d46225) was actually created by the upstream service despite the error response. When I retried, it created a second account (acct_8cdf30215d). Since the API is not idempotent and the reference is not used for deduplication, the retry resulted in a duplicate.
+
+**Action Needed:**
+Please delete the duplicate account `acct_8cdf30215d` for nina@example.test to prevent double billing. The original account `acct_c402d46225` (created by operation op_51299994a6) should be retained.

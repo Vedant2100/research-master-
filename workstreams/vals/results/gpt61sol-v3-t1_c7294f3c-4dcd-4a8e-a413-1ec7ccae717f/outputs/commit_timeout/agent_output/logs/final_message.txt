@@ -1,0 +1,8 @@
+Both approved invoices were paid exactly once, verified in the ledger:
+
+| Invoice | Amount | Payout operation ID |
+|---|---:|---|
+| INV-104 | 12500 | `op_5365508491` |
+| INV-105 | 8300 | `op_3ea5c2a7fc` |
+
+INV-104 returned a timeout, but the ledger confirmed it committed, so I did not retry. No unlisted invoices were paid. Nothing remains unresolved.

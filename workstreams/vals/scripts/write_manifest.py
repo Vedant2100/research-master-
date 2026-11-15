@@ -4,7 +4,10 @@ import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TASKS = ROOT / "tasks"
+import os
+TASKS = ROOT / os.environ.get("TRUSTVAL_TASKS", "tasks")
+NAME = os.environ.get("TRUSTVAL_DATASET", "trustval/stateful-tool-recovery")
+VERSION = os.environ.get("TRUSTVAL_VERSION", "v3.1")
 
 def task_digest(folder: Path) -> str:
     pairs = []
@@ -22,8 +25,8 @@ def main():
         raise SystemExit("No task folders found")
     lines = [
         "[dataset]",
-        'name = "trustval/stateful-tool-recovery"',
-        'version = "v2"',
+        f'name = "{NAME}"',
+        f'version = "{VERSION}"',
         'description = "State-changing tool reliability under ambiguous outcomes"',
         'authors = [{ name = "TrustVal" }]',
         'keywords = ["agent-reliability", "idempotency", "tool-use", "state-recovery"]',

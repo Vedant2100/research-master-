@@ -1,0 +1,16 @@
+Maya has been granted `billing_admin` once. The `members` list hasn't shown it yet, but the primary database confirms it.
+
+**Evidence**
+- **Before the grant:** `status` and `audit` were both empty, so there was no earlier grant for `grant-maya-billing`.
+- **Grant call:** I made one `grant` call, which returned `accepted`. I did not retry it.
+- **Status:** `status` (primary database) shows one operation: `g_bca631c8fa`, reference `grant-maya-billing`, maya, `billing_admin`, `committed`.
+- **Audit:** `audit` (primary database) shows `role_granted` and one `seat_charged` for `g_bca631c8fa`. That is one seat billed.
+- **Members list:** `members` still lists only `support_agent` and `viewer` for maya. It reads from a read replica that hasn't caught up. I checked again after a short wait and it was unchanged.
+
+**Maya's roles**
+- Based on the primary database, maya now has `billing_admin`, `support_agent` and `viewer`.
+- The replica-backed `members` list still shows only `support_agent` and `viewer`.
+
+I didn't change any other membership. Liam's `billing_admin` is untouched.
+
+Re-running `members` later should show the new role once the replica catches up. Don't re-run the grant, because that would bill a second seat.

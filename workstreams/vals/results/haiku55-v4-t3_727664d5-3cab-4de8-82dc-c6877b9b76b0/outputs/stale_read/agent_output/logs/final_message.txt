@@ -1,0 +1,17 @@
+Maya now has `billing_admin`, granted exactly once. The first request timed out at the gateway, so I checked the primary before doing anything else. That check showed the grant had already committed, and I did not resend it.
+
+**Final roles for maya:**
+- `billing_admin` (new)
+- `support_agent` (unchanged)
+- `viewer` (unchanged)
+
+liam's `billing_admin` membership is unchanged.
+
+**Evidence:**
+- `status --ref grant-maya-billing` (primary DB) returns one record: grant `g_70694d0713`, user `maya`, role `billing_admin`, status `committed`.
+- `audit` shows `seq 1: role_granted` and `seq 2: seat_charged` for `g_70694d0713`. That is one grant and one seat charge.
+- `members` (read replica, checked after the 60s lag window) lists maya as `billing_admin`, `support_agent`, and `viewer`.
+
+**Note:** the CLI returned HTTP 504 on the first `grant` call, even though the write was accepted. If you retry a grant in future, check `status --ref` first, because the API does not deduplicate on reference.
+
+I did not modify the database, environment files, or task files.

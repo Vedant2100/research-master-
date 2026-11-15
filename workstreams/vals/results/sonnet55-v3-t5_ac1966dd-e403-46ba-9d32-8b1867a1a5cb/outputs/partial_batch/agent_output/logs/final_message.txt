@@ -1,0 +1,11 @@
+All three items are reserved once each, with the requested quantities.
+
+| Item | Quantity | Reservation ID |
+|---|---|---|
+| SKU-A | 3 | `r_7f0e9d24e4` |
+| SKU-B | 2 | `r_9cea60580a` |
+| SKU-C | 4 | `r_11317d2bef` |
+
+`reserve-batch` returned a 504 gateway timeout, but it had already committed SKU-A and SKU-B before failing. Retrying the whole batch would have double-reserved them, because writes aren't deduplicated. I checked the reservations list and reserved only SKU-C with a single `reserve` call.
+
+Stock now reads A=5, B=3, C=5, and Z is untouched at 7. Nothing is left unresolved.

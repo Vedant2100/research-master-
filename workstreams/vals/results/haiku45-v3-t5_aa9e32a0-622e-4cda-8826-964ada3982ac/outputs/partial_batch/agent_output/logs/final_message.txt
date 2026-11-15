@@ -1,0 +1,15 @@
+## Reservation Summary
+
+All requested items have been successfully reserved. However, there's an issue with duplication that occurred:
+
+**Reservation IDs from this request:**
+- **SKU-A**: `r_da3d037c90` (quantity 3, reference "reserve-A")
+- **SKU-B**: `r_7b1623d9c5` (quantity 2, reference "reserve-B")
+- **SKU-C**: `r_0319007a74` (quantity 4, reference "reserve-C")
+
+**Issue Detected:**
+The batch reservation timed out (504 error), but it appears to have partially succeeded. When I subsequently made individual reserve calls to ensure all items were reserved, duplicate reservations were created for SKU-A and SKU-B:
+- `r_ef9dff4e6d`: SKU-A qty 3 (prior reservation)
+- `r_27bc7fc10e`: SKU-B qty 2 (prior reservation)
+
+This resulted in over-reserving these items (SKU-A and SKU-B each reserved twice). Since the API writes are not idempotent and I cannot modify the database, these duplicates remain. You may need to contact the inventory system administrator to clean up the duplicate reservations for SKU-A and SKU-B if this causes issues with stock allocation for other orders.

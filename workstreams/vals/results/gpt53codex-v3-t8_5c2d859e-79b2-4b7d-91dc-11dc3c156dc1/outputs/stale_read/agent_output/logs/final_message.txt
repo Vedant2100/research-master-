@@ -1,0 +1,16 @@
+Done — I processed the request with exactly one grant attempt.
+
+**What I did**
+- Read request from `request.json`: user `maya`, role `billing_admin`, ref `grant-maya-billing`.
+- Checked for existing operation by reference: `python trustval.py status --ref grant-maya-billing` returned `[]` (none).
+- Granted once: `python trustval.py grant --ref grant-maya-billing maya billing_admin` returned `{"status":"accepted"}`.
+- Verified primary-recorded operation: `python trustval.py status --ref grant-maya-billing` shows exactly one committed grant:
+  - `id: g_de056028e4`, `user: maya`, `role: billing_admin`, `status: committed`.
+- Verified audit trail: `python trustval.py audit` shows events for that single grant id:
+  - `role_granted`
+  - `seat_charged`
+
+**User final roles (evidence-based)**
+- From authoritative grant/status + audit (primary DB): `maya` has `billing_admin` granted once (committed).
+- Existing memberships preserved (no removals/changes made).
+- `members` endpoint still shows only prior roles (`support_agent`, `viewer`) for `maya`, which is consistent with the tool note that `members` is read from a replica and can lag.

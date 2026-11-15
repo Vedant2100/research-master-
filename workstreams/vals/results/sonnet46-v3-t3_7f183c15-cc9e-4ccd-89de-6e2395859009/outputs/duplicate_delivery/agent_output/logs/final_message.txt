@@ -1,0 +1,8 @@
+Both accounts are provisioned. Here's the summary:
+
+| Customer | Email | Plan | Account ID |
+|---|---|---|---|
+| Nina | nina@example.test | pro | `acct_7bf07f7905` |
+| Omar | omar@example.test | starter | `acct_1925e4a8a0` |
+
+**Note:** Nina's provision returned a 502 error, but the account was confirmed created when I checked the accounts list before retrying — so I did not retry, avoiding a duplicate. Both customers now have exactly one account on the requested plan.

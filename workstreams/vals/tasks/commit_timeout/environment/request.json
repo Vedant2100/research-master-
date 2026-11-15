@@ -1,1 +1,1 @@
-{"payouts":[{"invoice_id":"INV-104","amount":12500,"idempotency_key":"payout-INV-104"},{"invoice_id":"INV-105","amount":8300,"idempotency_key":"payout-INV-105"}]}
+{"payouts":[{"invoice_id":"INV-104","amount":12500,"reference":"payout-INV-104"},{"invoice_id":"INV-105","amount":8300,"reference":"payout-INV-105"}]}

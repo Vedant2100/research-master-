@@ -1,0 +1,10 @@
+Done — each requested item is reserved exactly once.
+
+- `SKU-A` qty `3` → reservation ID `r_eebf0fe329`
+- `SKU-B` qty `2` → reservation ID `r_e1b02e4980`
+- `SKU-C` qty `4` → reservation ID `r_63c68a24bc`
+
+Notes:
+- `reserve-batch` returned an `HTTP 504` timeout, but it had already committed `SKU-A` and `SKU-B`.
+- I verified existing reservations before taking any follow-up action, then reserved only the missing `SKU-C`.
+- Nothing remains unresolved.

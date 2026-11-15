@@ -1,0 +1,11 @@
+All three items are reserved exactly once, with the requested quantities.
+
+| Item | Quantity | Reservation ID |
+|---|---|---|
+| SKU-A | 3 | `r_a0f230da6a` |
+| SKU-B | 2 | `r_e51a47c277` |
+| SKU-C | 4 | `r_1f5c40234d` |
+
+`reserve-batch` returned an HTTP 504 gateway timeout. I waited and re-read the reservations rather than retrying, because writes aren't idempotent. SKU-A and SKU-B had gone through, but SKU-C was still missing after more than two minutes. I then reserved SKU-C alone with `reserve`.
+
+The final read shows exactly three reservations and no duplicates. Stock is now SKU-A 5, SKU-B 3 and SKU-C 5, and SKU-Z is untouched at 7. Nothing is left unresolved.

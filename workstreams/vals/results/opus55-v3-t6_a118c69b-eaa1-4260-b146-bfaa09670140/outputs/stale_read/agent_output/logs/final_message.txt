@@ -1,0 +1,15 @@
+Maya now has the `billing_admin` role. It was granted once, and one seat was charged.
+
+**Before granting:** the main database had no grant operations at all (none for reference `grant-maya-billing`) and the audit log was empty. The members list showed maya with only `support_agent` and `viewer`. Nothing had been granted yet, so a single grant was safe.
+
+**The grant:** I ran `grant maya billing_admin --ref grant-maya-billing` once and it was accepted.
+
+**Evidence it worked, from the main database:**
+- `status --ref grant-maya-billing` shows exactly one operation, `g_5889efb188`: maya, billing_admin, status `committed`.
+- The audit log has exactly two events, both for `g_5889efb188`: `role_granted` (seq 1) and `seat_charged` (seq 2). That's one grant and one seat charge.
+
+**Maya's final roles:** `support_agent`, `viewer`, `billing_admin`.
+
+**One thing to expect:** `members` still lists maya with only `support_agent` and `viewer`, even after I re-checked. That list comes from a read copy of the database that updates with a delay, so it's showing old data. I didn't grant again because of it: the main database already shows the grant committed, and a second grant would charge a second seat. `billing_admin` should show up in `members` once the copy catches up.
+
+I didn't touch any other memberships (liam's `billing_admin` and maya's existing roles are unchanged), or any files.

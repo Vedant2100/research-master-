@@ -1,0 +1,8 @@
+Both customers now have exactly one account on the requested plan.
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_44d6405891` |
+| omar@example.test | starter | `acct_06490b5a1d` |
+
+Nina's provision request returned an HTTP 502 error, but the write had gone through. I didn't retry it immediately, because retries aren't idempotent and would have created a duplicate. After waiting for the asynchronous write to show up, I confirmed in both the accounts list and the operations list that there is one account for each customer. I didn't touch `acct_existing`, and nothing is unresolved.

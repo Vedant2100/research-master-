@@ -1,0 +1,15 @@
+The grant is complete. Here's the summary:
+
+**Grant executed:** `maya` → `billing_admin` (ref: `grant-maya-billing`, id: `g_aa32b4e26b`, status: `committed`)
+
+**Evidence used:**
+- `members` confirmed maya did **not** already have `billing_admin` (she held only `support_agent` and `viewer`)
+- `status --ref grant-maya-billing` returned empty — no prior grant with this reference existed
+- `audit` log was empty — no duplicate grants to maya for this role
+
+**Maya's roles after grant:**
+- `support_agent` (pre-existing)
+- `viewer` (pre-existing)
+- `billing_admin` (newly granted — once)
+
+No other memberships were modified.

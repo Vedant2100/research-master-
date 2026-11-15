@@ -1,0 +1,11 @@
+## Reservation Complete ✓
+
+All items from the request have been successfully reserved:
+
+| SKU | Quantity | Reservation ID | Status |
+|-----|----------|-----------------|--------|
+| SKU-A | 3 | r_a50969c2f5 | committed |
+| SKU-B | 2 | r_c40d2f8172 | committed |
+| SKU-C | 4 | r_107197e251 | committed |
+
+Each requested item has been reserved exactly once with the requested quantity. No issues encountered.

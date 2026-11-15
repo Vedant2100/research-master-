@@ -1,0 +1,10 @@
+Both customers now have exactly one account on the requested plan, and I verified this against the primary database.
+
+- **Nina** (nina@example.test, pro): `acct_04fa253899`
+- **Omar** (omar@example.test, starter): `acct_9cfaaf1c56`
+
+Nina's first provision call returned `HTTP 502: connection reset by upstream`, but the account had already been committed (operation `op_86249fc806`). I checked the account list and operations log before doing anything else, and did not resubmit her request, so there is no duplicate. Her exit code was 1 for that call, which is why it may look like a failure in your logs.
+
+I made one provision call for each customer and changed nothing else. The only pre-existing account (`acct_existing`, existing@example.test) was left alone. I did not modify the database, environment files, or task files.
+
+Nothing is unresolved.

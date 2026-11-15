@@ -1,0 +1,10 @@
+Both customers now have exactly one account on the requested plan.
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_b42acb52f1` |
+| omar@example.test | starter | `acct_9a28e1332e` |
+
+Nina's provision call returned an HTTP 502 ("connection reset by upstream"). The account had been created anyway. I checked the accounts and operations lists before doing anything else and didn't retry, so there is no duplicate. I did not touch `acct_existing`.
+
+There is nothing left unresolved.

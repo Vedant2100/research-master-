@@ -1,0 +1,19 @@
+Perfect! The access grant has been successfully processed. Here's the summary:
+
+**Grant Details:**
+- **User:** maya
+- **Role Granted:** billing_admin
+- **Reference:** grant-maya-billing
+- **Grant ID:** g_2b586e8dc6
+- **Status:** committed
+
+**Audit Trail:**
+- Event 1: `role_granted` - billing_admin role was granted to maya
+- Event 2: `seat_charged` - one billing seat was charged (as expected for paid role)
+
+**User's Final Roles:**
+- support_agent (unchanged)
+- viewer (unchanged)
+- **billing_admin** (newly granted)
+
+The grant was executed exactly once with proper billing recorded. The members list is served from a read replica and may have a slight propagation delay, but the primary database and audit log confirm the role was successfully committed.

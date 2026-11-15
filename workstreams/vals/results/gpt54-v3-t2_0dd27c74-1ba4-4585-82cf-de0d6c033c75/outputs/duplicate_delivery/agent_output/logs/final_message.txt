@@ -1,0 +1,9 @@
+Provisioning is complete.
+
+- `nina@example.test` → `acct_b91f2ba0ba`
+- `omar@example.test` → `acct_689061b00c`
+
+Notes:
+- Both requested customers now have exactly one account on the requested plan.
+- A transient `502` occurred during Nina’s provisioning, but state verification showed the account was successfully committed, so I did not retry that request and avoided creating a duplicate.
+- Nothing remains unresolved.

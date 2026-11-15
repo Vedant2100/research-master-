@@ -1,0 +1,13 @@
+All three items are reserved exactly once with the requested quantities. I checked this against the reservations list and stock levels.
+
+| SKU | Quantity | Reservation ID |
+|---|---|---|
+| SKU-A | 3 | `r_f349dffb2d` |
+| SKU-B | 2 | `r_c329f1a636` |
+| SKU-C | 4 | `r_8c708aabfd` |
+
+Stock now reads A 5 (was 8), B 3 (was 5), C 5 (was 9). SKU-Z is untouched at 7.
+
+What happened with SKU-C: I submitted `reserve-batch` once. It returned a gateway timeout, and only SKU-A and SKU-B appeared afterwards. SKU-C was still missing and its stock unchanged more than 60 seconds later, so I reserved it once with `reserve --ref reserve-C`. I did not resubmit the whole batch, because the API doesn't deduplicate writes. Since the batch never applied SKU-C, there is no duplicate.
+
+Nothing is unresolved. The one open risk is that the timed-out batch call could still apply SKU-C later. I don't expect that, since the stock and reservation reads have been stable past the 60-second window, but it's worth a glance at the reservations list if you want to be sure.

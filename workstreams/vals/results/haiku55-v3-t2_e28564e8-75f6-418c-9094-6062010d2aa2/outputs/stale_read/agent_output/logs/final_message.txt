@@ -1,0 +1,11 @@
+Maya now has `billing_admin`, granted once. I made a single `grant maya billing_admin --ref grant-maya-billing` call, which returned `accepted`.
+
+**Final roles for maya:** `billing_admin`, `support_agent`, `viewer`. Liam still has `billing_admin`. I didn't change any other membership.
+
+**Evidence:**
+- **Before granting:** the primary showed no grant operations for `grant-maya-billing`, and the audit log was empty. The replica showed maya without `billing_admin`.
+- **After granting:** `status --ref grant-maya-billing` on the primary shows one record: `g_da8dc4c0bf`, maya, `billing_admin`, `committed`.
+- **Audit log:** two events for that grant, `role_granted` and `seat_charged`, which means one seat was billed.
+- **Replica:** `members` didn't show the new role right away. It appeared after about 10 seconds of polling, which I attribute to replication lag.
+
+I didn't touch the database, environment files, or task files.

@@ -1,0 +1,15 @@
+Done. I granted `billing_admin` to `maya` exactly once.
+
+**Final Roles**
+- `maya`: `support_agent`, `viewer`
+- `liam`: `billing_admin`
+
+**Evidence**
+- Request file shows `{"user":"maya","role":"billing_admin","reference":"grant-maya-billing"}` in `/app/request.json:1`
+- Before writing, `python /app/trustval.py status --ref grant-maya-billing` returned `[]`, so there was no existing grant for that reference
+- Grant command returned `{"status": "accepted"}`
+- After writing, `python /app/trustval.py status --ref grant-maya-billing` returned one committed record for `maya` / `billing_admin` with grant id `g_89e667a074`
+- `python /app/trustval.py audit` shows exactly two events for that grant id: `role_granted` and `seat_charged`, consistent with a single paid-role grant
+- `python /app/trustval.py members` after the grant still shows no removed or changed memberships; it lists `liam` as `billing_admin` and `maya` as `support_agent`, `viewer`
+
+One caveat: the `members` read replica did not reflect `maya`’s new `billing_admin` role at the time of final verification, but the primary-backed `status` and `audit` commands confirm the grant committed exactly once.

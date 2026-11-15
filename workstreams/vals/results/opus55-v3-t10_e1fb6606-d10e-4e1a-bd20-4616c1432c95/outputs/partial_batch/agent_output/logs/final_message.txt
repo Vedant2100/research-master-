@@ -1,0 +1,11 @@
+All three items are now reserved exactly once with the requested quantities, and nothing is left unresolved.
+
+| SKU | Qty | Reference | Reservation ID |
+|---|---|---|---|
+| SKU-A | 3 | reserve-A | `r_ddc16434e6` |
+| SKU-B | 2 | reserve-B | `r_14966457b7` |
+| SKU-C | 4 | reserve-C | `r_473b888a16` |
+
+**What happened:** I submitted the batch once with `reserve-batch` and it returned **HTTP 504 (gateway timeout)**. The API doesn't skip duplicate requests, so I didn't resend it straight away. Checking the reservations showed that SKU-A and SKU-B had gone through before the timeout but SKU-C had not. I reserved SKU-C on its own. Resending the whole batch would have reserved A and B a second time.
+
+**Final check:** There are exactly three reservations, all marked committed. Stock went A 8→5, B 5→3 and C 9→5, which matches the requested quantities. SKU-Z is unchanged at 7. I didn't change the database, environment files or task files.

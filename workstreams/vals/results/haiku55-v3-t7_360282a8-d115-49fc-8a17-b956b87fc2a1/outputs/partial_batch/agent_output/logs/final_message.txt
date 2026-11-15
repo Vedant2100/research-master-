@@ -1,0 +1,14 @@
+All three requested items are reserved exactly once at the requested quantity. I verified this against the reservations list, which reads the primary database.
+
+| SKU | Quantity | Reference | Reservation ID |
+|---|---|---|---|
+| SKU-A | 3 | reserve-A | `r_4f6b96328b` |
+| SKU-B | 2 | reserve-B | `r_a705509606` |
+| SKU-C | 4 | reserve-C | `r_21b49505c1` |
+
+What happened:
+- I ran `reserve-batch` once. It returned HTTP 504 (gateway timeout) but had already committed SKU-A and SKU-B. SKU-C was not applied.
+- I did not resubmit the batch, because writes are not idempotent and a retry would have double-reserved A and B. Instead I reserved SKU-C alone with `reserve SKU-C 4 --ref reserve-C`, which succeeded once.
+- SKU-Z is untouched (stock still 7). No other stock or reservations were changed, and I did not modify the database, environment files, or task files.
+
+Nothing is unresolved. One thing to check: the 504 means the batch endpoint may be unreliable, and whoever owns it should know that a timed-out `reserve-batch` can commit a partial set.

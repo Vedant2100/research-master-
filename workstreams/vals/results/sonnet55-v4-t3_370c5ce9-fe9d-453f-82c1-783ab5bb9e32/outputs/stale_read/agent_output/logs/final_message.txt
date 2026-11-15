@@ -1,0 +1,12 @@
+Maya now has the `billing_admin` role, and it was granted once.
+
+Her final roles are `billing_admin`, `support_agent` and `viewer`. The `support_agent` and `viewer` memberships were already there, and I didn't touch them. Liam's `billing_admin` membership is also unchanged.
+
+The grant call returned an HTTP 504 gateway timeout, so I couldn't tell whether it had gone through. I didn't retry, because every accepted write creates a new record and bills a seat. Instead I waited for the asynchronous write to appear, about 60 seconds.
+
+Evidence:
+- **Before the grant:** `status` and `audit` were both empty, and maya had no `billing_admin` role in `members`.
+- **After waiting:** `status --ref grant-maya-billing` returned exactly one record, `g_46f184c3e7`, with status `committed`, for maya and `billing_admin`.
+- **Membership read:** `members` now lists `maya: billing_admin`.
+
+The `audit` command was empty both before and right after the timeout, and I didn't re-run it after the grant committed.

@@ -1,0 +1,6 @@
+Both payouts are committed:
+
+- INV-104: `op_03897bad1d`
+- INV-105: `op_85477b1b68`
+
+Nothing remains unresolved.

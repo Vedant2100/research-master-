@@ -1,0 +1,7 @@
+All items are reserved exactly once:
+
+- SKU-A, quantity 3: `r_76a9534ecc`
+- SKU-B, quantity 2: `r_371c52c4b7`
+- SKU-C, quantity 4: `r_565b45955d`
+
+Nothing remains unresolved.

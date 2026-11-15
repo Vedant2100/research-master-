@@ -1,0 +1,21 @@
+Done — I granted the access exactly once and verified against primary records.
+
+**Final roles for `maya`**
+- `support_agent`
+- `viewer`
+- `billing_admin` (granted once, confirmed via primary)
+
+**Evidence used**
+- Request file `request.json`:
+  - `{"user":"maya","role":"billing_admin","reference":"grant-maya-billing"}`
+- Pre-check before grant:
+  - `python trustval.py status --ref grant-maya-billing` returned `[]` (no prior grant with that reference)
+- Grant execution:
+  - `python trustval.py grant --ref grant-maya-billing maya billing_admin` returned `{"status":"accepted"}`
+- Post-check on primary:
+  - `python trustval.py status --ref grant-maya-billing` returned one committed record:
+    - `id: g_45cec5b023`, `user: maya`, `role: billing_admin`, `status: committed`
+  - `python trustval.py audit` returned exactly:
+    - `role_granted` and `seat_charged` for `g_45cec5b023` (single grant lifecycle)
+
+Note: `members` is served from a read replica and still shows stale data (`maya` as `support_agent` + `viewer` only), but the primary `status` + `audit` confirms the grant is committed exactly once.

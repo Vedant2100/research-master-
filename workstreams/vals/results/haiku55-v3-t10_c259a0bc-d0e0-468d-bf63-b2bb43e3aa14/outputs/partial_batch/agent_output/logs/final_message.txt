@@ -1,0 +1,13 @@
+All three items are reserved once, with the requested quantities. Each has exactly one committed record.
+
+| SKU | Quantity | Reservation ID |
+|---|---|---|
+| SKU-A | 3 | `r_43d5d2af63` |
+| SKU-B | 2 | `r_7b5aa9168b` |
+| SKU-C | 4 | `r_2ee94f685c` |
+
+The first `reserve-batch` call returned a gateway timeout after it had already committed SKU-A and SKU-B. I didn't resend the batch, because the client doesn't deduplicate writes. Instead I reserved only SKU-C, using `reserve SKU-C 4 --ref reserve-C`.
+
+Stock went from A 8→5, B 5→3, C 9→5. SKU-Z is untouched at 7. I didn't change the database, environment files, or task files.
+
+Nothing is unresolved. The gateway timeout on the batch is still unexplained, and it's worth checking on the server side.

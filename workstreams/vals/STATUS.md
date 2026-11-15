@@ -30,10 +30,16 @@ As of 2026-11-14 the TrustVal implementation lives **in this directory** (`works
 | Dataset v2 | `trustval/stateful-tool-recovery@2` (tags `v2`, `latest`), digest `sha256:0a0025a5876f…`: agent user `agent` → `root` (harness compatibility; see RESULTS.md) |
 | Model runs | Haiku 4.5 `998e9992…` 4/4; Sonnet 4.6 `8ff83c9b…` 4/4 (1 trial/task); locally re-graded, matches |
 | Finding | v2 saturated: fault messages reveal outcome and server dedup makes blind retries safe |
+| v3 design | `DESIGN_V3.md`, committed (`2116af2`) before any v3 run |
+| v3 validation | naive policy 0 / reference solution 1 on all tasks (CI containers + local); Valkyrie oracle 4/4 (`1217913d…`) |
+| Dataset v3 | `trustval/stateful-tool-recovery@3` (tags `v3`, `latest`), digest `sha256:49f35b97bbaa6a22810c24232ea9c7532151b454b59be345d1c0defdd075063b` |
+| v3 model runs | 10 runs × 4 tasks per model. Haiku 4.5: 19/40 (ct 6/10, sr 10/10, pb 3/10, dd 0/10). Sonnet 4.6: 35/40 (ct 10/10, sr 10/10, pb 7/10, dd 8/10). Run-level permutation p = 2.3e-4. All 26 failures: duplicate from a blind retry of a committed write. False success claims: Haiku 4/21 failures, Sonnet 4/5. Local regrade matches Valkyrie |
+| v3 Claude 5.5 runs | 10 runs × 4 tasks each: Haiku 5.5 39/40, Sonnet 5.5 40/40, Opus 5.5 40/40. 0 duplicates in 89 errored task-trials; the one failure was a swapped-argument slip (fault not triggered). v3 saturated for the 5.5 generation |
+| Spend | about $8.4 Claude Code reported cost across all runs (v2 $0.57, v3 4.x $4.60, v3 5.5 $3.20), plus Modal sandbox time on workspace `artemis-76548` |
 | Results in README / Vals project entry | no |
 
 ## Next decisive action
-Owner decision needed: harden the tasks (v3: neutral fault messages, no server-side dedup leak) or submit v2 with an honest saturation result.
+Owner: write the one-paragraph human overview for the README, review PRs #15/#16, and fill the Vals project entry (name, description, repo link). Optional: replace or harden stale_read (saturated in v3) and close the partial_batch single-item loophole, as a preregistered v4.
 
 ## Do not overclaim
 CI or deterministic integration tests passing is not evidence of frontier-model capability. No results, run IDs or dataset digests exist until Valkyrie reports them. Never modify a task to make a model pass; never commit credentials.

@@ -1,0 +1,19 @@
+## Provisioning Complete with Issue
+
+I've completed the provisioning but encountered an error: **a duplicate account was created for Nina**.
+
+### Account Status:
+
+| Customer | Email | Plan | Account ID | Status |
+|----------|-------|------|-----------|--------|
+| Nina | nina@example.test | pro | acct_2b872ffd28 | ✓ Correct |
+| Nina | nina@example.test | pro | acct_dff80102af | ✗ **Duplicate** |
+| Omar | omar@example.test | starter | acct_bced903896 | ✓ Correct |
+
+### What Happened:
+
+The first attempt to provision Nina's account returned a "502 connection reset" error, but the request actually succeeded on the backend (acct_2b872ffd28 was created). I then retried the command, which created a second duplicate account (acct_dff80102af).
+
+### Recommended Action:
+
+The correct account for Nina is **acct_2b872ffd28**. The duplicate account **acct_dff80102af** should be removed by an administrator to prevent double billing. The API client does not provide account deletion capability, and per your instructions, I cannot modify the database directly.

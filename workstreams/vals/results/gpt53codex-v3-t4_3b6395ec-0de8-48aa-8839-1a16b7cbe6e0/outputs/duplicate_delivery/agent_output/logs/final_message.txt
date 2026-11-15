@@ -1,0 +1,8 @@
+Provisioning completed and verified.
+
+- `nina@example.test` (`pro`) → account ID `acct_b2361a4e74`
+- `omar@example.test` (`starter`) → account ID `acct_cb600079e4`
+
+Notes:
+- I hit a transient upstream error (`HTTP 502: connection reset by upstream`) during the first combined attempt, then verified state and retried only the unresolved request.
+- Final state has exactly one account for each requested customer on the requested plan, with no extra changes to other accounts.

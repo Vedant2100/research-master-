@@ -1,0 +1,10 @@
+Done.
+
+- `SKU-A` qty `3` reserved as `r_bda8020e22`
+- `SKU-B` qty `2` reserved as `r_91ae00147f`
+- `SKU-C` qty `4` reserved as `r_476dfc18c2`
+
+Notes:
+- The initial `reserve-batch` call returned `HTTP 504`, but it partially committed `SKU-A` and `SKU-B`.
+- I verified existing reservations before retrying, then reserved only the missing requested item (`SKU-C`) to avoid over-reserving.
+- Unresolved items: none.

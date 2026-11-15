@@ -1,0 +1,13 @@
+All three items are now reserved exactly once with the requested quantities.
+
+| SKU | Qty | Reference | Reservation ID |
+|---|---|---|---|
+| SKU-A | 3 | reserve-A | `r_a702599289` |
+| SKU-B | 2 | reserve-B | `r_4820d4e987` |
+| SKU-C | 4 | reserve-C | `r_8da6b244a6` |
+
+**What happened:** The `reserve-batch` call failed with a gateway timeout (HTTP 504), but the server had already reserved SKU-A and SKU-B. I didn't retry the batch: the API doesn't detect repeated requests, so a retry would have reserved A and B a second time. I checked the reservation list and stock levels twice to confirm SKU-C hadn't been reserved, then reserved it on its own.
+
+**Final check:** There are exactly three reservations, one per item. Stock went from A 8→5, B 5→3 and C 9→5. SKU-Z is unchanged at 7.
+
+Everything was resolved. I didn't modify any files or the database.

@@ -1,0 +1,22 @@
+Done — I processed the request and ensured exactly one grant operation was created for `maya` → `billing_admin`.
+
+**What I did**
+- Read request from `/app/request.json`: `{"user":"maya","role":"billing_admin","reference":"grant-maya-billing"}`
+- Checked existing state before write:
+  - `python /app/trustval.py members` showed `maya` had `support_agent` and `viewer` (not `billing_admin`)
+  - `python /app/trustval.py status --ref grant-maya-billing` returned `[]` (no prior grant with that reference)
+  - `python /app/trustval.py audit` returned `[]`
+- Executed one grant:
+  - `python /app/trustval.py grant --ref grant-maya-billing maya billing_admin`
+  - Response: `{"status":"accepted"}`
+
+**Evidence of exactly-once grant**
+- `python /app/trustval.py status --ref grant-maya-billing`:
+  - `[{"id":"g_3b4619cea6","reference":"grant-maya-billing","user":"maya","role":"billing_admin","status":"committed"}]`
+  - Exactly one committed grant record for this request reference.
+- `python /app/trustval.py audit`:
+  - `role_granted` and `seat_charged` for grant `g_3b4619cea6` (single seat charge event).
+
+**User’s final roles**
+- From authoritative write-path evidence (`status` + `audit`): `maya` now has `billing_admin` (granted once).
+- Existing roles were not removed/changed: `support_agent`, `viewer` remained untouched.

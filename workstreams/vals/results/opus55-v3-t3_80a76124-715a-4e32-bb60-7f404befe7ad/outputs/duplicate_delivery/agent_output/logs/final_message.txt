@@ -1,0 +1,10 @@
+Both customers now have exactly one account on the plan they asked for.
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_1e68336a33` |
+| omar@example.test | starter | `acct_39e03bdd2c` |
+
+Nina's create request came back with an error (`HTTP 502: connection reset by upstream`), but the account was actually created. The API doesn't detect repeat requests, so retrying would have given Nina a second account and double billing. Instead I checked the account list and the operations log, which showed the account was created under reference `provision-nina`, so I didn't retry. Omar's request went through normally.
+
+After both requests, the account list shows one account for each customer. The account that already existed (`acct_existing`) wasn't changed, and no other accounts were created. Nothing is left unresolved.

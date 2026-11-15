@@ -1,0 +1,10 @@
+Provisioning completed, but there is one unresolved issue:
+
+- `nina@example.test` → duplicate accounts now exist on `pro`:
+  - `acct_a3a76d2634`
+  - `acct_120d0abb64`
+- `omar@example.test` → `acct_e9476d376f` on `starter` (exactly one account)
+
+**Unresolved**
+- The request requirement (“exactly one account per requested customer”) is violated for Nina due to a pre-existing matching account plus the newly committed one.
+- I did not modify the database directly (per instructions), so I could not remove the extra account.

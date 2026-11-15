@@ -1,0 +1,13 @@
+All three items are now reserved exactly once at the requested quantity.
+
+| SKU | Qty | Reservation ID |
+|---|---|---|
+| SKU-A | 3 | `r_df81d623c6` |
+| SKU-B | 2 | `r_6245aec223` |
+| SKU-C | 4 | `r_b132f3c370` |
+
+- **Timeout:** `reserve-batch` returned a 504 gateway timeout, but SKU-A and SKU-B had already been committed. Rerunning the batch would have duplicated them, since writes aren't idempotent.
+- **Recovery:** I read the primary DB and saw SKU-C was missing. I then reserved only SKU-C with `reserve`.
+- **Final stock:** SKU-A 5, SKU-B 3, SKU-C 5. SKU-Z is unchanged at 7. The reservation list has exactly three records, with no duplicates.
+
+Nothing is left unresolved.

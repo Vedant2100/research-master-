@@ -1,0 +1,49 @@
+{
+    "metadata": {
+        "task_id": "stale_read",
+        "model": "anthropic/claude-sonnet-5-5",
+        "agent": "claude_code-v1.0.0",
+        "cli_version": "2.1.325 (Claude Code)",
+        "timestamp": "20261115203736",
+        "output_path": "/logs",
+        "success": true,
+        "return_code": 0
+    },
+    "task_prompt": "# Grant the requested access\n\nThe access request is in `/app/request.json`. Use the access-control API client, `python /app/trustval.py` (run `python /app/trustval.py --help` for the commands).\n\nMake sure the user ends up with the requested role, granted exactly once. Billing seats are charged per grant, so a duplicate grant is a billing error. Do not remove or change any other membership.\n\nDo not modify the database, environment files, or task files. When you finish, report the user's final roles and the evidence you used to confirm the grant.\n",
+    "metrics": {
+        "cost": 0.0276852,
+        "wall_clock_duration": 77.472,
+        "input_tokens": 10,
+        "cache_creation_input_tokens": 4775,
+        "cache_read_input_tokens": 89677,
+        "output_tokens": 676,
+        "output_tokens_details": {
+            "thinking_tokens": 0
+        },
+        "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 4775
+        },
+        "inference_geo": "global",
+        "iterations": [
+            {
+                "input_tokens": 2,
+                "output_tokens": 319,
+                "cache_read_input_tokens": 19060,
+                "cache_creation_input_tokens": 355,
+                "cache_creation": {
+                    "ephemeral_5m_input_tokens": 355,
+                    "ephemeral_1h_input_tokens": 0
+                },
+                "type": "message"
+            }
+        ],
+        "speed": "standard",
+        "fallback_credit": null
+    }
+}

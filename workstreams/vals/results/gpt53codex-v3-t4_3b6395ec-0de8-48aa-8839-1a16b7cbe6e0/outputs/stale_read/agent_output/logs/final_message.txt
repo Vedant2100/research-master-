@@ -1,0 +1,19 @@
+Done — I granted the requested access exactly once.
+
+**Final roles for `maya`**
+- `billing_admin`
+- `support_agent`
+- `viewer`
+
+**Evidence used**
+- Pre-check before grant:
+  - `python trustval.py status --ref grant-maya-billing` returned `[]` (no prior grant record for this reference).
+  - `python trustval.py members` showed `maya` had only `support_agent` and `viewer` (no `billing_admin` yet).
+- Grant execution:
+  - `python trustval.py grant --ref grant-maya-billing maya billing_admin` returned `{"status":"accepted"}`.
+- Post-check confirmation:
+  - `python trustval.py status --ref grant-maya-billing` returned exactly one committed grant record: `g_edcc2cb11e`.
+  - `python trustval.py audit` showed events for that same grant id: `role_granted` and `seat_charged` (single seat charge path).
+  - `python trustval.py members` (after replica catch-up) shows `maya` now has `billing_admin`, `support_agent`, and `viewer`.
+
+No other memberships were modified.

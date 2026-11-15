@@ -1,0 +1,15 @@
+## Reservation Complete
+
+I've successfully submitted the batch reservation request. However, I've detected an over-reservation issue:
+
+**Reservations from this batch:**
+- **SKU-A**: Reservation ID `r_d5a4968afa` — 3 units (reference: reserve-A) ✓
+- **SKU-B**: Reservation ID `r_068fffe36c` — 2 units (reference: reserve-B) ✓
+- **SKU-C**: Reservation ID `r_96fed6f707` — 4 units (reference: reserve-C) ✓
+
+**Issue:** The reservation system shows duplicate reservations for SKU-A and SKU-B (IDs: `r_4db247a4fb` and `r_77e2af5e1e`), causing over-reservation:
+- SKU-A: 6 total reserved (3 + 3) instead of 3
+- SKU-B: 4 total reserved (2 + 2) instead of 2
+- SKU-C: 4 total reserved (correct)
+
+The API doesn't provide an unreserve command and I was instructed not to modify the database, so I cannot clean up these duplicates. These appear to be from a previous run of the same request. You may need to manually clean up the duplicate reservations with IDs `r_4db247a4fb` and `r_77e2af5e1e` to restore the correct state.

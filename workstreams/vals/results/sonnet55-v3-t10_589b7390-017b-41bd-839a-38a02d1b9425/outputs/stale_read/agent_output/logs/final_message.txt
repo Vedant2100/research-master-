@@ -1,0 +1,11 @@
+Maya now has `billing_admin`, granted exactly once. The `members` list hasn't caught up yet, and I didn't re-run the grant to try to fix that.
+
+I checked first and found no earlier grant for this reference. `status` and `audit` were both empty.
+
+**Evidence from the primary database:**
+- `status --ref grant-maya-billing` shows one grant, `g_46da97e9ce`, for maya and `billing_admin`, with status `committed`.
+- `audit` shows `role_granted` and `seat_charged`, one of each, both for that grant. That means one seat was billed.
+
+**`members` is stale:** `members` still lists only `support_agent` and `viewer` for maya. The tool says it reads from a replica, so I take this to be replication lag. A second grant would have billed a second seat.
+
+**Maya's roles:** `billing_admin` (just granted), `support_agent` and `viewer`. I didn't change any other membership, including liam's `billing_admin`.

@@ -1,0 +1,11 @@
+Maya now has the `billing_admin` role, and it was granted exactly once.
+
+Maya's final roles are `billing_admin`, `support_agent` and `viewer`.
+
+- **Timeout:** My first grant call returned an HTTP 504, so I didn't know whether it had gone through. I didn't retry. I waited 65 seconds, because writes can take up to 60 seconds to appear, and then checked.
+- **Status:** Looking up the reference `grant-maya-billing` showed one grant, `g_86599303e4`, with status `committed`.
+- **Audit log:** It has one `role_granted` event and one `seat_charged` event for that grant, so one seat was billed.
+- **Members list:** It shows `maya` with `billing_admin`. This list comes from a read replica, so I treated it as supporting evidence only.
+- **Other memberships:** I didn't change any. `liam` still has `billing_admin`, and Maya's `support_agent` and `viewer` roles are intact.
+
+My first attempt without `--ref` failed on argument validation and wasn't sent, so it created no record.

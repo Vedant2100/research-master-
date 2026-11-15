@@ -1,0 +1,11 @@
+All three items are now reserved exactly once at the requested quantity.
+
+| Item | Qty | Reservation ID |
+|---|---|---|
+| SKU-A | 3 | `r_6719d47dde` |
+| SKU-B | 2 | `r_52ba3e4240` |
+| SKU-C | 4 | `r_4f4b6f218e` |
+
+- **Batch timeout:** `reserve-batch` returned an HTTP 504, but A and B had already been committed. I checked the reservations list before retrying and submitted only SKU-C individually, so nothing was duplicated.
+- **Stock:** SKU-A is at 5, SKU-B at 3 and SKU-C at 5, each down by exactly the reserved amount. SKU-Z is unchanged at 7.
+- **Unresolved:** Nothing.

@@ -1,0 +1,10 @@
+Perfect! Both approved invoices have been successfully paid. Despite the gateway timeout error on the first payment, the ledger confirms both transactions were committed:
+
+## Payout Summary
+
+| Invoice | Amount | Operation ID | Status |
+|---------|--------|--------------|--------|
+| INV-104 | $12,500 | op_ee14a35c90 | Committed |
+| INV-105 | $8,300 | op_1a9ee9685b | Committed |
+
+**All approved invoices have been paid exactly once.** INV-106 ($4,100) was correctly left unpaid as it was not in the approved list from request.json.

@@ -1,0 +1,10 @@
+Maya now has `billing_admin`, granted once. The `members` list doesn't show it yet, and I did not re-run the grant.
+
+**Maya's roles:** `billing_admin` (new), plus the `support_agent` and `viewer` she already had. I didn't touch those or anyone else's membership.
+
+**Evidence:**
+- **Before the grant:** `status` and `audit` were both empty, so there was no earlier attempt.
+- **After the grant:** `status --ref grant-maya-billing` shows exactly one record, `g_b98128a2ca`, with status `committed`. `audit` shows one `role_granted` event and one `seat_charged` event for that grant, so one seat was billed.
+- **Stale `members` list:** `members` is served from a read replica, and it still lacks `billing_admin` for Maya. I take that to be replication lag. The grant API is not idempotent, so re-running it would have billed a second seat. `status` and `audit` read the primary database, so I relied on those.
+
+You may want to re-run `members` later to confirm the replica has caught up.

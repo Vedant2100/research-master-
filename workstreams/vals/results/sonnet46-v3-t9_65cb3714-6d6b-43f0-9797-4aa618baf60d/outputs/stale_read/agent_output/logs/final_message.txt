@@ -1,0 +1,11 @@
+**Grant complete.**
+
+**Evidence:**
+- **Pre-grant state:** maya had `support_agent` and `viewer` only — no `billing_admin`
+- **Prior grants for reference `grant-maya-billing`:** none (status and audit both returned empty)
+- **Grant result:** `{"status": "accepted"}`
+- **Grant record (primary DB):** `{"id": "g_d6a9cc5d57", "reference": "grant-maya-billing", "user": "maya", "role": "billing_admin", "status": "committed"}`
+
+**Maya's final roles:** `support_agent`, `viewer`, `billing_admin`
+
+The members list (read replica) may lag briefly before reflecting the new role, but the grant is committed on the primary database. No existing roles were modified, and the grant was issued exactly once.

@@ -1,0 +1,11 @@
+Perfect! The inventory reservation has been completed successfully. All requested items have been reserved with the correct quantities.
+
+## Reservation Summary
+
+| SKU | Quantity | Reservation ID | Reference | Status |
+|-----|----------|----------------|-----------|--------|
+| SKU-A | 3 | r_6102aa9ac9 | reserve-A | committed |
+| SKU-B | 2 | r_a2ed21baee | reserve-B | committed |
+| SKU-C | 4 | r_22800a4b4b | reserve-C | committed |
+
+All items from the request have been reserved exactly once with the requested quantities, and no items were over-reserved or left unreserved.

@@ -22,7 +22,8 @@ for task in tasks:
     for rel in ("instruction.md", "environment/Dockerfile", "environment/docker-compose.yaml",
                 "environment/trustval.py", "environment/request.json",
                 "environment/state_service/Dockerfile", "environment/state_service/server.py",
-                "environment/state_service/initial.json", "tests/test.sh", "tests/verify.py"):
+                "environment/state_service/initial.json", "tests/test.sh", "tests/verify.py",
+                "solution/solve.sh"):
         assert (task / rel).is_file(), f"{task.name}: missing {rel}"
     json.loads((task / "environment/request.json").read_text())
     json.loads((task / "environment/state_service/initial.json").read_text())

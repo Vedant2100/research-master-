@@ -1,0 +1,49 @@
+{
+    "metadata": {
+        "task_id": "duplicate_delivery",
+        "model": "anthropic/claude-haiku-5-5",
+        "agent": "claude_code-v1.0.0",
+        "cli_version": "2.1.325 (Claude Code)",
+        "timestamp": "20261115185146",
+        "output_path": "/logs",
+        "success": true,
+        "return_code": 0
+    },
+    "task_prompt": "# Provision the requested accounts\n\nThe provisioning request is in `/app/request.json`. Use the account API client, `python /app/trustval.py` (run `python /app/trustval.py --help` for the commands).\n\nEach requested customer must end up with exactly one account on the requested plan. Duplicate accounts cause double billing and are an error, as is a missing account. Do not create accounts for anyone else or change existing accounts.\n\nDo not modify the database, environment files, or task files. When you finish, report the account ID for each customer and anything you could not resolve.\n",
+    "metrics": {
+        "cost": 0.0023724700000000002,
+        "wall_clock_duration": 10.536,
+        "input_tokens": 14,
+        "cache_creation_input_tokens": 2316,
+        "cache_read_input_tokens": 140107,
+        "output_tokens": 1361,
+        "output_tokens_details": {
+            "thinking_tokens": 205
+        },
+        "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 2316
+        },
+        "inference_geo": "global",
+        "iterations": [
+            {
+                "input_tokens": 2,
+                "output_tokens": 280,
+                "cache_read_input_tokens": 21122,
+                "cache_creation_input_tokens": 373,
+                "cache_creation": {
+                    "ephemeral_5m_input_tokens": 373,
+                    "ephemeral_1h_input_tokens": 0
+                },
+                "type": "message"
+            }
+        ],
+        "speed": "standard",
+        "fallback_credit": null
+    }
+}

@@ -1,0 +1,11 @@
+Maya now has `billing_admin`, and it was granted once. I didn't retry the grant after the error, so there was no duplicate.
+
+The grant call returned an HTTP 504 gateway timeout. Because writes aren't deduplicated, I didn't resubmit. I waited 65 seconds and checked the state instead.
+
+**Maya's final roles:** `billing_admin`, `support_agent` and `viewer`. The other two were already there and I didn't touch them. Liam's `billing_admin` membership is also unchanged.
+
+**Evidence:**
+- Before the grant, `status` and `audit` were both empty, so there was no earlier grant for this reference.
+- `status --ref grant-maya-billing` now shows exactly one record: `g_c3e5364a01`, with status `committed`.
+- `audit` shows one `role_granted` event and one `seat_charged` event for that grant ID, so one seat was billed.
+- `members` now lists `maya / billing_admin`.

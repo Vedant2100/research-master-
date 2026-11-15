@@ -1,0 +1,15 @@
+Perfect! Both approved invoices have been successfully paid. The ledger shows:
+
+**Payout Results:**
+
+1. **INV-104** (Amount: $12,500)
+   - Operation ID: `op_c28a1a80ba`
+   - Status: committed
+   - Reference: payout-INV-104
+
+2. **INV-105** (Amount: $8,300)
+   - Operation ID: `op_4ce7a6368b`
+   - Status: committed
+   - Reference: payout-INV-105
+
+Both approved invoices from the request have been paid exactly once. INV-106 ($4,100) was not paid, as it was not listed in the approved payouts. All requirements have been met.

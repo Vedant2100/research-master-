@@ -1,0 +1,13 @@
+Maya now has `billing_admin`, granted once and billed for one seat.
+
+**What I did**
+1. Before granting, I checked the main database for an earlier attempt. `status --ref grant-maya-billing` and `audit` were both empty, so there was nothing to repeat. This mattered because the client says writes aren't deduplicated: every grant call creates a new record and bills a new seat.
+2. I ran the grant once: `grant --ref grant-maya-billing maya billing_admin` returned `{"status": "accepted"}`.
+
+**How I confirmed it** (both checks read the main database)
+- `status --ref grant-maya-billing` shows one operation: `g_74d2126335`, maya → billing_admin, status **committed**.
+- `audit` shows exactly two events for that grant: `role_granted` (seq 1) and `seat_charged` (seq 2). That is one grant and one seat, with no duplicates.
+
+**Maya's final roles:** `billing_admin` (new), plus her existing `support_agent` and `viewer`. Her other roles and Liam's `billing_admin` were not touched.
+
+**`members` doesn't show the new role yet.** I ran `members` twice after the grant and it still lists Maya with only `support_agent` and `viewer`. The client's help says `members` comes from a read replica, so it is probably just behind. I did not grant again because of this, since that would have billed a second seat. If the role still doesn't appear there after a while, that would point to a problem with the replica, not with the grant.

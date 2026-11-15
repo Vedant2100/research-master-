@@ -1,0 +1,13 @@
+All three items are now reserved once each, with the requested quantities.
+
+| SKU | Qty | Reference | Reservation ID |
+|---|---|---|---|
+| SKU-A | 3 | reserve-A | `r_b622686496` |
+| SKU-B | 2 | reserve-B | `r_3b019785f0` |
+| SKU-C | 4 | reserve-C | `r_735b60a7bc` |
+
+**What happened:** I ran `reserve-batch` once and it returned `HTTP 504 gateway timeout`. The API creates a new record on every write, even for the same reference, so rerunning the whole batch would have reserved some items twice. I checked the reservations list first. SKU-A and SKU-B had been reserved before the timeout, but SKU-C had not. I reserved only SKU-C with a single `reserve` call, which succeeded.
+
+**Final check:** The reservations list shows exactly these three records. Stock moved by exactly the requested amounts: A went from 8 to 5, B from 5 to 3 and C from 9 to 5. SKU-Z was not touched and is still at 7.
+
+Nothing is left unresolved, and I didn't modify any files.

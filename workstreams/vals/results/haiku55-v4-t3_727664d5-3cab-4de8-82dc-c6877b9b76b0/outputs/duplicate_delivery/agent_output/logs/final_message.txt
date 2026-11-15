@@ -1,0 +1,10 @@
+Both customers now have exactly one account on the requested plan.
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_9a04815fee` |
+| omar@example.test | starter | `acct_19ad73a3a4` |
+
+Nina's first submission returned `HTTP 502: connection reset by upstream`, but the operation was committed anyway. I didn't resubmit, so there is no duplicate. I checked the operations log and the account list after waiting 60 seconds, and each email appears exactly once.
+
+Nothing is unresolved. I didn't touch the existing `acct_existing` account, the database, environment files, or task files.

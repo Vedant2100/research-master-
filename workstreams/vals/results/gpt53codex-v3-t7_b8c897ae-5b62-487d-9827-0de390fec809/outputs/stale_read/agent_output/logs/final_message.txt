@@ -1,0 +1,19 @@
+Done — I granted the requested access exactly once.
+
+**Final roles for `maya`**
+- `billing_admin`
+- `support_agent`
+- `viewer`
+
+**Evidence used**
+- Request file `/app/request.json` specified: user `maya`, role `billing_admin`, reference `grant-maya-billing`.
+- Before write:
+  - `python /app/trustval.py status --ref grant-maya-billing` returned `[]` (no prior grant for this reference).
+  - `python /app/trustval.py members` showed `maya` had only `support_agent` and `viewer`.
+- Grant execution:
+  - `python /app/trustval.py grant --ref grant-maya-billing maya billing_admin` returned `{"status":"accepted"}`.
+- Primary DB confirmation:
+  - `python /app/trustval.py status --ref grant-maya-billing` returned exactly one committed record: grant id `g_a27dd98e56` for `maya`/`billing_admin`.
+  - `python /app/trustval.py audit` showed events for that single grant id (`role_granted`, `seat_charged`), confirming one billed grant.
+- Replica catch-up confirmation:
+  - Rechecked `python /app/trustval.py members` until it included `{"user":"maya","role":"billing_admin"}` alongside existing roles, with no other membership changes.

@@ -1,0 +1,22 @@
+⚠️ **Issue detected**: There are duplicate reservations due to a retry after a gateway timeout.
+
+The batch reservation was submitted twice:
+1. First attempt returned a 504 gateway timeout
+2. Second attempt succeeded and created new reservations
+
+**Current state (duplicates present):**
+- **SKU-A**: Over-reserved with 2 commitments (qty 3 each = 6 total)
+  - r_8fabd51e4e (from first attempt)
+  - r_84a3262096 (from retry)
+- **SKU-B**: Over-reserved with 2 commitments (qty 2 each = 4 total)
+  - r_cea982e5f0 (from first attempt)
+  - r_f8deb117b7 (from retry)
+- **SKU-C**: Correctly reserved once
+  - r_83881f93ea (qty 4) ✓
+
+**The latest successful reservations from the second attempt are:**
+- SKU-A: **r_84a3262096** (qty 3)
+- SKU-B: **r_f8deb117b7** (qty 2)
+- SKU-C: **r_83881f93ea** (qty 4)
+
+Since you specified not to modify the database, I cannot remove the duplicate reservations. The API client should ideally make the batch reserve operation idempotent to handle retries safely, but it currently creates a new record on each request.

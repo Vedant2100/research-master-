@@ -1,0 +1,22 @@
+Done — I granted the requested access exactly once.
+
+**Maya’s Final Roles**
+- `support_agent`
+- `viewer`
+- `billing_admin` (newly granted)
+
+**Evidence Used**
+- Request file `request.json` specified: user `maya`, role `billing_admin`, ref `grant-maya-billing`.
+- Pre-check before grant:
+  - `python trustval.py status --ref grant-maya-billing` returned `[]` (no prior grant with that reference).
+  - `python trustval.py members` showed Maya had only `support_agent` and `viewer` (no `billing_admin`).
+- Grant execution:
+  - `python trustval.py grant --ref grant-maya-billing maya billing_admin` returned `{"status": "accepted"}`.
+- Post-grant primary DB confirmation:
+  - `python trustval.py status --ref grant-maya-billing` returned one committed record:
+    - `id: g_49820a3766`, `reference: grant-maya-billing`, `user: maya`, `role: billing_admin`, `status: committed`.
+  - `python trustval.py audit` shows exactly one grant flow for that `grant_id`:
+    - `role_granted`
+    - `seat_charged`
+
+Note: `members` is read-replica backed and did not reflect the new role yet, but primary-backed `status` and `audit` confirm one successful committed grant (no duplicate billing grant).

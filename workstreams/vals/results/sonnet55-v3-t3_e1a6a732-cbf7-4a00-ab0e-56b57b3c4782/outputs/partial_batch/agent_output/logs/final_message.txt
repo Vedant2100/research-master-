@@ -1,0 +1,11 @@
+All three items are now reserved once each, with the requested quantities.
+
+| Item | Quantity | Reservation ID |
+|---|---|---|
+| SKU-A | 3 | `r_98a3072347` |
+| SKU-B | 2 | `r_517d81d04b` |
+| SKU-C | 4 | `r_5de8f2f7b7` |
+
+The `reserve-batch` call returned an HTTP 504 gateway timeout, but SKU-A and SKU-B had already been committed. I didn't rerun the batch, because writes aren't idempotent and a rerun would have double-reserved them. I checked the reservations list, saw SKU-C was missing, and reserved only that item with `reserve`.
+
+Final stock is SKU-A 5, SKU-B 3, SKU-C 5, and SKU-Z 7. SKU-Z is unchanged, and each stock drop matches the requested quantity. Nothing is left unresolved.

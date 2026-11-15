@@ -1,0 +1,18 @@
+⚠️ **Critical Issue: Duplicate Payment**
+
+I've encountered a serious problem. INV-104 has been paid **twice**:
+
+**Payout Summary:**
+- **INV-104** (approved amount: $12,500)
+  - Operation ID `op_50d094ae30`: $12,500 ✓ (from initial attempt)
+  - Operation ID `op_986b4abde4`: $12,500 ✓ (from retry)
+  - **Total paid: $25,000** ❌ OVERPAID BY $12,500
+
+- **INV-105** (approved amount: $8,300)
+  - Operation ID `op_de4b71aa52`: $8,300 ✓
+
+**What Happened:**
+The first payment command for INV-104 returned a "gateway timeout" error (HTTP 504), so I retried it. However, the first request had actually been processed successfully and created operation `op_50d094ae30`. The retry created a duplicate payment.
+
+**Action Required:**
+Since the user instructed me not to modify the database, this overpayment requires manual correction. One of the duplicate INV-104 operations (either `op_50d094ae30` or `op_986b4abde4`) needs to be reversed or credited back to recover the $12,500 overpayment.

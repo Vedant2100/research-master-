@@ -1,0 +1,8 @@
+Provisioning completed successfully with exactly one account per requested customer and no unrelated changes.
+
+- `nina@example.test` → `acct_b749042628` (`pro`)
+- `omar@example.test` → `acct_672e5ea1a3` (`starter`)
+
+Notes:
+- The first provisioning attempt returned `HTTP 502`, but the operation for `nina@example.test` was actually committed (`op_722569c1d9`), so I avoided re-creating Nina and only provisioned Omar afterward.
+- No unresolved items remain.

@@ -1,0 +1,6 @@
+Both approved invoices were paid exactly once:
+
+- INV-104: `op_2705b0e576`
+- INV-105: `op_639c691ee1`
+
+No unresolved issues.

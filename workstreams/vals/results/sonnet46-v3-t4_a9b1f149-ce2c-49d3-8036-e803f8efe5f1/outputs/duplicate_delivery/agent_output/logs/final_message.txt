@@ -1,0 +1,10 @@
+Both accounts were successfully created despite the 502 response for nina — the write committed server-side.
+
+**Results:**
+
+| Customer | Email | Plan | Account ID |
+|---|---|---|---|
+| Nina | nina@example.test | pro | `acct_f1aae78782` |
+| Omar | omar@example.test | starter | `acct_c28d636dfd` |
+
+Both customers have exactly one account on their requested plan. No duplicate accounts were created.

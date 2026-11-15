@@ -1,0 +1,13 @@
+All three requested items are now reserved once each, with the requested quantities.
+
+| SKU | Qty | Reference | Reservation ID |
+|---|---|---|---|
+| SKU-A | 3 | reserve-A | `r_68b382e49e` |
+| SKU-B | 2 | reserve-B | `r_26b78bb534` |
+| SKU-C | 4 | reserve-C | `r_58ad7d2eb4` |
+
+**What happened:** The `reserve-batch` call returned `HTTP 504 gateway timeout`, but that didn't mean nothing was saved. Requests aren't idempotent, so resubmitting the batch would have reserved A and B twice. Instead I checked the reservations list, which reads from the primary database. A and B had already been saved and C had not. I reserved only SKU-C on its own.
+
+**Final check:** There are exactly three reservations, one per SKU. Stock went down by exactly the requested amounts: A 8→5, B 5→3, C 9→5. SKU-Z is still at 7.
+
+Everything is resolved, and I didn't modify the database or any files.
