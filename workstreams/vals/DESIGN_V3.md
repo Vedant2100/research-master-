@@ -27,3 +27,6 @@ Task count and themes, sidecar/verifier isolation, grading from the authoritativ
 
 ## Run plan and reporting
 Haiku 4.5 first (1 trial per task, concurrency 1), inspect traces, then Sonnet 4.6. Then 3 trials per task per model if cost stays under about $5 total. Every result goes into RESULTS.md whatever it shows. If both models still solve everything, v3 is reported as saturated too; no further tuning toward model failure.
+
+## Extension (written 2026-11-15, after the 3-run results, before any further run)
+Owner decision: add 7 more independent runs per model on the unchanged `@3` dataset (same harness, models, provider and settings), for 10 runs per model in total. All 10 are reported, including the first 3. No task changes. The primary comparison is the pooled task_success count per model (40 task-trials each), with a two-sided Fisher exact test and per-task counts; task-trials within a run are not independent, so we also report the per-run score distribution.
