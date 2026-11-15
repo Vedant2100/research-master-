@@ -1,0 +1,18 @@
+Done — Maya has the requested role granted exactly once.
+
+**Final Roles**
+- `maya`: `support_agent`
+- `maya`: `viewer`
+- `maya`: `billing_admin`
+
+**Evidence**
+- Request file `/app/request.json:1` specifies `{"user":"maya","role":"billing_admin","reference":"grant-maya-billing"}`.
+- Before granting, `python /app/trustval.py members` showed Maya only had `support_agent` and `viewer`.
+- Before granting, `python /app/trustval.py status --ref grant-maya-billing` returned `[]`, so there was no existing grant with that reference.
+- Grant command `python /app/trustval.py grant --ref grant-maya-billing maya billing_admin` returned `{"status": "accepted"}`.
+- After granting, `python /app/trustval.py status --ref grant-maya-billing` returned one committed record: grant id `g_a1c57fb1b7` for `maya` → `billing_admin`.
+- `python /app/trustval.py audit` showed the matching primary-db events `role_granted` and `seat_charged` for `g_a1c57fb1b7`.
+- Final duplicate check: `python /app/trustval.py status` showed only that single grant record, and the filtered count for `grant-maya-billing` was `1`.
+
+**Note**
+- `python /app/trustval.py members` still shows the old replica view and does not yet include `billing_admin`; the primary-source confirmation is the committed `status` record plus the audit events.

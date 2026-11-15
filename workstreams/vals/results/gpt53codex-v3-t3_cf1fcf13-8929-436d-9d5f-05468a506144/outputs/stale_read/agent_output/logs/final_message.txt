@@ -1,0 +1,23 @@
+Done — I processed the request exactly once and did not change any other memberships.
+
+**Final roles for `maya`**
+- `support_agent`
+- `viewer`
+- `billing_admin` (granted exactly once; confirmed via primary records)
+
+**Evidence used**
+- Request file `request.json`:
+  - `{"user":"maya","role":"billing_admin","reference":"grant-maya-billing"}`
+- Before grant:
+  - `python /app/trustval.py status --ref grant-maya-billing` → `[]` (no prior grant with that reference)
+  - `python /app/trustval.py members` showed `maya` had only `support_agent`, `viewer`
+- Grant execution:
+  - `python /app/trustval.py grant --ref grant-maya-billing maya billing_admin` → `{"status":"accepted"}`
+- After grant (authoritative primary):
+  - `python /app/trustval.py status --ref grant-maya-billing` → one committed record:
+    - `id: g_81f50f4ae4`, `user: maya`, `role: billing_admin`, `status: committed`
+  - `python /app/trustval.py audit` shows exactly one grant flow for that `grant_id`:
+    - `role_granted`
+    - `seat_charged`
+
+Note: `members` is read-replica backed and still showed old roles after a short wait, but primary `status` + `audit` confirms the single successful grant.

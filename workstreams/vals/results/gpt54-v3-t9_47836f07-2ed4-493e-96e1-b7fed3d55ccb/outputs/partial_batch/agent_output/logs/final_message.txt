@@ -1,0 +1,10 @@
+Done.
+
+- `SKU-A` → reservation ID `r_888ebb5858`
+- `SKU-B` → reservation ID `r_e3795a2667`
+- `SKU-C` → reservation ID `r_7b94ac24db`
+
+Notes:
+- Initial `reserve-batch` attempt returned a `504 gateway timeout`, but it partially applied `SKU-A` and `SKU-B`.
+- I reconciled existing reservations before proceeding, then reserved only the missing requested item (`SKU-C`) to avoid over-reserving.
+- Unresolved items: none.

@@ -1,0 +1,15 @@
+Provisioning is **not fully resolvable safely** now because `nina@example.test` already has duplicates.
+
+- `nina@example.test` (`pro`):  
+  - `acct_cea2b8edd4`  
+  - `acct_69901dbe88`  
+  - Status: **error condition** (2 accounts on same requested plan; causes double billing)
+
+- `omar@example.test` (`starter`):  
+  - `acct_3be97831ea`  
+  - Status: **ok** (exactly one account on requested plan)
+
+Notes:
+- I only used the provided API client and did not modify database/env/task files.
+- A transient `HTTP 502` occurred during provisioning retries.
+- Based on operation history, `provision-nina` was committed twice (`op_a3ad53d125`, `op_91e5f76a63`), which created the duplicate.

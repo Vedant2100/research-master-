@@ -1,0 +1,9 @@
+{
+    "cost": null,
+    "wall_clock_duration": 17.731,
+    "input_tokens": 75589,
+    "cached_input_tokens": 58240,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 806,
+    "reasoning_output_tokens": 0
+}

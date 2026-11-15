@@ -1,0 +1,8 @@
+Done.
+
+- `INV-104` → `op_99a447d9bd`
+- `INV-105` → `op_915498a155`
+
+**Notes**
+- `INV-104` initially returned `HTTP 504`, but I verified via `status --ref` and `ledger` that it was committed exactly once, so I did not retry.
+- No unresolved items remain.

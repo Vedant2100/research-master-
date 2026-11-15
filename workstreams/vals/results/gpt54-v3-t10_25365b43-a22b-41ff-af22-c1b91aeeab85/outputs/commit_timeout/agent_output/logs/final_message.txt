@@ -1,0 +1,9 @@
+Done.
+
+- `INV-104` → `op_c9bc6e4cac`
+- `INV-105` → `op_c54a21aced`
+
+**Notes**
+- `INV-104` initially returned `HTTP 504`, but a follow-up `status`/`ledger` check showed it had already committed. I did not retry it, to avoid a duplicate payout.
+- Nothing remains unresolved.
+- I did not pay `INV-106` because it was not listed in `/app/request.json`.

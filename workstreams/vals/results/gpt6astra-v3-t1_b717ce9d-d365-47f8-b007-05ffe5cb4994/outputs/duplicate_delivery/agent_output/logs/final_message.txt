@@ -1,0 +1,8 @@
+Verified exactly one account per requested customer:
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_480ba2ecb2` |
+| omar@example.test | starter | `acct_dcd39dd6e3` |
+
+Nina’s request returned HTTP 502, but reads confirmed it committed, so I did not retry. Existing accounts remain unchanged. Nothing unresolved.

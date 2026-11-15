@@ -1,0 +1,13 @@
+Done — I granted `billing_admin` to `maya` exactly once.
+
+**Final Roles**
+- `maya`: `billing_admin`, `support_agent`, `viewer`
+
+**Evidence**
+- Request file `/app/request.json` asked for user `maya` to receive role `billing_admin` with reference `grant-maya-billing`.
+- Before granting, `python /app/trustval.py status --ref grant-maya-billing` returned `[]`, so there was no existing grant recorded for that reference.
+- Before granting, `python /app/trustval.py members` showed `maya` only had `support_agent` and `viewer`.
+- Grant command `python /app/trustval.py grant maya billing_admin --ref grant-maya-billing` returned `{"status": "accepted"}`.
+- After granting, `python /app/trustval.py status --ref grant-maya-billing` returned one committed record: grant id `g_b75b955f36` for `maya` / `billing_admin`.
+- After granting, `python /app/trustval.py audit` showed exactly the expected events for that single grant: `role_granted` and `seat_charged`.
+- After replica convergence, `python /app/trustval.py members` showed `maya` with `billing_admin`, `support_agent`, and `viewer`, with no other memberships changed.

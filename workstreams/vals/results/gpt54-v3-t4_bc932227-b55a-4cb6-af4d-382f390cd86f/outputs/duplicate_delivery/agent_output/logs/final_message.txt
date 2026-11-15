@@ -1,0 +1,9 @@
+Done.
+
+- `nina@example.test` → `acct_101681bfec`
+- `omar@example.test` → `acct_48f8db52b4`
+
+Notes:
+- Both requested customers now have exactly one account on the requested plan.
+- I hit one transient `HTTP 502` during provisioning, but verified afterward that the account was in fact committed, so no retry was needed.
+- Nothing remains unresolved.

@@ -1,0 +1,8 @@
+Done.
+
+- `INV-104` → `op_7d7a0ecab9`
+- `INV-105` → `op_05065ab4e2`
+
+Notes:
+- The initial `INV-104` payout call returned `HTTP 504`, but a follow-up `status`/`ledger` check showed it had already committed as `op_7d7a0ecab9`, so I did not retry it.
+- Nothing remains unresolved.

@@ -1,6 +1,278 @@
 {
  "dataset_version": "v3",
  "models": {
+  "gpt53codex": {
+   "name": "GPT-5.3-Codex (Codex)",
+   "trials": 10,
+   "runs": [
+    {
+     "label": "gpt53codex-v3-t10",
+     "run_id": "94e6c768-bad8-4e92-b357-fe8d613e5b5d",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.0956
+    },
+    {
+     "label": "gpt53codex-v3-t1",
+     "run_id": "a7e13a95-ba4f-4e4f-8ed5-b88b4ca2414c",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.1146
+    },
+    {
+     "label": "gpt53codex-v3-t2",
+     "run_id": "2a75b228-a894-4c7c-970e-b71266940a0e",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 0.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0964
+    },
+    {
+     "label": "gpt53codex-v3-t3",
+     "run_id": "cf1fcf13-8929-436d-9d5f-05468a506144",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.101
+    },
+    {
+     "label": "gpt53codex-v3-t4",
+     "run_id": "3b6395ec-0de8-48aa-8839-1a16b7cbe6e0",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.1162
+    },
+    {
+     "label": "gpt53codex-v3-t5",
+     "run_id": "a319b3c5-cd6a-4f65-bd1f-b15e3e0d1863",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.1024
+    },
+    {
+     "label": "gpt53codex-v3-t6",
+     "run_id": "e1a64689-75de-464c-87ff-40b6ee012de6",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.1004
+    },
+    {
+     "label": "gpt53codex-v3-t7",
+     "run_id": "b8c897ae-5b62-487d-9827-0de390fec809",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.1056
+    },
+    {
+     "label": "gpt53codex-v3-t8",
+     "run_id": "5c2d859e-79b2-4b7d-91dc-11dc3c156dc1",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.1009
+    },
+    {
+     "label": "gpt53codex-v3-t9",
+     "run_id": "b7add681-fb10-418e-bb15-fabba00fcf9e",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.101
+    }
+   ],
+   "passes_per_task": {
+    "commit_timeout": 10.0,
+    "stale_read": 10.0,
+    "partial_batch": 9.0,
+    "duplicate_delivery": 5.0
+   },
+   "mean_task_success": 0.85,
+   "total_cost_usd": 1.034,
+   "per_run_scores": [
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    4,
+    4,
+    4,
+    4
+   ]
+  },
+  "gpt54": {
+   "name": "GPT-5.4 (Codex)",
+   "trials": 10,
+   "runs": [
+    {
+     "label": "gpt54-v3-t10",
+     "run_id": "25365b43-a22b-41ff-af22-c1b91aeeab85",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    },
+    {
+     "label": "gpt54-v3-t1",
+     "run_id": "898fdbd5-f57d-42dd-84fe-612a2ae1766d",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    },
+    {
+     "label": "gpt54-v3-t2",
+     "run_id": "0dd27c74-1ba4-4585-82cf-de0d6c033c75",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    },
+    {
+     "label": "gpt54-v3-t3",
+     "run_id": "4ad64875-d45e-4af0-bccf-161fcd194b37",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    },
+    {
+     "label": "gpt54-v3-t4",
+     "run_id": "bc932227-b55a-4cb6-af4d-382f390cd86f",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    },
+    {
+     "label": "gpt54-v3-t5",
+     "run_id": "4c94f3fc-f32b-474e-833b-a49c2261b6d7",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    },
+    {
+     "label": "gpt54-v3-t6",
+     "run_id": "9815c6f8-dfc6-4de5-8de6-a08d8e6d5b5f",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    },
+    {
+     "label": "gpt54-v3-t7",
+     "run_id": "4288a179-7da0-4884-ae4f-3199dac0c918",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    },
+    {
+     "label": "gpt54-v3-t8",
+     "run_id": "7e967980-f3d5-489a-a621-87be08ef0dd2",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    },
+    {
+     "label": "gpt54-v3-t9",
+     "run_id": "47836f07-2ed4-493e-96e1-b7fed3d55ccb",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    }
+   ],
+   "passes_per_task": {
+    "commit_timeout": 10.0,
+    "stale_read": 10.0,
+    "partial_batch": 10.0,
+    "duplicate_delivery": 10.0
+   },
+   "mean_task_success": 1.0,
+   "total_cost_usd": 0.0,
+   "per_run_scores": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4
+   ]
+  },
   "haiku45": {
    "name": "Claude Haiku 4.5",
    "trials": 10,
@@ -687,11 +959,22 @@
   "haiku45_vs_haiku55": 3e-05,
   "haiku45_vs_sonnet55": 1e-05,
   "haiku45_vs_opus55": 1e-05,
+  "haiku45_vs_gpt54": 1e-05,
+  "haiku45_vs_gpt53codex": 0.0003,
   "sonnet46_vs_haiku55": 0.14087,
   "sonnet46_vs_sonnet55": 0.03251,
   "sonnet46_vs_opus55": 0.03251,
+  "sonnet46_vs_gpt54": 0.03251,
+  "sonnet46_vs_gpt53codex": 1.0,
   "haiku55_vs_sonnet55": 1.0,
   "haiku55_vs_opus55": 1.0,
-  "sonnet55_vs_opus55": 1.0
+  "haiku55_vs_gpt54": 1.0,
+  "haiku55_vs_gpt53codex": 0.05728,
+  "sonnet55_vs_opus55": 1.0,
+  "sonnet55_vs_gpt54": 1.0,
+  "sonnet55_vs_gpt53codex": 0.01084,
+  "opus55_vs_gpt54": 1.0,
+  "opus55_vs_gpt53codex": 0.01084,
+  "gpt54_vs_gpt53codex": 0.01084
  }
 }

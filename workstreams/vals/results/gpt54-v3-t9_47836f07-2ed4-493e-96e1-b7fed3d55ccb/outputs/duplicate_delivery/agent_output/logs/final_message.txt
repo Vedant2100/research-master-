@@ -1,0 +1,9 @@
+Done.
+
+- `nina@example.test` → `acct_954b6f2b7c`
+- `omar@example.test` → `acct_95d021d03a`
+
+Notes:
+- Both requested customers now have exactly one account on the requested plan.
+- I did not modify the database directly, environment files, or task files.
+- One transient API error occurred while provisioning Nina (`HTTP 502`), but verification showed the operation had already committed, so I did not retry and avoided creating a duplicate.

@@ -1,0 +1,11 @@
+Reservation results:
+
+- `SKU-A` (qty `3`): reservation ID `r_b59ebe91c9`
+- `SKU-B` (qty `2`): reservation ID `r_fc132f5d2c`
+- `SKU-C` (qty `4`): reservation ID `r_c8986be59a`
+
+Unresolved issues:
+
+- `SKU-A` and `SKU-B` were already reserved previously (`r_4a24f9a148` and `r_129c7714b4`), and running `reserve-batch` created additional reservations for them.  
+- So those two items are now over-reserved overall (more than once), which cannot be corrected from here without a cancellation/adjustment capability.  
+- `SKU-C` appears reserved exactly once.

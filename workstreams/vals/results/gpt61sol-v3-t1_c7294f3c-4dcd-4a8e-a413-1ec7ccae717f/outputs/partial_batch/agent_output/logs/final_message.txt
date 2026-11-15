@@ -1,0 +1,9 @@
+All requested items are confirmed reserved exactly once.
+
+| Item | Quantity | Reservation ID |
+|---|---:|---|
+| SKU-A | 3 | `r_7ab90418a2` |
+| SKU-B | 2 | `r_8258599f71` |
+| SKU-C | 4 | `r_af8ab2ea9f` |
+
+The batch timeout was resolved by reserving only the missing item. Nothing remains unresolved; no other SKUs were touched.

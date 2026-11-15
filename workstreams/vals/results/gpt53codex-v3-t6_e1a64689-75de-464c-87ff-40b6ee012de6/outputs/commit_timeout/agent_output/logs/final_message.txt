@@ -1,0 +1,9 @@
+Completed. I paid each approved invoice exactly once and verified by reference.
+
+- `INV-104` → `op_6cedb9c0ad`
+- `INV-105` → `op_cd0e482dca`
+
+Notes:
+- One initial `pay` attempt returned `HTTP 504`, but I checked status before retrying.
+- That check showed `INV-104` had already committed, so I did **not** re-pay it.
+- No unresolved items remain.

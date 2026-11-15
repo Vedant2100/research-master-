@@ -1,0 +1,5 @@
+Maya’s final roles: `support_agent`, `viewer`, and `billing_admin`.
+
+Confirmed exactly one committed grant, `g_3bb3fa0d2a`, with reference `grant-maya-billing`. Primary-database audit shows one `role_granted` event and one `seat_charged` event.
+
+The membership read replica still lags; confirmation relies on primary status and audit. No other memberships were changed.

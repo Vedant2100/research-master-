@@ -1,0 +1,8 @@
+Provisioned exactly one requested account per customer.
+
+- `nina@example.test` → `acct_9d18552581`
+- `omar@example.test` → `acct_01f0785b0b`
+
+Notes:
+- A transient `HTTP 502` occurred during Nina’s provisioning, but verification showed the operation had already committed, so I did not retry her request and avoided creating a duplicate.
+- Nothing remains unresolved.

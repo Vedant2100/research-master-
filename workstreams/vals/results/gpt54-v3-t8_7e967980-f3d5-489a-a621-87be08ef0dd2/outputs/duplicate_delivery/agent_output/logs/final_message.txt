@@ -1,0 +1,8 @@
+Done.
+
+- `nina@example.test` → `acct_7bd0c6525b`
+- `omar@example.test` → `acct_7a241b8859`
+
+Notes:
+- `nina@example.test` initially returned `HTTP 502`, but I verified afterward that the provisioning operation committed and exactly one account exists for the requested plan.
+- Nothing remains unresolved.

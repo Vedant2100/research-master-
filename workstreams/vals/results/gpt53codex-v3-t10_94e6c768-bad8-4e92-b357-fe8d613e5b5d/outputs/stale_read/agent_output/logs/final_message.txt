@@ -1,0 +1,19 @@
+Done — I processed the request in `/app/request.json` and granted the role once.
+
+**Final roles for `maya`**
+- `support_agent`
+- `viewer`
+- `billing_admin` (newly granted)
+
+**Evidence used**
+- Request file: `/app/request.json` requested `user: "maya"`, `role: "billing_admin"`, `reference: "grant-maya-billing"`.
+- Pre-grant membership check (`python /app/trustval.py members`) showed `maya` had only `support_agent` and `viewer`.
+- Grant execution (`python /app/trustval.py grant --ref grant-maya-billing maya billing_admin`) returned `{"status":"accepted"}`.
+- Primary DB verification:
+  - `python /app/trustval.py status --ref grant-maya-billing` returned one committed grant:
+    - `id: g_b2f69f9dde`, `user: maya`, `role: billing_admin`, `status: committed`.
+  - `python /app/trustval.py audit` showed events for that single grant id:
+    - `role_granted`
+    - `seat_charged`
+
+Note: `members` is served from a read replica and may lag briefly; `status`/`audit` confirmed the committed grant exactly once.

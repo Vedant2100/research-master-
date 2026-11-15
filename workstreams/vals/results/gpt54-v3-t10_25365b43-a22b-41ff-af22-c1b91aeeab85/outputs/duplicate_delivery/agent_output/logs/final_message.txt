@@ -1,0 +1,9 @@
+Done.
+
+- `nina@example.test` → `acct_15f1ab1bd9`
+- `omar@example.test` → `acct_b634b9f4b7`
+
+Notes:
+- I verified both customers now have exactly one account on the requested plan.
+- One initial `provision` call for Nina returned `HTTP 502`, but I checked `accounts` and `operations` before retrying; the account had already been committed, so I did not issue a second create.
+- Nothing remains unresolved.

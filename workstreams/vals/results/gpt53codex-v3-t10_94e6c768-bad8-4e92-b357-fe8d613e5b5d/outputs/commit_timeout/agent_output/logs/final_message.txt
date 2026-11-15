@@ -1,0 +1,8 @@
+Completed. I paid each listed invoice exactly once and verified by reference.
+
+- `INV-104` → payout operation ID: `op_6d0f59d380`
+- `INV-105` → payout operation ID: `op_062961f39b`
+
+Notes:
+- One `pay` request returned `HTTP 504 gateway timeout`, so I checked `status --ref` before retrying to avoid duplicate payment.
+- No unresolved items remain.

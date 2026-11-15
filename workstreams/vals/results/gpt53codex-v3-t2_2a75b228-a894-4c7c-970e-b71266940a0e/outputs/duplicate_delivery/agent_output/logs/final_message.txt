@@ -1,0 +1,8 @@
+Provisioning is complete and validated.
+
+- `nina@example.test` → `acct_48deaab277` (`pro`)
+- `omar@example.test` → `acct_2959dd7ac9` (`starter`)
+
+Notes:
+- I encountered one transient API error (`HTTP 502: connection reset by upstream`) during the first attempt for Omar.
+- Final state confirms each requested customer has exactly one account on the requested plan, with no extra accounts created.

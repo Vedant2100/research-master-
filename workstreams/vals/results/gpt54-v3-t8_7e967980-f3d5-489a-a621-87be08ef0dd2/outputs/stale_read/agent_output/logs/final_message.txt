@@ -1,0 +1,24 @@
+Done.
+
+**Final Roles**
+- `maya`: `support_agent`, `viewer`, `billing_admin`
+- No other memberships were changed.
+
+**What I did**
+- Read the request in `/app/request.json:1` and found `user = maya`, `role = billing_admin`, `reference = grant-maya-billing`.
+- Checked existing memberships with `python /app/trustval.py members`; before the change, Maya had only `support_agent` and `viewer`.
+- Checked the primary for prior grant records with `python /app/trustval.py status --ref grant-maya-billing`; it returned `[]`, so there was no existing grant for that reference.
+- Issued exactly one grant with `python /app/trustval.py grant --ref grant-maya-billing maya billing_admin`.
+
+**Evidence**
+- Grant response: `{"status": "accepted"}`
+- Primary status confirmation: `python /app/trustval.py status --ref grant-maya-billing` returned one committed record:
+  - `id = g_34669e5553`
+  - `reference = grant-maya-billing`
+  - `user = maya`
+  - `role = billing_admin`
+  - `status = committed`
+- Primary audit confirmation: `python /app/trustval.py audit` returned exactly the expected events for that single grant:
+  - `{"seq": 1, "grant_id": "g_34669e5553", "event": "role_granted"}`
+  - `{"seq": 2, "grant_id": "g_34669e5553", "event": "seat_charged"}`
+- Replica note: `python /app/trustval.py members` still showed the pre-grant state during recheck, which matches the tool’s note that `members` is served from a read replica and may lag the primary.

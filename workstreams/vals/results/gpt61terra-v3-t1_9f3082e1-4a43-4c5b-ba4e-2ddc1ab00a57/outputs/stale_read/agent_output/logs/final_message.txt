@@ -1,0 +1,3 @@
+Maya’s final roles are `support_agent`, `viewer`, and `billing_admin`.
+
+The primary status shows one committed grant, `g_1a552d3014`. The audit records one role grant and one seat charge. The membership replica had not yet reflected the new role.

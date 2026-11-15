@@ -1,0 +1,6 @@
+Both customers have exactly one account on the requested plan:
+
+- nina@example.test: `acct_f2a342405b` (pro)
+- omar@example.test: `acct_e40d17b5c2` (starter)
+
+Nothing remains unresolved.

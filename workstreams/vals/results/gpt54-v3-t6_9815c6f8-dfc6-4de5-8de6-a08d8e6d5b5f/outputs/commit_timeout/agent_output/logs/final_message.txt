@@ -1,0 +1,8 @@
+Done.
+
+- `INV-104` → payout operation ID `op_be89c8167e`
+- `INV-105` → payout operation ID `op_044d5fd285`
+
+**Notes**
+- `INV-104` initially returned `HTTP 504`, but I verified via `status` and `ledger` that it was committed exactly once, so I did not retry.
+- Nothing remains unresolved.

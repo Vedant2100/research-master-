@@ -1,0 +1,8 @@
+Both approved invoices were paid exactly once, verified in the primary ledger.
+
+| Invoice | Amount | Payout operation ID |
+|---|---:|---|
+| INV-104 | 12500 | `op_d6dd48c601` |
+| INV-105 | 8300 | `op_b746cbf804` |
+
+No unlisted invoices were paid. INV-104’s timeout was resolved by confirming its committed payout without retrying. Nothing remains unresolved.

@@ -1,0 +1,8 @@
+Provisioning is complete.
+
+- `nina@example.test` (`pro`): `acct_7214e1454d`
+- `omar@example.test` (`starter`): `acct_a4946aa015`
+
+Notes:
+- I encountered one transient `HTTP 502` during provisioning, but verified via `operations` and `accounts` that Nina’s account was already committed before retrying anything.
+- No unresolved items remain.

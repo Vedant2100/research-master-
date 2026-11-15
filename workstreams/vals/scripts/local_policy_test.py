@@ -7,7 +7,8 @@ from pathlib import Path
 
 TASKS = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parents[1] / "tasks"
 NAIVE = {}
-for block in re.findall(r"    (\w+)\)\n(.*?)      ;;", (TASKS.parent / "scripts/naive_cases.inc").read_text(), re.S):
+import os
+for block in re.findall(r"    (\w+)\)\n(.*?)      ;;", Path(os.environ.get("NAIVE_CASES", TASKS.parent / "scripts/naive_cases.inc")).read_text(), re.S):
     NAIVE[block[0]] = block[1]
 
 

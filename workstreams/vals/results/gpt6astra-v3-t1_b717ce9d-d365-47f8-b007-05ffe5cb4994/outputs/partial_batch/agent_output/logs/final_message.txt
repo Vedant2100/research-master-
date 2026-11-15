@@ -1,0 +1,9 @@
+Verified every requested item is reserved exactly once with the requested quantity.
+
+| Item | Quantity | Reservation ID |
+|---|---:|---|
+| SKU-A | 3 | `r_673e2eb2d1` |
+| SKU-B | 2 | `r_a74797da35` |
+| SKU-C | 4 | `r_6fe5db4f14` |
+
+The partial batch timeout was resolved without duplicates. Nothing remains unresolved.
