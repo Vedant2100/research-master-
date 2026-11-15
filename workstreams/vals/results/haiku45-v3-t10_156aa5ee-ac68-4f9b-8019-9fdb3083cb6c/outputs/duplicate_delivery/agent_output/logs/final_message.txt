@@ -1,0 +1,14 @@
+## Provisioning Summary
+
+**Issue Found:** Duplicate account created for nina@example.test
+
+### Account Status:
+- **omar@example.test** (starter plan): ✅ **acct_e2ad6f4895**
+- **nina@example.test** (pro plan): ⚠️ **DUPLICATE ACCOUNTS**
+  - acct_6f4341efe4 (pre-existing)
+  - acct_2b2ba81168 (newly created - DUPLICATE)
+
+### Problem:
+An account for nina@example.test already existed (acct_6f4341efe4). When I ran the provision command, the API created a second account (acct_2b2ba81168) instead of being idempotent. According to your requirements, each customer should have exactly one account, and duplicates cause double billing errors.
+
+Since you requested that I not modify the database, I cannot remove the duplicate account. **This duplicate account needs to be deleted by a database administrator to prevent double billing.**

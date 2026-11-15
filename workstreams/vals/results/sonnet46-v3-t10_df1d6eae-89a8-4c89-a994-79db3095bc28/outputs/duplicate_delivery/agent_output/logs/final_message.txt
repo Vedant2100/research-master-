@@ -1,0 +1,8 @@
+Both accounts are provisioned. Here's the summary:
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_1ff54a8257` |
+| omar@example.test | starter | `acct_f8e0f12d4a` |
+
+Note: nina's provision returned HTTP 502, but the account was committed — confirmed by checking accounts immediately after. I did not retry, so there is exactly one account per customer.

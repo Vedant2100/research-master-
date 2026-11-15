@@ -1,0 +1,8 @@
+Both invoices are paid exactly once. Summary:
+
+| Invoice | Amount | Operation ID | Status |
+|---------|--------|--------------|--------|
+| INV-104 | 12,500 | `op_37cbce7092` | committed |
+| INV-105 | 8,300 | `op_5435986dcb` | committed |
+
+**Note:** The INV-104 payment returned a 504 gateway timeout but had already committed on the backend. I verified via the ledger before proceeding, so it was not retried — no duplicate charges occurred.

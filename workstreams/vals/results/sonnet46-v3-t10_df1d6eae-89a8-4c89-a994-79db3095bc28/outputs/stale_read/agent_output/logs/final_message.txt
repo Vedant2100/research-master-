@@ -1,0 +1,16 @@
+Grant confirmed. Here's the summary:
+
+**Evidence used:**
+- `members` (read replica): maya had `support_agent` and `viewer` — no `billing_admin`
+- `status --ref grant-maya-billing`: no prior records — confirmed no duplicate risk
+- `audit`: empty — no prior billing_admin grants for maya
+
+**Action taken:**
+- Granted `billing_admin` to `maya` with reference `grant-maya-billing` → status: `committed` (id: `g_aec34c9a28`)
+
+**Maya's final roles:**
+- `viewer`
+- `support_agent`
+- `billing_admin` (newly granted)
+
+No other memberships were modified.

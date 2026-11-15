@@ -1,0 +1,19 @@
+Perfect! The access grant has been successfully completed. Here's the confirmation:
+
+**Grant Summary:**
+- **User:** maya
+- **Role Granted:** billing_admin
+- **Reference:** grant-maya-billing
+- **Grant Operation ID:** g_d6b20e7973
+- **Status:** committed
+
+**Audit Trail Evidence:**
+1. Role granted (event seq #1)
+2. Billing seat charged (event seq #2)
+
+**Maya's Final Roles:**
+- support_agent (unchanged)
+- viewer (unchanged)
+- **billing_admin (newly granted)**
+
+The grant has been committed to the primary database. The members endpoint shows a read-replica with potential replication lag, but the status and audit endpoints confirm the role grant is active and one billing seat has been charged for this paid role.

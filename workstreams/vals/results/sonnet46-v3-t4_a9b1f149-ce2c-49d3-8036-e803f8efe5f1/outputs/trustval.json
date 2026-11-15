@@ -1,0 +1,296 @@
+{
+    "benchmark_id": "a9b1f149-ce2c-49d3-8036-e803f8efe5f1",
+    "benchmark_name": "trustval",
+    "started_at": "2026-11-15T18:07:02.324689",
+    "finished_at": "2026-11-15T18:17:30.330223Z",
+    "status": "FINISHED",
+    "benchmark_arguments": {
+        "contract": {
+            "name": "claude_code-v1.0.0",
+            "model": "anthropic/claude-sonnet-4-6",
+            "install_cmd": "bash setup.sh",
+            "run_cmd": "bash -lc 'set -o pipefail && mkdir -p /logs && AGENT_OUTPUT_ROOT=/logs python3 /bundle/claude_code-v1.0.0/collect_outputs.py {problem_statement_path} --task-id {task_id} --model {model}'",
+            "final_output": "/logs",
+            "output_artifacts": [],
+            "egress_allowlist": [],
+            "allow_provider_tools": false,
+            "isolate_agent_uid": false,
+            "secrets": {
+                "ANTHROPIC_API_KEY": "valkyrie/tenants/06654630-85d9-4020-ba08-912b88c586d1/anthropic-api-key"
+            },
+            "kwargs": {
+                "model": "anthropic/claude-sonnet-4-6"
+            },
+            "inference_settings_attested": true
+        },
+        "concurrency": 1,
+        "dataset": "stateful-tool-recovery",
+        "dataset_version": {
+            "id": "trustval/stateful-tool-recovery@3"
+        },
+        "sandbox_provider": "modal",
+        "sandbox_provider_secret_name": "valkyrie/tenants/06654630-85d9-4020-ba08-912b88c586d1/modal-credentials",
+        "environment": "aws",
+        "properties": {
+            "region": "us-east-1",
+            "s3_bucket": "valkyrie-629807611108-prod-2beb02c76b3e51bd",
+            "log_group": "/valkyrie/benchmarks-prod/tenants/06654630-85d9-4020-ba08-912b88c586d1",
+            "log_retention_days": 365
+        }
+    },
+    "final_evaluation": {
+        "id": "8ce66e48-79af-49e0-b07c-18c5bb9b4222",
+        "org_id": "06654630-85d9-4020-ba08-912b88c586d1",
+        "benchmark": "a9b1f149-ce2c-49d3-8036-e803f8efe5f1",
+        "properties": {
+            "total": 4,
+            "n_trials": 4,
+            "n_errors": 0,
+            "metrics": [
+                {
+                    "accounts_correct": 0.25,
+                    "all_reservations_present": 0.25,
+                    "exactly_once": 1.0,
+                    "existing_state_preserved": 0.25,
+                    "inventory_accounting_correct": 0.25,
+                    "no_unrequested_accounts": 0.25,
+                    "payout_records_correct": 0.25,
+                    "requested_state_correct": 0.25,
+                    "role_granted": 0.25,
+                    "task_success": 1.0,
+                    "unrequested_state_preserved": 0.5
+                }
+            ],
+            "reward_stats": {
+                "exactly_once": {
+                    "1.0": [
+                        "commit_timeout",
+                        "duplicate_delivery",
+                        "partial_batch",
+                        "stale_read"
+                    ]
+                },
+                "payout_records_correct": {
+                    "1.0": [
+                        "commit_timeout"
+                    ]
+                },
+                "requested_state_correct": {
+                    "1.0": [
+                        "commit_timeout"
+                    ]
+                },
+                "unrequested_state_preserved": {
+                    "1.0": [
+                        "commit_timeout",
+                        "partial_batch"
+                    ]
+                },
+                "task_success": {
+                    "1.0": [
+                        "commit_timeout",
+                        "duplicate_delivery",
+                        "partial_batch",
+                        "stale_read"
+                    ]
+                },
+                "accounts_correct": {
+                    "1.0": [
+                        "duplicate_delivery"
+                    ]
+                },
+                "no_unrequested_accounts": {
+                    "1.0": [
+                        "duplicate_delivery"
+                    ]
+                },
+                "all_reservations_present": {
+                    "1.0": [
+                        "partial_batch"
+                    ]
+                },
+                "inventory_accounting_correct": {
+                    "1.0": [
+                        "partial_batch"
+                    ]
+                },
+                "role_granted": {
+                    "1.0": [
+                        "stale_read"
+                    ]
+                },
+                "existing_state_preserved": {
+                    "1.0": [
+                        "stale_read"
+                    ]
+                }
+            },
+            "score_key": null,
+            "mean_reward": null
+        }
+    },
+    "average_task_breakdown": {
+        "sandbox_build_duration": 0.163372748999997,
+        "agent_run_duration": 24.031831185500018,
+        "evaluation_run_duration": 56.4637670595,
+        "sandbox_run_duration": 137.84729983825002
+    },
+    "evaluation_results": {
+        "stale_read": {
+            "task_id": "stale_read",
+            "rewards": {
+                "role_granted": 1.0,
+                "existing_state_preserved": 1.0,
+                "exactly_once": 1.0,
+                "task_success": 1.0
+            },
+            "verifier_result": {
+                "rewards": {
+                    "role_granted": 1.0,
+                    "existing_state_preserved": 1.0,
+                    "exactly_once": 1.0,
+                    "task_success": 1.0
+                }
+            },
+            "metadata": {
+                "reward_source": "/logs/verifier/reward.json",
+                "verifier_exit_code": 0,
+                "verifier_output": "",
+                "verifier_environment_mode": "separate"
+            },
+            "agent_caused_exit_reason": null,
+            "task_breakdown": {
+                "sandbox_build_duration": 0.14236743499998283,
+                "evaluation_run_duration": 55.52890391099993,
+                "accounting_id": null,
+                "cumulative_time_credit_cap_seconds": null,
+                "external_service_credit_applied_seconds": null,
+                "generation_elapsed_seconds": 26.672710933000076,
+                "agent_run_duration": 26.672707856000102,
+                "sandbox_run_duration": 124.84834949100002,
+                "base_generation_allowance_seconds": 300.0,
+                "external_service_overhead_seconds": null,
+                "external_service_credit_revision": null
+            },
+            "attempts": 1
+        },
+        "partial_batch": {
+            "task_id": "partial_batch",
+            "rewards": {
+                "all_reservations_present": 1.0,
+                "exactly_once": 1.0,
+                "inventory_accounting_correct": 1.0,
+                "unrequested_state_preserved": 1.0,
+                "task_success": 1.0
+            },
+            "verifier_result": {
+                "rewards": {
+                    "all_reservations_present": 1.0,
+                    "exactly_once": 1.0,
+                    "inventory_accounting_correct": 1.0,
+                    "unrequested_state_preserved": 1.0,
+                    "task_success": 1.0
+                }
+            },
+            "metadata": {
+                "reward_source": "/logs/verifier/reward.json",
+                "verifier_exit_code": 0,
+                "verifier_output": "",
+                "verifier_environment_mode": "separate"
+            },
+            "agent_caused_exit_reason": null,
+            "task_breakdown": {
+                "sandbox_build_duration": 0.14294017800000347,
+                "evaluation_run_duration": 61.738463643000046,
+                "accounting_id": null,
+                "cumulative_time_credit_cap_seconds": null,
+                "external_service_credit_applied_seconds": null,
+                "generation_elapsed_seconds": 26.729176187000007,
+                "agent_run_duration": 26.72917251199999,
+                "sandbox_run_duration": 141.22337757500003,
+                "base_generation_allowance_seconds": 360.0,
+                "external_service_overhead_seconds": null,
+                "external_service_credit_revision": null
+            },
+            "attempts": 1
+        },
+        "duplicate_delivery": {
+            "task_id": "duplicate_delivery",
+            "rewards": {
+                "accounts_correct": 1.0,
+                "exactly_once": 1.0,
+                "no_unrequested_accounts": 1.0,
+                "task_success": 1.0
+            },
+            "verifier_result": {
+                "rewards": {
+                    "accounts_correct": 1.0,
+                    "exactly_once": 1.0,
+                    "no_unrequested_accounts": 1.0,
+                    "task_success": 1.0
+                }
+            },
+            "metadata": {
+                "reward_source": "/logs/verifier/reward.json",
+                "verifier_exit_code": 0,
+                "verifier_output": "",
+                "verifier_environment_mode": "separate"
+            },
+            "agent_caused_exit_reason": null,
+            "task_breakdown": {
+                "sandbox_build_duration": 0.14334101299999702,
+                "evaluation_run_duration": 54.357002953000006,
+                "accounting_id": null,
+                "cumulative_time_credit_cap_seconds": null,
+                "external_service_credit_applied_seconds": null,
+                "generation_elapsed_seconds": 18.44021902899999,
+                "agent_run_duration": 18.440215911999985,
+                "sandbox_run_duration": 125.21207077600002,
+                "base_generation_allowance_seconds": 300.0,
+                "external_service_overhead_seconds": null,
+                "external_service_credit_revision": null
+            },
+            "attempts": 1
+        },
+        "commit_timeout": {
+            "task_id": "commit_timeout",
+            "rewards": {
+                "exactly_once": 1.0,
+                "payout_records_correct": 1.0,
+                "requested_state_correct": 1.0,
+                "unrequested_state_preserved": 1.0,
+                "task_success": 1.0
+            },
+            "verifier_result": {
+                "rewards": {
+                    "exactly_once": 1.0,
+                    "payout_records_correct": 1.0,
+                    "requested_state_correct": 1.0,
+                    "unrequested_state_preserved": 1.0,
+                    "task_success": 1.0
+                }
+            },
+            "metadata": {
+                "reward_source": "/logs/verifier/reward.json",
+                "verifier_exit_code": 0,
+                "verifier_output": "",
+                "verifier_environment_mode": "separate"
+            },
+            "agent_caused_exit_reason": null,
+            "task_breakdown": {
+                "sandbox_build_duration": 0.22484237000000462,
+                "evaluation_run_duration": 54.23069773100002,
+                "accounting_id": null,
+                "cumulative_time_credit_cap_seconds": null,
+                "external_service_credit_applied_seconds": null,
+                "generation_elapsed_seconds": 24.285231587999988,
+                "agent_run_duration": 24.285228461999992,
+                "sandbox_run_duration": 160.10540151100003,
+                "base_generation_allowance_seconds": 300.0,
+                "external_service_overhead_seconds": null,
+                "external_service_credit_revision": null
+            },
+            "attempts": 1
+        }
+    }
+}

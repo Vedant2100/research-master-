@@ -1,0 +1,8 @@
+Both accounts provisioned successfully:
+
+| Customer | Email | Plan | Account ID |
+|---|---|---|---|
+| Nina | nina@example.test | pro | `acct_53be16bbb0` |
+| Omar | omar@example.test | starter | `acct_62efe1a2c9` |
+
+No issues to report. The initial provision attempt for Nina hit a 502 upstream error, but the retry succeeded without creating a duplicate (I verified existing accounts before any writes — neither customer had a pre-existing account).

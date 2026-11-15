@@ -1,0 +1,10 @@
+Grant confirmed. Here's the summary:
+
+**Action taken:** Granted `billing_admin` to `maya` (grant ID `g_ccbf2a6d75`, reference `grant-maya-billing`).
+
+**Evidence:**
+- Pre-grant check: `status --ref grant-maya-billing` returned `[]` and audit log was empty — no prior grant existed.
+- Grant accepted and committed; audit log shows `role_granted` and `seat_charged` events (seq 1 and 2), confirming exactly one billing seat was charged.
+- Maya's existing roles (`support_agent`, `viewer`) were not modified.
+
+**Maya's final roles:** `support_agent`, `viewer`, `billing_admin`.

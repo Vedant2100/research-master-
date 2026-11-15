@@ -1,0 +1,21 @@
+Perfect! The access has been successfully granted. Here's the confirmation:
+
+**Grant Summary:**
+- **Grant ID**: g_49d5395d75
+- **Reference**: grant-maya-billing
+- **User**: maya
+- **Role**: billing_admin
+- **Status**: committed
+
+**Evidence:**
+1. **Grant Status** - Confirmed via `status` command: The grant is committed in the primary database
+2. **Audit Log** - Confirmed via `audit` command:
+   - Event 1: `role_granted` (seq: 1)
+   - Event 2: `seat_charged` (seq: 2) - billing seat charged as expected for paid role
+
+**Final User Roles for maya:**
+- support_agent (unchanged)
+- viewer (unchanged)
+- **billing_admin** (newly granted)
+
+The grant was made exactly once with no duplicates, and no other membership changes were made. The billing seat has been properly charged for the paid role.

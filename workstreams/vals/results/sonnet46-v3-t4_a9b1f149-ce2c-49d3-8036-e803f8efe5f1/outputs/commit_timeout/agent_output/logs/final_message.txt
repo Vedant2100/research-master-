@@ -1,0 +1,8 @@
+Both invoices are paid exactly once. Here are the results:
+
+| Invoice | Amount | Operation ID | Status |
+|---------|--------|--------------|--------|
+| INV-104 | 12,500 | `op_18a30b9890` | committed |
+| INV-105 | 8,300 | `op_c8d004a1fb` | committed |
+
+Note: INV-104's pay call returned HTTP 504 (gateway timeout), but the ledger confirmed it committed successfully before I retried, so no duplicate payment was made.

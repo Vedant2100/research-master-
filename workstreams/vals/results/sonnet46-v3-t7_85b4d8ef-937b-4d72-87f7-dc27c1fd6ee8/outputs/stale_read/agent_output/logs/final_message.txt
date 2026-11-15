@@ -1,0 +1,8 @@
+**Grant complete.**
+
+**Evidence:**
+- `status --ref grant-maya-billing` shows exactly one committed grant: `g_d5905ca6a6` — `maya` → `billing_admin`
+- No prior grants existed for this reference (audit and status were both empty before the grant)
+- The members read replica still shows maya's pre-existing roles (`support_agent`, `viewer`); the primary confirms `billing_admin` is committed
+
+**Maya's final roles:** `support_agent`, `viewer`, `billing_admin` — no other memberships were modified.

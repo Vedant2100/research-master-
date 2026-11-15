@@ -3,14 +3,14 @@
 **Track:** RL Post-Training & Reward Design (evaluation lane)
 **Source:** [`workstreams/vals/`](../workstreams/vals/) in this repo (imported 2026-11-14 from role-work-forge-artifacts @ `be8f2eb`, PR #4)
 **Event:** https://www.vals.ai/hackathon, Build Your Own Eval track
-**State:** executed on Valkyrie (v3: Haiku 4.5 6/12, Sonnet 4.6 10/12); not yet submitted
+**State:** executed on Valkyrie (v3, 10 runs/model: Haiku 4.5 19/40, Sonnet 4.6 35/40); not yet submitted
 **Decision:** HIGH, time-boxed to the Nov 14–15 event
 
 ## Research question
 When a state-changing tool call has an ambiguous outcome (commit-then-timeout, stale read, partial batch, duplicate delivery), does a frontier agent inspect authoritative state and recover with exactly-once effects, or does it duplicate or drop side effects?
 
 ## Existing evidence
-Four Harbor tasks with a sidecar SQLite service and hidden verifiers. v2 was saturated (both models 4/4; faults leaked the outcome). v3 (neutral 504/502 errors, non-idempotent writes, preregistered in DESIGN_V3.md): Haiku 4.5 6/12, Sonnet 4.6 10/12 over 3 runs; every failure was a blind retry of a committed write, 2 ended in false success claims. Details: workstreams/vals/RESULTS.md.
+Four Harbor tasks with a sidecar SQLite service and hidden verifiers. v2 was saturated (both models 4/4; faults leaked the outcome). v3 (neutral 504/502 errors, non-idempotent writes, preregistered in DESIGN_V3.md): 10 runs per model: Haiku 4.5 19/40, Sonnet 4.6 35/40 (run-level p = 2.3e-4); every failure was a blind retry of a committed write; Sonnet reported false success in 4 of its 5 failures. Details: workstreams/vals/RESULTS.md.
 
 ## Methods / comparisons
 Valkyrie `claude_code-v1.0.0` harness, `anthropic/claude-sonnet-4-6`, Modal provider, one trial per task at concurrency 1 first; inspect full traces; separate infrastructure failures from agent failures.

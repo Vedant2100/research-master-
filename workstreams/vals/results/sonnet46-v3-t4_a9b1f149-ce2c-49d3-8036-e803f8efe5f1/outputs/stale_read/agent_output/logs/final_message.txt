@@ -1,0 +1,14 @@
+The grant is committed. The `members` endpoint is served from a read replica and hasn't propagated yet, but the primary database confirms the grant.
+
+**Result:**
+
+- **User:** maya
+- **Role granted:** `billing_admin`
+- **Grant ID:** `g_ddda91a2f8` (reference: `grant-maya-billing`, status: `committed`)
+- **Grant count for this reference:** 1 — no duplicate
+
+**Evidence:**
+- Pre-grant check via `status --ref grant-maya-billing` returned empty — no prior grant existed.
+- Pre-grant `members` showed maya only had `support_agent` and `viewer`.
+- `grant` command returned `accepted`, then `status` confirmed `committed`.
+- No other memberships were modified (liam's `billing_admin`, maya's `support_agent` and `viewer` are untouched).

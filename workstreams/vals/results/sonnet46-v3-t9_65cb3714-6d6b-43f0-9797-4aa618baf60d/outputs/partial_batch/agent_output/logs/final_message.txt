@@ -1,0 +1,9 @@
+All three items reserved successfully. Here are the reservation IDs:
+
+| SKU | Quantity | Reservation ID |
+|-----|----------|----------------|
+| SKU-A | 3 | `r_a5bde9c759` |
+| SKU-B | 2 | `r_4e8e3e3848` |
+| SKU-C | 4 | `r_056692f568` |
+
+Each item was reserved exactly once at the requested quantity. SKU-Z was not touched. The first attempt hit a 504 gateway timeout; the retry succeeded cleanly with no issues to report.

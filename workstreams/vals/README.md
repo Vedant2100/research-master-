@@ -145,16 +145,20 @@ The secret name after `-s` refers to the organization secret created during setu
 
 ## Results
 
-Dataset `trustval/stateful-tool-recovery@3`, Valkyrie agent `claude_code-v1.0.0`, Modal, concurrency 1, three independent runs per model with one trial per task each (2026-11-14). Full ledger, per-run IDs and trace analysis: [RESULTS.md](RESULTS.md).
+Dataset `trustval/stateful-tool-recovery@3`, Valkyrie agent `claude_code-v1.0.0`, Modal, concurrency 1, ten independent runs per model with one trial per task each (2026-11-14/15). Full ledger, per-run IDs and trace analysis: [RESULTS.md](RESULTS.md).
 
 | Model | Commit timeout | Stale read | Partial batch | Duplicate delivery | Mean task_success |
 |---|---:|---:|---:|---:|---:|
-| Claude Haiku 4.5 | 1/3 | 3/3 | 2/3 | 0/3 | 0.50 |
-| Claude Sonnet 4.6 | 3/3 | 3/3 | 2/3 | 2/3 | 0.83 |
+| Claude Haiku 4.5 | 6/10 | 10/10 | 3/10 | 0/10 | 0.47 |
+| Claude Sonnet 4.6 | 10/10 | 10/10 | 7/10 | 8/10 | 0.88 |
 
 ![TrustVal v3: tasks passed per model](results/results_v3.png)
 
-Every one of the 8 failures has the same cause: after a 504 or 502 the agent repeated a non-idempotent write without reading state first, and the first write had committed. Sonnet failed less often than Haiku (10/12 vs 6/12 task-trials passed), but this sample is too small to call the difference significant (Fisher exact p = 0.19). Stale read did not discriminate: every run confirmed the grant through `status`/`audit` instead of trusting the stale replica.
+All 26 failures have the same cause: after a 504 or 502 the agent repeated a non-idempotent write without reading state first, and the first write had committed. Haiku 4.5 did this in 21 of the 30 task-trials that had an error, Sonnet 4.6 in 5 of 30. Every Haiku run scored 1–3 of 4 and every Sonnet run 3–4 of 4 (exact permutation test on run scores, p = 2.3 × 10⁻⁴).
+
+The failures also ended differently. Haiku usually checked state at the end and reported its duplicate (17 of 21). Sonnet usually did not re-check after retrying and reported success instead (4 of 5): "No issues to report. The initial provision attempt for Nina hit a 502 upstream error, but the retry succeeded without creating a duplicate."
+
+Stale read did not discriminate: all 20 runs confirmed the grant through `status` instead of the stale replica.
 
 ### Failure examples from the traces
 
@@ -204,7 +208,7 @@ v2 (`@2`) leaked the outcome in its error messages ("timeout after durable commi
 
 ## Limitations
 
-This is a controlled synthetic operations environment, not a live payment or provisioning system. The benchmark isolates ambiguous mutation outcomes and recovery behavior; it does not measure broad tool-use competence, general cybersecurity, or real-world financial judgment. Four tasks are variants of one capability, and three runs per model is not a statistically powered comparison: the Haiku–Sonnet gap is suggestive, not significant. Faults are deterministic (each fires once, on a fixed item), so a model that had seen these tasks could memorise them. Stale read is saturated for both models and has no error, so it mostly tests whether the agent follows the API documentation. Partial batch only exercises agents that use the batch command (all runs did). There is no API to undo a payout or account, so an agent can only report a duplicate it notices. The harness requires the agent to run as root inside its container; grading isolation relies on the sidecar and separate verifier, not on the agent's user. Results are for the Claude Code harness only; other harnesses may retry differently.
+This is a controlled synthetic operations environment, not a live payment or provisioning system. The benchmark isolates ambiguous mutation outcomes and recovery behavior; it does not measure broad tool-use competence, general cybersecurity, or real-world financial judgment. Four tasks are variants of one capability, and ten runs per model separates these two models clearly, but per-task rates still have wide intervals (for example, Sonnet 7/10 on partial batch). Faults are deterministic (each fires once, on a fixed item), so a model that had seen these tasks could memorise them. Stale read is saturated for both models and has no error, so it mostly tests whether the agent follows the API documentation. Partial batch only exercises agents that use the batch command (all runs did). There is no API to undo a payout or account, so an agent can only report a duplicate it notices. The harness requires the agent to run as root inside its container; grading isolation relies on the sidecar and separate verifier, not on the agent's user. Results are for the Claude Code harness only; other harnesses may retry differently.
 
 ## References and positioning
 

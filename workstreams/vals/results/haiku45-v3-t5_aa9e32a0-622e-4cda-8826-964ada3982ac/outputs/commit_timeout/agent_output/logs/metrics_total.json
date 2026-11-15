@@ -1,0 +1,36 @@
+{
+    "cost": 0.049663,
+    "wall_clock_duration": 15.967,
+    "input_tokens": 41,
+    "cache_creation_input_tokens": 25370,
+    "cache_read_input_tokens": 96095,
+    "output_tokens": 1660,
+    "output_tokens_details": {
+        "thinking_tokens": 857
+    },
+    "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 25370
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+        {
+            "input_tokens": 8,
+            "output_tokens": 325,
+            "cache_read_input_tokens": 24991,
+            "cache_creation_input_tokens": 379,
+            "cache_creation": {
+                "ephemeral_5m_input_tokens": 379,
+                "ephemeral_1h_input_tokens": 0
+            },
+            "type": "message"
+        }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+}

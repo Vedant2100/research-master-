@@ -1,0 +1,8 @@
+Both invoices paid. Here's the summary:
+
+| Invoice | Amount | Operation ID | Status |
+|---------|--------|--------------|--------|
+| INV-104 | 12,500 | `op_b2a0f853e0` | committed |
+| INV-105 | 8,300 | `op_d875d9939f` | committed |
+
+**Note on INV-104:** The initial pay call returned HTTP 504 (gateway timeout), but checking the ledger confirmed the transaction was committed — so I did not retry, avoiding a double payment.

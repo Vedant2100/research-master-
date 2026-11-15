@@ -1,0 +1,8 @@
+Both invoices paid successfully:
+
+| Invoice | Amount | Operation ID | Status |
+|---------|--------|--------------|--------|
+| INV-104 | 12,500 | `op_1870f6753e` | committed |
+| INV-105 | 8,300 | `op_001a78faef` | committed |
+
+Note: The INV-104 payment returned a 504 gateway timeout, but I checked the ledger before retrying — the record was already committed, so I did not retry. No duplicate payments were made.

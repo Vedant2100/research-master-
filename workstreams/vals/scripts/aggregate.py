@@ -52,6 +52,30 @@ lines = ["| Model | Trials | " + " | ".join(TASKS) + " | Mean task_success | Age
 for model, s in summary["models"].items():
     cells = " | ".join(f"{int(s['passes_per_task'][t])}/{s['trials']}" for t in TASKS)
     lines.append(f"| {s['name']} | {s['trials']} | {cells} | {s['mean_task_success']:.2f} | {s['total_cost_usd']:.2f} |")
+from math import comb
+
+
+def fisher_two_sided(a, b, c, d):
+    """Two-sided Fisher exact p for [[a, b], [c, d]]."""
+    n, r1, c1 = a + b + c + d, a + b, a + c
+    p = lambda x: comb(c1, x) * comb(n - c1, r1 - x) / comb(n, r1)
+    p0 = p(a)
+    return sum(p(x) for x in range(max(0, r1 - (n - c1)), min(r1, c1) + 1) if p(x) <= p0 * (1 + 1e-9))
+
+
+lines.append("")
+for model, s in summary["models"].items():
+    scores = sorted(int(sum(r["success"].values())) for r in s["runs"])
+    s["per_run_scores"] = scores
+    lines.append(f"- {s['name']} per-run scores (tasks passed of 4): {scores}")
+ms = list(summary["models"].values())
+if len(ms) == 2:
+    k = [int(sum(m["passes_per_task"].values())) for m in ms]
+    tot = [m["trials"] * len(TASKS) for m in ms]
+    pval = fisher_two_sided(k[0], tot[0] - k[0], k[1], tot[1] - k[1])
+    summary["fisher_two_sided_p"] = round(pval, 4)
+    lines.append(f"- Pooled: {ms[0]['name']} {k[0]}/{tot[0]} vs {ms[1]['name']} {k[1]}/{tot[1]}, two-sided Fisher exact p = {pval:.3g}")
+out.write_text(json.dumps(summary, indent=1))
 (ROOT / "results" / f"summary_{VERSION}.md").write_text("\n".join(lines) + "\n")
 print("\n".join(lines))
 

@@ -1,0 +1,9 @@
+All three items are now reserved. Summary:
+
+| SKU | Qty | Reservation ID | Status |
+|-----|-----|----------------|--------|
+| SKU-A | 3 | `r_2a58e55685` | committed |
+| SKU-B | 2 | `r_d467e7bab9` | committed |
+| SKU-C | 4 | `r_318fe6c12c` | committed |
+
+The batch timed out after committing SKU-A and SKU-B, so I reserved SKU-C individually. All items match the requested quantities exactly. SKU-Z was not touched.

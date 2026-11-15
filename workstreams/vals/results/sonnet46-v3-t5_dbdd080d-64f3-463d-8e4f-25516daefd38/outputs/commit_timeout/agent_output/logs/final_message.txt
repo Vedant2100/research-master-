@@ -1,0 +1,8 @@
+Both approved invoices are paid exactly once:
+
+| Invoice | Amount | Payout Operation ID |
+|---------|--------|---------------------|
+| INV-104 | 12,500 | `op_24859acb94` |
+| INV-105 | 8,300 | `op_3a18ddc5ec` |
+
+Note: The INV-104 payment returned a 504 gateway timeout, but the ledger confirmed it committed before I retried — so no duplicate was sent. Nothing unresolved.

@@ -3,8 +3,19 @@
  "models": {
   "haiku45": {
    "name": "Claude Haiku 4.5",
-   "trials": 3,
+   "trials": 10,
    "runs": [
+    {
+     "label": "haiku45-v3-t10",
+     "run_id": "156aa5ee-ac68-4f9b-8019-9fdb3083cb6c",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 0.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.1362
+    },
     {
      "label": "haiku45-v3-t1",
      "run_id": "57fcbdfa-778f-4fce-826e-ba1fa0d56982",
@@ -37,21 +48,110 @@
       "duplicate_delivery": 0.0
      },
      "cost_usd": 0.1667
+    },
+    {
+     "label": "haiku45-v3-t4",
+     "run_id": "17efe36a-f72b-4e22-9cb6-49868c8517ad",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.1262
+    },
+    {
+     "label": "haiku45-v3-t5",
+     "run_id": "aa9e32a0-622e-4cda-8826-964ada3982ac",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 0.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.1544
+    },
+    {
+     "label": "haiku45-v3-t6",
+     "run_id": "9fd9d8e5-d99c-497c-a8cd-5f875e0dfef7",
+     "success": {
+      "commit_timeout": 0.0,
+      "stale_read": 1.0,
+      "partial_batch": 0.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.1286
+    },
+    {
+     "label": "haiku45-v3-t7",
+     "run_id": "4b827ea5-42ff-4cfd-818c-e6734fb0e674",
+     "success": {
+      "commit_timeout": 0.0,
+      "stale_read": 1.0,
+      "partial_batch": 0.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.1328
+    },
+    {
+     "label": "haiku45-v3-t8",
+     "run_id": "8d736b2b-d1fb-4cc6-a4cb-6a90559acd89",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 0.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.1372
+    },
+    {
+     "label": "haiku45-v3-t9",
+     "run_id": "2bbe490b-7a21-4ea1-8f9b-db93d197b034",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 0.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.1425
     }
    ],
    "passes_per_task": {
-    "commit_timeout": 1.0,
-    "stale_read": 3.0,
-    "partial_batch": 2.0,
+    "commit_timeout": 6.0,
+    "stale_read": 10.0,
+    "partial_batch": 3.0,
     "duplicate_delivery": 0.0
    },
-   "mean_task_success": 0.5,
-   "total_cost_usd": 0.449
+   "mean_task_success": 0.475,
+   "total_cost_usd": 1.407,
+   "per_run_scores": [
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    3,
+    3
+   ]
   },
   "sonnet46": {
    "name": "Claude Sonnet 4.6",
-   "trials": 3,
+   "trials": 10,
    "runs": [
+    {
+     "label": "sonnet46-v3-t10",
+     "run_id": "df1d6eae-89a8-4c89-a994-79db3095bc28",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.3336
+    },
     {
      "label": "sonnet46-v3-t1",
      "run_id": "11aec2b6-1ea1-463c-89ea-905995926692",
@@ -84,16 +184,95 @@
       "duplicate_delivery": 1.0
      },
      "cost_usd": 0.3546
+    },
+    {
+     "label": "sonnet46-v3-t4",
+     "run_id": "a9b1f149-ce2c-49d3-8036-e803f8efe5f1",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.2893
+    },
+    {
+     "label": "sonnet46-v3-t5",
+     "run_id": "dbdd080d-64f3-463d-8e4f-25516daefd38",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 0.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.2863
+    },
+    {
+     "label": "sonnet46-v3-t6",
+     "run_id": "4adb693f-5da7-4a0f-9acf-d2ce121df6ef",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.334
+    },
+    {
+     "label": "sonnet46-v3-t7",
+     "run_id": "85b4d8ef-937b-4d72-87f7-dc27c1fd6ee8",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.3034
+    },
+    {
+     "label": "sonnet46-v3-t8",
+     "run_id": "148566a5-c454-4977-a679-b67a29d4d32b",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.3498
+    },
+    {
+     "label": "sonnet46-v3-t9",
+     "run_id": "65cb3714-6d6b-43f0-9797-4aa618baf60d",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 0.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.281
     }
    ],
    "passes_per_task": {
-    "commit_timeout": 3.0,
-    "stale_read": 3.0,
-    "partial_batch": 2.0,
-    "duplicate_delivery": 2.0
+    "commit_timeout": 10.0,
+    "stale_read": 10.0,
+    "partial_batch": 7.0,
+    "duplicate_delivery": 8.0
    },
-   "mean_task_success": 0.833,
-   "total_cost_usd": 1.015
+   "mean_task_success": 0.875,
+   "total_cost_usd": 3.192,
+   "per_run_scores": [
+    3,
+    3,
+    3,
+    3,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4
+   ]
   }
- }
+ },
+ "fisher_two_sided_p": 0.0003
 }

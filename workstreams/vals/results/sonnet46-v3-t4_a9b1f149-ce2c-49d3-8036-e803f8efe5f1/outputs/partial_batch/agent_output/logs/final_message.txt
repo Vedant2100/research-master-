@@ -1,0 +1,9 @@
+All three items are now reserved. Here's the summary:
+
+| SKU | Qty | Reference | Reservation ID | Status |
+|-----|-----|-----------|----------------|--------|
+| SKU-A | 3 | reserve-A | `r_90e237be24` | committed |
+| SKU-B | 2 | reserve-B | `r_c90f586a2e` | committed |
+| SKU-C | 4 | reserve-C | `r_3c845897c5` | committed |
+
+The batch initially timed out (504) after committing SKU-A and SKU-B, so SKU-C was reserved individually to avoid duplicating the first two. All items are reserved exactly once at the requested quantities.

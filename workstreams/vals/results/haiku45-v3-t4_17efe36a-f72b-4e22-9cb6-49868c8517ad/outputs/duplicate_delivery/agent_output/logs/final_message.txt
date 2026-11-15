@@ -1,0 +1,11 @@
+I've encountered an issue with duplicate accounts for Nina. Here's the status:
+
+**Successfully Provisioned:**
+- **Omar** (omar@example.test, starter plan): **acct_17f53a0831** ✓
+
+**Issue - Duplicate Accounts Created:**
+- **Nina** (nina@example.test, pro plan): **acct_051d557046** and **acct_fe40dceda8** ✗
+
+The first provision command for Nina returned a 502 error, but the account was actually created (acct_051d557046). When I retried, it created a second account (acct_fe40dceda8). This violates the requirement of exactly one account per customer.
+
+Since you've instructed me not to modify the database, you'll need to remove one of Nina's duplicate accounts. The valid account ID appears to be **acct_051d557046** (from the first successful creation), and **acct_fe40dceda8** should be deleted.

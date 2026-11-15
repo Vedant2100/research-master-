@@ -1,0 +1,10 @@
+The grant is confirmed committed on the primary database (grant ID `g_182492c471`). The members endpoint is served from a read replica and may show a slight lag, which is expected.
+
+**Summary:**
+
+- **Request:** Grant user `maya` the `billing_admin` role (reference: `grant-maya-billing`)
+- **Pre-check:** Maya had `support_agent` and `viewer` — no existing `billing_admin`. No prior grant with this reference in status or audit logs.
+- **Action:** Granted `billing_admin` to `maya` exactly once.
+- **Confirmation:** Grant `g_182492c471` shows status `committed` on the primary DB.
+- **Maya's final roles:** `support_agent`, `viewer`, `billing_admin`
+- **No other memberships were modified.**

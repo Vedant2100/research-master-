@@ -1,0 +1,9 @@
+All three items are now reserved. Here's the summary:
+
+| SKU | Quantity | Reference | Reservation ID | Status |
+|-----|----------|-----------|---------------|--------|
+| SKU-A | 3 | reserve-A | `r_1da50c44be` | committed |
+| SKU-B | 2 | reserve-B | `r_a867aaf46a` | committed |
+| SKU-C | 4 | reserve-C | `r_19230854bd` | committed |
+
+The batch command timed out mid-flight (504), so SKU-C needed a separate `reserve` call. All three items are now reserved exactly once at the requested quantities. SKU-Z was not touched.

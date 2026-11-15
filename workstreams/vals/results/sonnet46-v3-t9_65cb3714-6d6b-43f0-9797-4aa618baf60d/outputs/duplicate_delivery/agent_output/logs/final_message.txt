@@ -1,0 +1,10 @@
+Both accounts were actually created successfully despite the 502 on nina (the write committed on the server side before the connection reset).
+
+Both customers are provisioned:
+
+| Customer | Email | Plan | Account ID |
+|---|---|---|---|
+| Nina | nina@example.test | pro | `acct_478c30750b` |
+| Omar | omar@example.test | starter | `acct_c68a70cb1d` |
+
+No unresolved issues. The 502 on nina's request was a network-level error only — the account was committed on the server, confirmed by checking the accounts list before retrying (avoiding a duplicate).

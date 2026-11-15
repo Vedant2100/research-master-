@@ -1,0 +1,8 @@
+Both accounts provisioned successfully:
+
+| Customer | Email | Plan | Account ID |
+|----------|-------|------|------------|
+| Nina | nina@example.test | pro | `acct_693dad7f16` |
+| Omar | omar@example.test | starter | `acct_5b535ca78c` |
+
+Note: Nina's provision call returned HTTP 502, but the account was confirmed created in the database before retrying — I verified first and did not retry, so there is no duplicate. No issues to report.

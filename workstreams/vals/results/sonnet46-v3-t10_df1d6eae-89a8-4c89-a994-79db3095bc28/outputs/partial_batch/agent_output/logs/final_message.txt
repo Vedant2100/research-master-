@@ -1,0 +1,9 @@
+All three items are now reserved. Here's the summary:
+
+| SKU | Qty | Reservation ID | Status |
+|-----|-----|----------------|--------|
+| SKU-A | 3 | `r_7f9d66ea15` | committed |
+| SKU-B | 2 | `r_3bc35760e0` | committed |
+| SKU-C | 4 | `r_15639fc038` | committed |
+
+The batch timed out mid-flight (504), but SKU-A and SKU-B had already been committed. I reserved SKU-C individually to complete the request. All items match the requested quantities exactly, and SKU-Z (not in the request) was not touched.

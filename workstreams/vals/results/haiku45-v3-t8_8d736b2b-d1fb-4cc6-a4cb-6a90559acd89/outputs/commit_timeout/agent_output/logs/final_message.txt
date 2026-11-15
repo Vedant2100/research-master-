@@ -1,0 +1,13 @@
+Perfect! Both approved invoices have been successfully paid. Here's the summary:
+
+**Payout Results:**
+
+1. **INV-104** (Amount: 12,500)
+   - Operation ID: `op_d6b4a6c1dd`
+   - Status: Committed
+
+2. **INV-105** (Amount: 8,300)
+   - Operation ID: `op_bd678e38b7`
+   - Status: Committed
+
+Both invoices from the approved request have been paid exactly once. INV-106 was not paid as it was not listed in the request.json file, per your instructions.

@@ -33,12 +33,12 @@ As of 2026-11-14 the TrustVal implementation lives **in this directory** (`works
 | v3 design | `DESIGN_V3.md`, committed (`2116af2`) before any v3 run |
 | v3 validation | naive policy 0 / reference solution 1 on all tasks (CI containers + local); Valkyrie oracle 4/4 (`1217913d…`) |
 | Dataset v3 | `trustval/stateful-tool-recovery@3` (tags `v3`, `latest`), digest `sha256:49f35b97bbaa6a22810c24232ea9c7532151b454b59be345d1c0defdd075063b` |
-| v3 model runs | 3 runs × 4 tasks per model. Haiku 4.5: 6/12 (ct 1/3, sr 3/3, pb 2/3, dd 0/3). Sonnet 4.6: 10/12 (ct 3/3, sr 3/3, pb 2/3, dd 2/3). Fisher p = 0.19. All 8 failures: blind retry of a committed non-idempotent write; 2 ended in a false success claim. Re-graded locally, matches Valkyrie |
-| Spend | about $2.03 Claude Code reported cost across all runs (v2 $0.57, v3 $1.46), plus Modal sandbox time on workspace `artemis-76548` |
+| v3 model runs | 10 runs × 4 tasks per model. Haiku 4.5: 19/40 (ct 6/10, sr 10/10, pb 3/10, dd 0/10). Sonnet 4.6: 35/40 (ct 10/10, sr 10/10, pb 7/10, dd 8/10). Run-level permutation p = 2.3e-4. All 26 failures: duplicate from a blind retry of a committed write. False success claims: Haiku 4/21 failures, Sonnet 4/5. Local regrade matches Valkyrie |
+| Spend | about $5.2 Claude Code reported cost across all runs (v2 $0.57, v3 $4.60), plus Modal sandbox time on workspace `artemis-76548` |
 | Results in README / Vals project entry | no |
 
 ## Next decisive action
-Owner: write the one-paragraph human overview for the README, review PRs #15/#16, and fill the Vals project entry (name, description, repo link). Optional: more runs per model to tighten the Haiku/Sonnet comparison; replace or harden stale_read (saturated in v3).
+Owner: write the one-paragraph human overview for the README, review PRs #15/#16, and fill the Vals project entry (name, description, repo link). Optional: replace or harden stale_read (saturated in v3) and close the partial_batch single-item loophole, as a preregistered v4.
 
 ## Do not overclaim
 CI or deterministic integration tests passing is not evidence of frontier-model capability. No results, run IDs or dataset digests exist until Valkyrie reports them. Never modify a task to make a model pass; never commit credentials.

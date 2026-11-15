@@ -1,0 +1,8 @@
+Both invoices have been paid exactly once:
+
+| Invoice | Amount | Operation ID | Status |
+|---------|--------|-------------|--------|
+| INV-104 | 12,500 | `op_449c626b96` | committed |
+| INV-105 | 8,300 | `op_bd74b7538e` | committed |
+
+Note: INV-104's pay call returned a 504 timeout, but I checked the ledger before retrying and confirmed the payment had committed — so I did not retry it. No unresolved issues.
