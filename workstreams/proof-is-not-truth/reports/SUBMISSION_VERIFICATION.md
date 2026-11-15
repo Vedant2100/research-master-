@@ -11,13 +11,13 @@
 ## 1. Commit and Git Integrity
 
 - **Pinned Pre-Fix Baseline Commit SHA:**  
-  `840d3fb682caa2ae811248c60d98c6f4a26870f2`
+  `840d3fb682caa2ae811248c60d98c6f4a26870f2` (immutable baseline anchor)
 - **Substantive Candidate Commit SHA:**  
-  `dbf0d4b3bff987569a5e1714f1d47dcb63d48b75`
-- **Subsequent Audit-Only Commit SHA:**  
-  `6ad40b003ac770f6491d344d097b7726081eca73`
-- **Current Final Verification Patch Commit SHA:**  
-  `528aab6985aeeae6bf04cf288cb43315a6b73812`
+  `dbf0d4b3bff987569a5e1714f1d47dcb63d48b75` (last substantive code/test change)
+- **Subsequent Documentation Audit Commit SHA:**  
+  `6ad40b003ac770f6491d344d097b7726081eca73` (documentation audit commit)
+- **Runtime Candidate Verification:**  
+  Current candidate branch (`agent/proof-is-not-truth/apart-sprint`), runtime `HEAD` commit SHA, and clean working tree status are dynamically resolved, verified, and logged at execution time by `scripts/verify_submission.py` (avoiding hardcoded, self-referential commit hash loops).
 - **Repository Branch:** `agent/proof-is-not-truth/apart-sprint`
 - **Remote:** `https://github.com/Vedant2100/research-master-`
 - **Pull Request:** PR #13 (`agent/proof-is-not-truth/apart-sprint` -> `main`)
@@ -103,6 +103,7 @@ cd workstreams/proof-is-not-truth && python3 scripts/verify_submission.py
 ```
 **Exit Code:** 0  
 **Summary of Checks:**
+- Section 0 (Execution Context & Git Branch Verification): Confirmed current branch is `agent/proof-is-not-truth/apart-sprint`, resolved runtime candidate `HEAD` commit SHA, and verified clean working tree (`git status --porcelain` is empty).
 - Section 1 (Real Immutability & Manifest Allowlist): Confirmed pinned baseline commit `840d3fb682caa2ae811248c60d98c6f4a26870f2` exists in Git history; manifest entries match `EXPECTED_PROTECTED_PATHS` set exactly (13 items, no duplicates); all 13 protected artifacts match the Git baseline hash and disk hash. Zero git diff.
 - Section 2 (Harness Regression Tests): Programmatically ran all 11 harness regression tests; all pass.
 - Section 2b (Verifier Negative Failure-Mode Tests): Programmatically ran all 6 negative verifier tests; all pass.
@@ -136,6 +137,8 @@ The verifier confirmed programmatically that the following unsupported overclaim
 3. `first empirical demonstration`: **ABSENT**
 4. `proves that signatures cause`: **ABSENT**
 5. `provenance caused signature blindness`: **ABSENT**
+6. `causing agents to refuse`: **ABSENT**
+7. `our empirical findings establish`: **ABSENT**
 
 ---
 

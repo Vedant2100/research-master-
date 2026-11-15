@@ -88,6 +88,58 @@ def log_check(name: str, passed: bool, details: str = ""):
         raise AssertionError(f"VERIFIER FAILURE: {name} - {details}")
 
 
+def verify_execution_context(
+    expected_branch: str = "agent/proof-is-not-truth/apart-sprint",
+    require_clean_tree: bool = True,
+    repo_root: Path = REPO_ROOT,
+    _status_override: str | None = None
+) -> Tuple[str, str]:
+    """Verify that execution is running on the intended git branch with a clean working tree.
+    
+    Dynamically prints and verifies the current branch and HEAD commit SHA at runtime.
+    """
+    print("\n--- 0. Execution Context & Git Branch Verification ---")
+    
+    # 1. Resolve current branch
+    branch_cmd = ["git", "rev-parse", "--abbrev-ref", "HEAD"]
+    branch_res = subprocess.run(branch_cmd, cwd=repo_root, capture_output=True, text=True)
+    current_branch = branch_res.stdout.strip()
+    
+    log_check(
+        f"Git branch is '{expected_branch}' (found: '{current_branch}')",
+        current_branch == expected_branch,
+        f"Expected branch '{expected_branch}', but currently on '{current_branch}'"
+    )
+    
+    # 2. Resolve current HEAD SHA
+    head_cmd = ["git", "rev-parse", "HEAD"]
+    head_res = subprocess.run(head_cmd, cwd=repo_root, capture_output=True, text=True)
+    current_head = head_res.stdout.strip()
+    log_check(
+        f"Runtime candidate HEAD SHA resolved: {current_head}",
+        head_res.returncode == 0 and len(current_head) == 40,
+        f"Failed to resolve valid 40-char HEAD SHA: {current_head}"
+    )
+    
+    # 3. Check clean working tree
+    if _status_override is not None:
+        uncommitted = _status_override.strip()
+    else:
+        status_cmd = ["git", "status", "--porcelain"]
+        status_res = subprocess.run(status_cmd, cwd=repo_root, capture_output=True, text=True)
+        uncommitted = status_res.stdout.strip()
+        
+    if require_clean_tree:
+        log_check(
+            "Working tree is clean (no uncommitted or untracked changes)",
+            uncommitted == "",
+            f"Working tree has uncommitted changes:\n{uncommitted}"
+        )
+    
+    print(f"Verified Execution Context: Branch={current_branch}, HEAD={current_head}")
+    return current_branch, current_head
+
+
 def verify_real_artifact_immutability(
     baseline_commit: str = PINNED_BASELINE_COMMIT,
     manifest_entries: List[Tuple[str, str]] = PROTECTED_MANIFEST_ENTRIES,
@@ -380,6 +432,7 @@ def verify_documentation_and_claim_calibration(
         "proves that signatures cause",
         "provenance caused signature blindness",
         "causing agents to refuse",
+        "our empirical findings establish",
     ]
     for claim in prohibited_claims:
         log_check(f"Prohibited overclaim absent from report: '{claim}'",
@@ -448,6 +501,7 @@ def main():
     print("ADVERSARIAL VERIFICATION SUITE: PROOF IS NOT TRUTH (APART SPRINT)")
     print("=====================================================================")
     
+    verify_execution_context()
     verify_real_artifact_immutability()
     verify_regression_tests()
     verify_verifier_negative_tests()

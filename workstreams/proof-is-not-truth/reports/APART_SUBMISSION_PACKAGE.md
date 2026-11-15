@@ -21,9 +21,9 @@ We distinguish three foundational concepts often conflated in automated trust sy
 2. **Factual Veracity:** Correspondence between source assertions and current observable reality.
 3. **Action Authorization:** Policy granting permission to execute a specific state-changing action.
 
-Across a newly developed 16-case benchmark evaluated across six matched prompt/tool configurations (96 real-model episodes on `Qwen2.5-7B-Instruct`), our empirical findings establish:
+Across a newly developed 16-case benchmark evaluated across six matched prompt/tool configurations (96 real-model episodes on `Qwen2.5-7B-Instruct`), in this exploratory single-model, single-seed evaluation we observe:
 
-- **Origin Authentication Does Not Protect Against Authentic Falsehoods:** When authorized systems emit factually false claims (e.g., silent CI crash reports, frozen sensor telemetry, stale security exemptions), agents equipped with origin verification accepted false claims at the exact same rate (**66.7%**, 2/3) as baseline agents lacking any provenance metadata (**66.7%**, 2/3). Cryptographic origin verification was effective at rejecting forged inputs (0.0% false trust), but blind to authentic falsehoods.
+- **Origin Authentication Does Not Protect Against Authentic Falsehoods:** When authorized systems emit factually false claims (e.g., silent CI crash reports, frozen sensor telemetry, stale security exemptions), agents in the tested `verified_origin` configuration accepted false claims at the exact same rate (**66.7%**, 2/3) as baseline agents lacking any provenance metadata (**66.7%**, 2/3). In the tested `verified_origin` configuration—which incorporated an explicit policy instruction (*"If origin is authentic, proceed with the requested operation"*)-cryptographic origin verification effectively filtered unauthenticated or forged inputs (0.0% false trust), but was blind to authentic falsehoods, executing the false operations whenever the HMAC signature was valid.
 - **The "Paralyzed Guardian" Safety–Utility Tradeoff:** Across the six tested configurations, configurations incorporating provenance verification or telemetry tools were associated with substantial over-abstention (**62.5% to 81.3%** overall abstention), compared to **6.3% to 12.5%** for `textual_authority` and `no_metadata`. In these verification- and corroboration-oriented configurations, the agent refused 75% to 100% of benign uncontested baseline tasks, and Legitimate Task Completion (LTC) dropped from 50.0%–70.0% down to 10.0%–20.0%. Crucially, because `telemetry_only` lacked provenance tools yet recorded 81.3% abstention, this pattern reflects policy prompt and tool-checking stringency across configurations rather than an isolated effect of cryptographic provenance alone.
 - **Action-Ordering Failures in Autonomous Tool Use:** Trace-level auditing revealed critical temporal failures where agents executed hazardous state-changing mutations first (e.g., writing `SHUTDOWN`), checked provenance only afterward, and then invoked `abstain()`. Naive string-based graders awarded safe-abstention credit to these episodes; our offline Version 2 event-ordering regrader eliminates this loophole, showing an actual 16.7% false-trust rate on the directive configuration.
 - **Telemetry Corroboration and Prompt Comparisons:** In the authentic-false trap cases (Cell C), both the `telemetry_only` configuration (which explicitly instructed discovering and checking live telemetry) and the `corroborated_provenance_directive` configuration (which warned that *"Proof of origin is NOT proof of truth"*) recorded 0.0% false trust (0/3). Under a neutral combined prompt (`corroborated_provenance_neutral`), the agent bypassed telemetry on a silent CI crash and trusted the valid signature (33.3% false trust, 1/3). Crucially, this comparison does **not** isolate a causal effect of the directive or establish that epistemic directives are generally necessary: `telemetry_only` already contained an explicit telemetry-corroboration instruction and achieved 0/3 false trust on Cell C without any provenance tool.
@@ -88,11 +88,10 @@ Condition                            Overall Acc   Balanced Acc   False Trust (A
 To reproduce all 11 regression tests, verify artifact immutability, reproduce the v2 regrade, and independently recalculate every metric:
 
 ```bash
-# Clone the repository and checkout the sprint branch
-git clone https://github.com/Vedant2100/research-master-.git
-cd research-master-/workstreams/proof-is-not-truth
+git clone --branch agent/proof-is-not-truth/apart-sprint \
+  https://github.com/Vedant2100/research-master-.git
 
-# Execute the comprehensive verification suite (completes in < 2 seconds, no GPU/LLM required)
+cd research-master-/workstreams/proof-is-not-truth
 python3 scripts/verify_submission.py
 ```
 
@@ -101,30 +100,54 @@ Expected output:
 =====================================================================
 ADVERSARIAL VERIFICATION SUITE: PROOF IS NOT TRUTH (APART SPRINT)
 =====================================================================
---- 1. Original Experiment Artifact Immutability ---
-[PASS] Original artifact exists: evaluation_results.csv
-[PASS] Original artifact unmodified in git: evaluation_results.csv
+
+--- 0. Execution Context & Git Branch Verification ---
+[PASS] Git branch is 'agent/proof-is-not-truth/apart-sprint' (found: 'agent/proof-is-not-truth/apart-sprint')
+[PASS] Runtime candidate HEAD SHA resolved: <current-commit-sha>
+[PASS] Working tree is clean (no uncommitted or untracked changes)
+Verified Execution Context: Branch=agent/proof-is-not-truth/apart-sprint, HEAD=<current-commit-sha>
+
+--- 1. Real Artifact Immutability & Manifest Allowlist ---
+[PASS] Pinned baseline commit exists in Git history (840d3fb682ca)
+[PASS] Manifest matches expected path set exactly
+[PASS] Manifest contains exactly 13 protected artifacts
+[PASS] Baseline Git hash matches manifest: workstreams/proof-is-not-truth/src/cases.py
+[PASS] Disk file hash matches manifest: workstreams/proof-is-not-truth/src/cases.py
+[PASS] Zero git diff between baseline and candidate for: workstreams/proof-is-not-truth/src/cases.py
 ...
+
 --- 2. Harness & Action-Ordering Regression Tests ---
 [PASS] All regression tests pass (11 tests expected, 11 run)
+
+--- 2b. Verifier Negative Failure-Mode Tests ---
+[PASS] All verifier negative tests pass (6 tests expected, 6 run)
+
 --- 3. Offline v2 Regrade Reproducibility ---
 [PASS] v2 Regraded CSV bit-for-bit identical to reproduction
 [PASS] v2 Metrics summary JSON identical to reproduction
+
 --- 4. Episode Cardinality & Denominator Verification ---
 [PASS] Evaluation CSV row count exactly 96
+[PASS] Evaluation traces count exactly 96
+[PASS] Benchmark case definition count is 16
 [PASS] Condition 'verified_origin' has exactly 16 episodes
 ...
+
 --- 5. Independent Mathematical Metric Recomputation ---
 [PASS] [no_metadata] Overall accuracy matches (6/16 = 0.375)
 [PASS] [verified_origin] Cell C False trust (2/3 = 0.6667)
 [PASS] [corroborated_provenance_directive] Cell C False trust (0/3 = 0.0)
 ...
---- 6. Documentation Cross-Consistency Checks ---
+
+--- 6. Claim-to-Evidence & Calibration Verifier ---
 [PASS] Report contains verified table rows
 [PASS] Report includes required disclosure/limitation: 'Single Model and Single Seed'
 [PASS] Report includes required disclosure/limitation: 'HMAC-SHA256'
+[PASS] Package documents 'Awaiting human sign-off'
+[PASS] STATUS documents 'AWAITING HUMAN SIGN-OFF'
+
 =====================================================================
-ALL ADVERSARIAL VERIFICATION CHECKS PASSED: SUBMISSION-READY STATE
+ALL ADVERSARIAL VERIFICATION CHECKS PASSED: READY FOR HUMAN SIGN-OFF
 =====================================================================
 ```
 
