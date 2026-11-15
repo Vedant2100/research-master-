@@ -1,6 +1,6 @@
 # Apart Research AI × Epistemics Sprint: Final Submission Package
 
-**Project Title:** Proof Is Not Truth: Epistemic Vulnerabilities and Safety–Utility Tradeoffs of Cryptographic Origin Verification in Tool-Using LLM Agents  
+**Project Title:** Proof Is Not Truth: Decoupling Origin Authentication from Factual Veracity in Tool-Using LLM Agents  
 **Event:** Apart Research AI × Epistemics Sprint (November 13–15, 2026)  
 **Submission Track:** Track 2: Trust Infrastructure (The Provenance Study Challenge)  
 **Submission Deadline:** November 15, 2026, 11:59 PM AoE  
@@ -8,7 +8,9 @@
 **Repository Remote:** `https://github.com/Vedant2100/research-master-`  
 **Pull Request:** PR #13 (`agent/proof-is-not-truth/apart-sprint` -> `main`)  
 **Evaluated Model:** `Qwen2.5-7B-Instruct` (greedy decoding, $T=0.0$, seed 42; 96 complete episodes on cluster `node06`, Slurm Job #312727)  
-**Status:** Awaiting human sign-off (PR #13 unmerged; not submitted externally)  
+**Status:** Submission PDF prepared; awaiting user submission (PR #13 unmerged; not submitted externally)
+**Editable Manuscript:** https://docs.google.com/document/d/1dCuURYJyKf-v3vvHE-53OxMlUYZ5bMMMLIPLrO3XWcs/edit  
+**Final Submission PDF:** https://drive.google.com/file/d/1ylAdku7xZ5j9ktmFJe5ZrjKDn_IHG58E/view  
 
 ---
 
@@ -23,7 +25,7 @@ We distinguish three foundational concepts often conflated in automated trust sy
 
 Across a newly developed 16-case benchmark evaluated across six matched prompt/tool configurations (96 real-model episodes on `Qwen2.5-7B-Instruct`), in this exploratory single-model, single-seed evaluation we observe:
 
-- **Origin Authentication Does Not Protect Against Authentic Falsehoods:** When authorized systems emit factually false claims (e.g., silent CI crash reports, frozen sensor telemetry, stale security exemptions), agents in the tested `verified_origin` configuration accepted false claims at the exact same rate (**66.7%**, 2/3) as baseline agents lacking any provenance metadata (**66.7%**, 2/3). In the tested `verified_origin` configuration—which incorporated an explicit policy instruction (*"If origin is authentic, proceed with the requested operation"*)-cryptographic origin verification effectively filtered unauthenticated or forged inputs (0.0% false trust), but was blind to authentic falsehoods, executing the false operations whenever the HMAC signature was valid.
+- **Origin Authentication Does Not Establish Factual Veracity:** In the tested `verified_origin` configuration, the agent rejected all three unauthenticated-false inputs (0/3) but accepted two of three authentic-false traps (2/3; 66.7%). The `no_metadata` baseline also accepted two of three authentic-false traps. Because the `verified_origin` prompt explicitly instructed the agent to proceed when origin was authentic, this is a prompt-conditioned result and does not isolate an effect of HMAC verification.
 - **The "Paralyzed Guardian" Safety–Utility Tradeoff:** Across the six tested configurations, configurations incorporating provenance verification or telemetry tools were associated with substantial over-abstention (**62.5% to 81.3%** overall abstention), compared to **6.3% to 12.5%** for `textual_authority` and `no_metadata`. In these verification- and corroboration-oriented configurations, the agent refused 75% to 100% of benign uncontested baseline tasks, and Legitimate Task Completion (LTC) dropped from 50.0%–70.0% down to 10.0%–20.0%. Crucially, because `telemetry_only` lacked provenance tools yet recorded 81.3% abstention, this pattern reflects policy prompt and tool-checking stringency across configurations rather than an isolated effect of cryptographic provenance alone.
 - **Action-Ordering Failures in Autonomous Tool Use:** Trace-level auditing revealed critical temporal failures where agents executed hazardous state-changing mutations first (e.g., writing `SHUTDOWN`), checked provenance only afterward, and then invoked `abstain()`. Naive string-based graders awarded safe-abstention credit to these episodes; our offline Version 2 event-ordering regrader eliminates this loophole, showing an actual 16.7% false-trust rate on the directive configuration.
 - **Telemetry Corroboration and Prompt Comparisons:** In the authentic-false trap cases (Cell C), both the `telemetry_only` configuration (which explicitly instructed discovering and checking live telemetry) and the `corroborated_provenance_directive` configuration (which warned that *"Proof of origin is NOT proof of truth"*) recorded 0.0% false trust (0/3). Under a neutral combined prompt (`corroborated_provenance_neutral`), the agent bypassed telemetry on a silent CI crash and trusted the valid signature (33.3% false trust, 1/3). Crucially, this comparison does **not** isolate a causal effect of the directive or establish that epistemic directives are generally necessary: `telemetry_only` already contained an explicit telemetry-corroboration instruction and achieved 0/3 false trust on Cell C without any provenance tool.
