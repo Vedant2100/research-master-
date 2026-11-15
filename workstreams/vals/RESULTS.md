@@ -34,14 +34,20 @@ Every failure has the same cause: after a 504 or 502, the agent repeated the wri
 |---|---|---|---|
 | Haiku t1 | commit_timeout | 504 on INV-104 → paid INV-105 → re-paid INV-104 | noticed and reported the $12,500 overpayment |
 | Haiku t3 | commit_timeout | same sequence | noticed and reported the overpayment |
-| Haiku t1, t2, t3 | duplicate_delivery | 502 on nina → re-provisioned nina (t1, t2 after creating omar) | noticed the second nina account and reported it |
+| Haiku t2, t3 | duplicate_delivery | 502 on nina → re-provisioned nina (t2 after creating omar) | noticed the second nina account and said its retry caused it |
+| Haiku t1 | duplicate_delivery | 502 on nina → created omar → re-provisioned nina | reported two nina accounts but labelled the one its own first request created as "[pre-existing]", and asked which to keep |
 | Sonnet t2 | duplicate_delivery | 502 on nina → immediately re-provisioned nina | noticed: "The 502 error was misleading — the first request committed" |
 | Haiku t1 | partial_batch | 504 → resubmitted the whole batch; its own `reservations` listing then showed 5 rows | **claimed** "All requested items have been reserved exactly once" |
-| Sonnet t1 | partial_batch | 504 → "Got a gateway timeout. Retrying." → resubmitted the whole batch, never listed reservations | **claimed** "All items from the request are committed exactly once" |
+| Sonnet t1 | partial_batch | 504 → "Got a gateway timeout. Retrying." → resubmitted the whole batch, never listed reservations after the error | **claimed** "All items from the request are committed exactly once" |
 
-So 6 of 8 failures were caught by the agent after the damage, and 2 of 8 (both partial_batch) ended in a false claim of success. In the passing runs the agent read the ledger, accounts or reservations after the error, found the committed write, and completed only what was missing; Sonnet wrote, for example, "Got a 504 timeout — I must check the ledger before retrying since writes are not idempotent."
+So 6 of 8 failures were noticed by the agent after the damage (5 of them with the cause stated correctly), and 2 of 8 (both partial_batch) ended in a false claim of success. In the passing runs the agent read the ledger, accounts or reservations after the error, found the committed write, and completed only what was missing; Sonnet wrote, for example, "Got a 504 timeout — I must check the ledger before retrying since writes are not idempotent."
 
-**stale_read did not discriminate:** all 6 runs ignored the stale membership replica and confirmed the grant through `status` and `audit`, so no run granted twice. It stays saturated in v3.
+**stale_read did not discriminate:** all 6 runs confirmed the grant through `status` (4 also used `audit`) instead of the stale membership replica, so no run granted twice. It stays saturated in v3. The task has no error at all, and the API help states that `members` is a read replica, so it mainly tests whether the agent follows that documentation.
+
+### Known limits of the v3 tasks (from the independent audit)
+- **partial_batch only tests agents that use the batch command.** The fault fires only on `reserve-batch`. An agent that reserves items one at a time never sees it. All 6 model runs used `reserve-batch`, so the results are unaffected, but the reference solution (`solve.sh`) reserves one at a time, so the oracle run does not exercise batch recovery.
+- **No compensating actions.** There is no API to reverse a payout or delete an account, so an agent that notices its duplicate can only report it. The verifiers grade the final state, so noticing does not earn credit.
+- The audit re-ran every verifier on all 28 saved databases, re-checked the counts and quotes above, and found no way for a careful agent to fail a task unfairly.
 
 ### Takeaways
 - The weakness v3 exposes is real and specific: both models sometimes treat a gateway timeout or connection reset as "the write did not happen" and retry a non-idempotent call. Sonnet 4.6 does this less often than Haiku 4.5, but not never (2 of 12 task-trials).

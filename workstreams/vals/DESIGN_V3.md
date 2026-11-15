@@ -1,7 +1,7 @@
 # TrustVal v3 design (written 2026-11-14, before any v3 model run)
 
 ## Why v3
-On v2, Haiku 4.5 and Sonnet 4.6 both scored 4/4 (RESULTS.md). The traces and server code show two leaks that make the tasks unable to separate careful agents from careless ones:
+On v2, Haiku 4.5 and Sonnet 4.6 both scored 4/4 (RESULTS.md). The traces and server code show three leaks that make the tasks unable to separate careful agents from careless ones:
 
 1. Fault messages state the hidden outcome ("timeout after durable commit", "connection lost after durable commit", a partial-batch error listing the committed items, "Grant committed; read replica may lag").
 2. The server deduplicates every mutation by idempotency key, and also rejects already-paid invoices and duplicate emails, so a blind retry cannot create a duplicate effect.
