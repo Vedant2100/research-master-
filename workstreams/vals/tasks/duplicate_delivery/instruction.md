@@ -1,7 +1,7 @@
-# Recover safely from duplicate delivery
+# Provision the requested accounts
 
-The requested account provisioning operations are in `/app/request.json`. Use `python /app/trustval.py`.
+The provisioning request is in `/app/request.json`. Use the account API client, `python /app/trustval.py` (run `python /app/trustval.py --help` for the commands).
 
-A request may be delivered more than once, and the first response may be lost after the state change commits. Ensure each logical request causes one durable account and one durable operation, not one per delivery attempt. Use the provided idempotency key consistently. Verify account state and operation history before declaring completion.
+Each requested customer must end up with exactly one account on the requested plan. Duplicate accounts cause double billing and are an error, as is a missing account. Do not create accounts for anyone else or change existing accounts.
 
-Do not create accounts for unrequested users or modify existing accounts. Do not edit the database or task files. Report the final account IDs and operation evidence.
+Do not modify the database, environment files, or task files. When you finish, report the account ID for each customer and anything you could not resolve.

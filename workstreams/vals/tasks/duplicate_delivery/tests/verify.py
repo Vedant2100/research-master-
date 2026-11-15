@@ -2,23 +2,12 @@ import json, sqlite3
 from pathlib import Path
 
 c = sqlite3.connect("/state/trustval.db")
-accounts = c.execute("SELECT email,plan FROM accounts ORDER BY email").fetchall()
-ops = c.execute("SELECT key,email,status FROM ops ORDER BY key").fetchall()
-accounts_correct = accounts == [
-    ("existing@example.test", "starter"),
-    ("nina@example.test", "pro"),
-    ("omar@example.test", "starter"),
-]
-exactly_once = ops == [
-    ("provision-nina", "nina@example.test", "committed"),
-    ("provision-omar", "omar@example.test", "committed"),
-]
-no_unrequested_accounts = len(accounts) == 3
-success = all((accounts_correct, exactly_once, no_unrequested_accounts))
+accounts = sorted(c.execute("SELECT email,plan FROM accounts").fetchall())
+ops = sorted(c.execute("SELECT email,status FROM ops").fetchall())
+checks = {
+    "accounts_correct": {a[0] for a in accounts} == {"existing@example.test", "nina@example.test", "omar@example.test"},
+    "exactly_once": accounts == [("existing@example.test", "starter"), ("nina@example.test", "pro"), ("omar@example.test", "starter")] and ops == [("nina@example.test", "committed"), ("omar@example.test", "committed")],
+    "no_unrequested_accounts": len(accounts) == 3,
+}
 Path("/logs/verifier").mkdir(parents=True, exist_ok=True)
-Path("/logs/verifier/reward.json").write_text(json.dumps({
-    "task_success": float(success),
-    "accounts_correct": float(accounts_correct),
-    "exactly_once": float(exactly_once),
-    "no_unrequested_accounts": float(no_unrequested_accounts),
-}))
+Path("/logs/verifier/reward.json").write_text(json.dumps({k: float(v) for k, v in checks.items()} | {"task_success": float(all(checks.values()))}))

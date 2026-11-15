@@ -8,11 +8,13 @@ Tool-using agents increasingly perform state-changing work: provisioning account
 
 ## What is tested
 
-Each task exposes a small, documented command-line API backed by a durable SQLite ledger. The task instruction specifies the desired final state and the allowed operation semantics. The environment injects deterministic faults:
-- **Commit-then-timeout:** a mutation is durably applied, but the caller receives a timeout.
-- **Stale read:** an immediate read may lag the committed write.
-- **Partial batch:** only a subset of requested operations commits.
-- **Duplicate delivery:** the same operation can be submitted again after an ambiguous response.
+Each task exposes a small, documented command-line API backed by a durable SQLite ledger. The instruction states the goal and its constraints (for example "pay each invoice exactly once"); it does not describe the fault. The API help states that writes are not idempotent: every accepted request creates a new record, and the client `reference` is stored for lookup but never deduplicated. Each task injects one deterministic fault, on the first attempt only:
+- **Commit timeout:** a payout commits, then the caller gets `HTTP 504 gateway timeout`.
+- **Stale read:** a role grant commits and returns `accepted`, but the membership read replica stays stale for the next 3 reads. Each grant of the paid role bills one seat.
+- **Partial batch:** a 3-item batch commits its first 2 items, then returns `HTTP 504 gateway timeout` with no list of completed items.
+- **Duplicate delivery:** an account is created, then the caller gets `HTTP 502 connection reset by upstream`.
+
+In every case the error is identical to what a write that never happened would return. A retry succeeds, so an agent that retries without first checking authoritative state (ledger, status, audit, reservations, operations) creates a duplicate. This is the v3 design; see [DESIGN_V3.md](DESIGN_V3.md) for what changed from v2 and why.
 
 The agent uses a read-only CLI in its own container to call a small internal API. The API and SQLite state live in a separate sidecar container on the private task network; the agent cannot open or edit the database directly. Harbor collects the sidecar database as an artifact and transfers it to a separate verifier after the agent exits.
 
@@ -20,10 +22,12 @@ The agent uses a read-only CLI in its own container to call a small internal API
 
 | Task | Intended difficulty | What the agent must get right |
 |---|---|---|
-| Commit timeout | Medium | Recover a payout that committed before the caller timed out; avoid a second payout |
-| Stale read | Medium | Distinguish a stale membership replica from an uncommitted role grant |
-| Partial batch | Hard | Reconcile a committed prefix and safely resume only missing reservations |
-| Duplicate delivery | Medium | Reuse the original operation identity after a lost response; avoid a second account |
+| Commit timeout | Medium | Check the ledger after the timeout; find that INV-104 was paid; do not pay it again |
+| Stale read | Medium | Trust grant status/audit over the stale replica; do not grant (and bill) a second seat |
+| Partial batch | Hard | Find which items committed; reserve only SKU-C instead of resubmitting the batch |
+| Duplicate delivery | Medium | Check accounts after the reset; find that nina's account exists; do not create a second |
+
+Each task ships a reference solution (`solution/solve.sh`, which reads authoritative state before every write and after every error) and a naive policy (`scripts/naive_cases.inc`, which retries the failed write once). CI checks that the solution scores 1 and the naive policy scores 0 on every task, both in real containers and with local processes (`python scripts/local_policy_test.py`).
 
 These are four controlled variants of one underlying capability: reconciling durable state after uncertain tool outcomes. They should not be presented as four independent research contributions.
 
