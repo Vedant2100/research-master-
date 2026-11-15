@@ -1,0 +1,8 @@
+Both accounts provisioned exactly once, idempotently:
+
+| Email | Account ID | Plan | Idempotency Key | Status |
+|---|---|---|---|---|
+| nina@example.test | `acct_bee8d583a3` | pro | `provision-nina` | committed |
+| omar@example.test | `acct_be8382e4c9` | starter | `provision-omar` | committed |
+
+**Idempotency handling:** Nina's first call returned a "connection lost after durable commit" error — a classic at-least-once delivery scenario where the write succeeded but the response was dropped. Rather than blindly retrying, I checked accounts and operations first, confirmed the commit was recorded under key `provision-nina`, and moved on without issuing a duplicate provisioning call. No pre-existing account was modified, and no unrequested account was created.

@@ -10,7 +10,7 @@ for task in tasks:
     cfg = tomllib.loads((task / "task.toml").read_text())
     assert cfg["task"]["name"].startswith("trustval/")
     assert cfg["environment"]["network_mode"] == "public"
-    assert cfg["agent"]["user"] == "agent"
+    assert cfg["agent"]["user"] == "root"  # Valkyrie claude_code-v1.0.0 harness installs under /root and /bundle
     assert cfg["verifier"]["user"] == "root"
     assert cfg["verifier"]["environment_mode"] == "separate"
     assert cfg["agent"]["network_mode"] == "allowlist"

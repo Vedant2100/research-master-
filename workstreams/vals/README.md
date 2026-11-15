@@ -36,16 +36,16 @@ The hidden verifier reads the SQLite database directly after the agent exits. It
 4. failed/unapplied items are recovered where safe;
 5. unrelated state remains unchanged.
 
-A fluent final answer, a CLI success string, or a locally edited file cannot earn credit. The verifier runs as root in a separate container, receives the state artifact from the sidecar, and grades the authoritative database snapshot. The agent runs as an unprivileged user.
+A fluent final answer, a CLI success string, or a locally edited file cannot earn credit. The verifier runs as root in a separate container, receives the state artifact from the sidecar, and grades the authoritative database snapshot. The agent process runs as root inside its own container, because Valkyrie's `claude_code-v1.0.0` harness installs Claude Code under `/root` and its runner under a root-only `/bundle` (dataset v1 used an unprivileged `agent` user, and every task failed with `Permission denied` before the model ran). Root in the agent container does not reach the graded state: the SQLite ledger lives only in the sidecar, the agent reaches it only through the HTTP API, and the verifier runs in a separate container with the tests.
 
 ## Benchmark status
 
 - Harbor task format: implemented in this directory.
 - Local deterministic simulator and hidden-state verifier: implemented.
-- Static task validation and Docker image builds: CI check pending.
-- Full Harbor agent/verifier execution: pending.
-- Frontier-model runs: not yet run.
-- Valkyrie upload/run: not yet run; requires the team's authenticated CLI session, Modal setup, and model/API credits.
+- Static task validation and Docker image builds: CI passes.
+- Full Harbor agent/verifier execution: done on Valkyrie (Modal VM runtime).
+- Frontier-model runs: Haiku 4.5 and Sonnet 4.6, 4/4 each on v2 (see Results).
+- Valkyrie upload: `trustval/stateful-tool-recovery@2`.
 
 ## Repository layout
 
@@ -90,10 +90,18 @@ The hosted route does **not** require Claude Code installed on your laptop. Valk
 uv tool install valkyrie-cli
 valkyrie login
 valkyrie org use hackathon-trustval-416d2c2ec6
-valkyrie secret set anthropic-api-key
+valkyrie secret set anthropic-api-key   # run in a real terminal; the hidden prompt needs a TTY
+valkyrie agent install \
+  https://github.com/vals-ai/public-agent-registry/tree/main/examples/claude_code-v1.0.0
 ```
 
-In the Modal workspace where you claimed the hackathon credits, create a Modal API token. Save its ID and secret in a local `modal.json` (do not commit it), then connect it to Valkyrie:
+In the Modal workspace where you claimed the hackathon credits, create a Modal API token. Save its ID and secret in a local `modal.json` (do not commit it). TrustVal tasks use Docker Compose (agent container plus state sidecar), which Valkyrie runs on Modal only with the VM runtime, so include `"runtime": "vm"`:
+
+```json
+{"MODAL_TOKEN_ID": "ak-...", "MODAL_TOKEN_SECRET": "as-...", "runtime": "vm"}
+```
+
+Then connect it to Valkyrie:
 
 ```bash
 valkyrie secret set modal-credentials < modal.json
@@ -120,23 +128,26 @@ From this directory, generate the pinned dataset manifest and publish the task f
 uv tool install valkyrie-cli
 valkyrie org use hackathon-trustval-416d2c2ec6
 python scripts/write_manifest.py
-valkyrie dataset push trustval/stateful-tool-recovery ./tasks --tag v1
+valkyrie dataset push trustval/stateful-tool-recovery ./tasks   # tag comes from dataset.toml (v2)
 valkyrie run start --agent claude_code-v1.0.0 \
-  --dataset trustval/stateful-tool-recovery@v1 \
+  --dataset trustval/stateful-tool-recovery@v2 \
   --model anthropic/claude-sonnet-4-6 --provider modal \
   -s ANTHROPIC_API_KEY anthropic-api-key \
   --concurrency 1 --connect
 ```
 
-The secret name after `-s` refers to the organization secret created during setup; it is not the API key itself. Modal runs the task containers remotely, so local Docker is not required for the hosted run. Local Docker is required only for local Harbor validation. Record the actual run ID, exact model identifier, dataset digest, and run configuration in the Results section below. Do not describe a run as completed until Valkyrie reports its terminal status.
+The secret name after `-s` refers to the organization secret created during setup; it is not the API key itself. Modal runs the task containers remotely, so local Docker is not required for the hosted run. Local Docker is required only for local Harbor validation. Record the actual run ID, exact model identifier, dataset digest, and run configuration in `RESULTS.md`. Fetch results and traces with `valkyrie run results RUN_ID --path results.json` and `valkyrie run outputs RUN_ID --output-dir DIR`, then check them with `python scripts/regrade.py DIR`. Do not describe a run as completed until Valkyrie reports its terminal status.
 
 ## Results
 
-No frontier-model results are claimed yet. This is a submission blocker: run at least one frontier model on all four tasks, record per-task rewards and traces, and add a results graph plus table here. Populate this section only from actual Valkyrie runs.
+Dataset `trustval/stateful-tool-recovery@2`, Valkyrie agent `claude_code-v1.0.0`, Modal, concurrency 1, one trial per task (2026-11-14). Full ledger, trajectories and infrastructure notes: [RESULTS.md](RESULTS.md).
 
-| Model | Run ID | Commit timeout | Stale read | Partial batch | Duplicate delivery | Mean reward |
+| Model | Run ID | Commit timeout | Stale read | Partial batch | Duplicate delivery | Mean task_success |
 |---|---|---:|---:|---:|---:|---:|
-| Not run | — | — | — | — | — | — | Report per-task rewards, aggregate score, model/version, run ID, dataset digest, concurrency, and traces for representative failures. Include multiple trials for stochastic models; do not treat task variants as independent model replications.
+| claude-haiku-4-5 | `998e9992-83cc-4927-8145-61d651f9feda` | 1 | 1 | 1 | 1 | 1.00 |
+| claude-sonnet-4-6 | `8ff83c9b-5e90-4363-be60-7c211e69a2c9` | 1 | 1 | 1 | 1 | 1.00 |
+
+Both models solve all four tasks, so v2 does not yet expose a weakness. The injected errors say whether the write committed ("timeout after durable commit"), and the server deduplicates by idempotency key, so even a blind retry cannot create a duplicate. Sonnet checked state before each mutation; Haiku retried first and checked afterwards. The verifiers score both the same.
 
 ## Limitations
 

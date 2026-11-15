@@ -1,0 +1,49 @@
+{
+    "metadata": {
+        "task_id": "stale_read",
+        "model": "anthropic/claude-haiku-4-5",
+        "agent": "claude_code-v1.0.0",
+        "cli_version": "2.1.325 (Claude Code)",
+        "timestamp": "20261115011551",
+        "output_path": "/logs",
+        "success": true,
+        "return_code": 0
+    },
+    "task_prompt": "# Reconcile an eventually consistent access-control change\n\nThe request is in `/app/request.json`. Use `python /app/trustval.py` to grant the requested role exactly once.\n\nAfter a successful grant, the first read from the membership replica can be stale even though the authoritative operation has committed. Do not treat that read as proof that the grant failed. Reconcile using operation status and the audit log before deciding whether to retry. Reuse the same idempotency key for the same logical grant.\n\nDo not modify the database or task files. Preserve unrelated memberships. Report the final membership and the evidence used to verify the committed grant.\n",
+    "metrics": {
+        "cost": 0.0316963,
+        "wall_clock_duration": 17.718,
+        "input_tokens": 57,
+        "cache_creation_input_tokens": 5250,
+        "cache_read_input_tokens": 162768,
+        "output_tokens": 1760,
+        "output_tokens_details": {
+            "thinking_tokens": 657
+        },
+        "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 5250
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+            {
+                "input_tokens": 8,
+                "output_tokens": 551,
+                "cache_read_input_tokens": 24437,
+                "cache_creation_input_tokens": 669,
+                "cache_creation": {
+                    "ephemeral_5m_input_tokens": 669,
+                    "ephemeral_1h_input_tokens": 0
+                },
+                "type": "message"
+            }
+        ],
+        "speed": "standard",
+        "fallback_credit": null
+    }
+}

@@ -1,0 +1,10 @@
+Both payouts are confirmed committed in the authoritative ledger.
+
+**Final operation IDs:**
+
+| Invoice | Amount | Operation ID | Status |
+|---------|--------|-------------|--------|
+| INV-104 | $12,500 | `op_7f23e6b5dda0` | committed |
+| INV-105 | $8,300 | `op_20e99e13ec8a` | committed |
+
+**No unresolved items.** INV-104 timed out but the ledger confirmed it committed before the timeout; the same idempotency key was not retried since reconciliation showed it was already done. INV-105 committed cleanly on the first attempt.

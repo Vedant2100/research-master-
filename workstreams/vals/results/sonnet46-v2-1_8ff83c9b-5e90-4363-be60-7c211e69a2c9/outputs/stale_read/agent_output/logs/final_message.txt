@@ -1,0 +1,26 @@
+The replica is still lagging (maya's `billing_admin` not yet reflected there), but that is expected. The authoritative evidence confirms the grant is committed.
+
+---
+
+**Result**
+
+The grant executed exactly once and is verified as committed. No retry was needed.
+
+**Evidence of committed grant:**
+
+| Source | Evidence |
+|---|---|
+| `grant` response | `"status": "committed"` |
+| `status --key grant-maya-billing` | `{"user":"maya","role":"billing_admin","status":"committed"}` |
+| `audit` log seq 1 | `"event":"grant_committed"` for key `grant-maya-billing` |
+
+**Final membership** (authoritative, from the committed operation — replica is still lagging):
+
+| User | Role |
+|---|---|
+| liam | billing_admin |
+| maya | support_agent |
+| maya | viewer |
+| **maya** | **billing_admin** ← newly granted |
+
+Unrelated memberships (liam's `billing_admin`, maya's `support_agent` and `viewer`) are unchanged. The replica stale read was not treated as a failure — the operation status and audit log are the source of truth.

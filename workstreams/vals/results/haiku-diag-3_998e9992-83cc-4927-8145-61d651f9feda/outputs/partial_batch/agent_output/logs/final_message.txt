@@ -1,0 +1,17 @@
+## Batch Completion Report
+
+✅ **All items successfully committed**
+
+### Final Reservation IDs:
+1. **r_8cd01013f6** – SKU-A, 3 units (idempotency key: reserve-A)
+2. **r_a44c73bbcd** – SKU-B, 2 units (idempotency key: reserve-B)
+3. **r_bcd452df99** – SKU-C, 4 units (idempotency key: reserve-C)
+
+### Stock Status:
+- **SKU-A**: 5 total (3 reserved, 2 available)
+- **SKU-B**: 3 total (2 reserved, 1 available)
+- **SKU-C**: 5 total (4 reserved, 1 available)
+- **SKU-Z**: 7 total (unrequested, preserved)
+
+### Process Summary:
+The batch operation initially timed out after committing SKU-A and SKU-B. The idempotency keys ensured safe resubmission—the already-committed items were skipped on retry, and SKU-C was successfully completed without duplication. All requested items are now reserved, and unrequested stock remains untouched.

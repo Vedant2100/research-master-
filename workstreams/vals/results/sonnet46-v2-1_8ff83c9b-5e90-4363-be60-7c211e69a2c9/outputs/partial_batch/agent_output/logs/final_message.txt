@@ -1,0 +1,11 @@
+All reservations completed successfully. Summary:
+
+| SKU | Qty Reserved | Reservation ID | Status |
+|-----|-------------|----------------|--------|
+| SKU-A | 3 | `r_5959e5e911` | committed (first run) |
+| SKU-B | 2 | `r_e58762992e` | committed (first run) |
+| SKU-C | 4 | `r_824be39384` | committed (retry) |
+
+**What happened:** The first batch call timed out after durably committing SKU-A and SKU-B. The ledger confirmed SKU-C was absent. Resubmitting the original batch with the same idempotency keys safely de-duplicated the already-committed items and completed SKU-C.
+
+**Stock integrity:** SKU-Z (unrequested) remains at 7 units — untouched throughout. No items were cancelled or duplicated.
