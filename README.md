@@ -1,6 +1,6 @@
 # Research Master — Four Active Tracks, Ten Specialist Agents
 
-The research portfolio coordinating **ten distinct workstreams across four continuously active areas**. **One agent owns one thread.** This repository is the *coordination hub*, not a duplicate of the experiments' source repositories.
+The research portfolio coordinating **ten distinct workstreams across four continuously active areas**. **One agent owns one thread.** This repository is the home for all research work: code, results and coordination (owner decision 2026-11-14).
 
 | Area | Thread | Agent |
 |---|---|---|
@@ -24,7 +24,7 @@ The research portfolio coordinating **ten distinct workstreams across four conti
 
 ## Tracking and sources
 
-- **[Canonical upstream code map — required for all nine agents](SOURCE_MAP.md): reuse source repositories and existing results; do not reinvent or copy them.**
+- **[Source map](SOURCE_MAP.md): where each workstream's prior code lives, to import into `workstreams/<slug>/` and build on rather than reinvent.**
 
 
 - [Ten-agent roster](AGENT_ROSTER.md) and [coordination protocol](AGENTS.md)

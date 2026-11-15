@@ -9,4 +9,4 @@
 7. Do not store secrets, hidden test data, real patient/company data, confidential materials, OAuth tokens or personal application answers in public sources.
 8. Preserve raw traces, errors and failures, separate pilot from counted comparisons and record cost and uncertainty.
 9. Do not claim hackathon submission, registration or fellowship invitation without the real receipt.
-10. Project code and artifacts stay in original repositories; this master is coordination and documentation.
+10. All project code, artifacts and documentation live in this repo under `workstreams/<slug>/` (owner decision 2026-11-14). Other repos are frozen history to import from.

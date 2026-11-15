@@ -11,5 +11,5 @@ NEXT ACTION: Check approval and Vals conflict; assemble real failed-task→train
 GO/NO-GO: Verified participation, real model execution, heldout evaluation and submission evidence.
 CLAIM GUARDRAIL: No confirmed RSVP or prize result; do not fabricate venue participation.
 
-Read AGENTS.md and projects/iterate.md, EVIDENCE.md and the source repo before changing anything. Work ONLY in workstreams/iterate/STATUS.md and, after checking primary evidence, projects/iterate.md. Source repo code changes require separate authorization and source-repo access. Do not claim results from CI passes, mock data or incomplete jobs. Do not spend GPU/API credits or submit papers without authorization. Produce a PR with an evidence-linked handoff according to templates/EXPERIMENT_HANDOFF.md. If blocked, state precisely why.
+Read AGENTS.md and projects/iterate.md, EVIDENCE.md and the source repo before changing anything. Work in workstreams/iterate/** (import prior code from the source repo there, pinning repo + SHA) and projects/iterate.md. All work stays in research-master. Do not claim results from CI passes, mock data or incomplete jobs. Do not spend GPU/API credits or submit papers without authorization. Produce a PR with an evidence-linked handoff according to templates/EXPERIMENT_HANDOFF.md. If blocked, state precisely why.
 """

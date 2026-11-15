@@ -1,15 +1,15 @@
 # Master agent contract
 
-**Four active research tracks; ten thread-specific specialists.** Each role owns one research question and one status file. This repo tracks evidence and coordination; code and raw results remain in their original repositories.
+**Four active research tracks; ten thread-specific specialists.** Each role owns one research question and one status file. This repo is the single home for all research work: code, configs, results and coordination live here.
 
-## Mandatory upstream reuse (supersedes any suggestion to reimplement)
+## All work lives in research-master (owner decision 2026-11-14, applies always)
 
-Before writing code, every specialist MUST open [SOURCE_MAP.md](SOURCE_MAP.md), access the correct original upstream repository and any relevant experiment branches, inspect existing source/tests/configs/results, and continue the implementation from there. **Do not create duplicate harnesses, experiment pipelines, training code, or source copies in this master.** Only missing functionality is implemented, as scoped changes to the original upstream source. Iterate reuses Terminal DreamGym. Exception: TrustVal (`vals`) keeps its canonical source in `workstreams/vals/` of this repo by owner decision (2026-11-14). If the original repo is private or unavailable, stop and report access needs, not an invented substitute.
+Work happens in this repository, under `workstreams/<slug>/`. Do not keep or start code in other repositories. When a workstream still has code elsewhere, import it here (pin the source repo and commit SHA in the commit message and STATUS.md) and continue from the imported copy; treat the old location as frozen history. Before importing, read the existing source, tests, configs and results listed in [SOURCE_MAP.md](SOURCE_MAP.md) and build on them rather than reimplementing. This repo is **public**: strip secrets, credentials, private data and personal details before importing anything.
 
 ## Workflow
-1. Read `README.md`, `AGENT_ROSTER.md`, `GOVERNANCE.md`, `EVIDENCE.md`, the assigned `projects/<slug>.md`, its `workstreams/<slug>/STATUS.md`, and the actual source repository.
+1. Read `README.md`, `AGENT_ROSTER.md`, `GOVERNANCE.md`, `EVIDENCE.md`, the assigned `projects/<slug>.md`, and everything under its `workstreams/<slug>/`.
 2. Record hypothesis, controls, split, seeds, worker, verifier SHA, cost cap and end-to-end timing before a new experiment.
-3. Confirm source-repo access and resource budget. **Never launch GPU/cloud/API workloads or submit external forms without explicit authorization.**
+3. Confirm resource budget. **Never launch GPU/cloud/API workloads or submit external forms without explicit authorization.**
 4. If access is limited to this repository, update only the assigned status and create actionable, precise source-repo change proposals; do not pretend to have run code elsewhere.
 5. Keep separate **designed / implemented / executed / replicated / submitted / accepted**. CI green is never evidence of a successful model run. Don't conflate SFT with GRPO, UCB with actor-critic, or deterministic replay seeds with independent trials.
 6. Use a branch `agent/<slug>/<task>` and a scoped PR. Allowed paths are `workstreams/<slug>/**` and (with source evidence) `projects/<slug>.md`; shared file changes require explicit coordinator review.
@@ -27,4 +27,4 @@ Supporting Fleet-Mem governance is prior work, **not an eleventh agent**.
 
 
 ## Tenth specialist — TTC
-`adaptive-ttc` is a **design-stage conditional pilot** under RL Post-Training, not an existing trained model. Read [TTC brief](projects/adaptive-ttc.md) and [Source Map](SOURCE_MAP.md); use original DreamGym/reward verifier code rather than making another generic agent harness. Cross-episode policy learning, matched compute budgets, and held-out transfer are the scientific differentiators. Coordinate upstream code changes with the DreamGym and RewardHackLab agents. [Issue #10](https://github.com/Vedant2100/research-master-/issues/10).
+`adaptive-ttc` is a **design-stage conditional pilot** under RL Post-Training, not an existing trained model. Read [TTC brief](projects/adaptive-ttc.md) and [Source Map](SOURCE_MAP.md); use original DreamGym/reward verifier code rather than making another generic agent harness. Cross-episode policy learning, matched compute budgets, and held-out transfer are the scientific differentiators. Import the reused code into `workstreams/adaptive-ttc/` and coordinate with the DreamGym and RewardHackLab agents. [Issue #10](https://github.com/Vedant2100/research-master-/issues/10).

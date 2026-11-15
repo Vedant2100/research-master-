@@ -1,4 +1,6 @@
-# Canonical upstream code map — reuse before implementation
+# Source map — prior code to import and build on
+
+> **Owner decision 2026-11-14 (applies always):** all work lives in research-master under `workstreams/<slug>/`. The repositories below are prior sources: import what a workstream needs (pinning repo + SHA), then continue here. Do not open new work in them. Rules below that say to extend the upstream repo instead of the master are superseded.
 
 **All ten specialists must use existing working code, configs, tests, artifacts, and prior experiment results. This public master is a control plane, not a monorepo. Do not copy source directories or rebuild a working harness here.**
 
