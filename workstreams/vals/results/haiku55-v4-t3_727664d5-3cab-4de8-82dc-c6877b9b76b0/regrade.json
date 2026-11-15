@@ -1,0 +1,28 @@
+{
+ "commit_timeout": {
+  "exactly_once": 0.0,
+  "payout_records_correct": 0.0,
+  "requested_state_correct": 1.0,
+  "unrequested_state_preserved": 0.0,
+  "task_success": 0.0
+ },
+ "duplicate_delivery": {
+  "accounts_correct": 1.0,
+  "exactly_once": 1.0,
+  "no_unrequested_accounts": 1.0,
+  "task_success": 1.0
+ },
+ "partial_batch": {
+  "all_reservations_present": 1.0,
+  "exactly_once": 1.0,
+  "inventory_accounting_correct": 1.0,
+  "unrequested_state_preserved": 1.0,
+  "task_success": 1.0
+ },
+ "stale_read": {
+  "role_granted": 1.0,
+  "existing_state_preserved": 1.0,
+  "exactly_once": 1.0,
+  "task_success": 1.0
+ }
+}

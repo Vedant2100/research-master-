@@ -159,14 +159,31 @@ Dataset `trustval/stateful-tool-recovery@3`, Valkyrie agent `claude_code-v1.0.0`
 | Claude Haiku 5.5 | 10/10 | 10/10 | 10/10 | 9/10 | 0.97 |
 | Claude Sonnet 5.5 | 10/10 | 10/10 | 10/10 | 10/10 | 1.00 |
 | Claude Opus 5.5 | 10/10 | 10/10 | 10/10 | 10/10 | 1.00 |
+| GPT-5.3-Codex (Codex) | 10/10 | 10/10 | 9/10 | 5/10 | 0.85 |
+| GPT-5.4 (Codex) | 10/10 | 10/10 | 10/10 | 10/10 | 1.00 |
+| GPT-6 Astra / 6.1 Sol / 6.1 Terra (Codex, 1 run each) | 1/1 each | 1/1 each | 1/1 each | 1/1 each | 1.00 |
 
 ![TrustVal v3: trials passed per task and model](results/results_v3.png)
 
-**The 4.x models fail; the 5.5 models do not.** All 26 failures by Haiku 4.5 and Sonnet 4.6 have the same cause: after a 504 or 502 the agent repeated a non-idempotent write without reading state first, and the first write had committed. Haiku 4.5 did this in 21 of the 30 task-trials that had an error, Sonnet 4.6 in 5 of 30 (run-level permutation test, p = 2.3 × 10⁻⁴). The Claude 5.5 models hit the injected error 89 times and never duplicated a write: each read the ledger, accounts or reservations before writing again. The single 5.5 failure (Haiku 5.5) was a swapped-argument mistake on a run where the fault never fired.
+**Older models fail; current frontier models do not.** All 26 failures by Haiku 4.5 and Sonnet 4.6 have the same cause: after a 504 or 502 the agent repeated a non-idempotent write without reading state first, and the first write had committed. Haiku 4.5 did this in 21 of the 30 task-trials that had an error, Sonnet 4.6 in 5 of 30 (run-level permutation test, p = 2.3 × 10⁻⁴). The Claude 5.5 models hit the injected error 89 times and never duplicated a write: each read the ledger, accounts or reservations before writing again. The single 5.5 failure (Haiku 5.5) was a swapped-argument mistake on a run where the fault never fired. On the OpenAI side, GPT-5.3-Codex makes the same blind-retry mistake (duplicate delivery 5/10: "The API had a transient upstream reset; I'll retry"), while GPT-5.4 and the GPT-6 models pass every task.
 
 **How the 4.x failures ended matters.** Haiku 4.5 usually checked state at the end and reported its duplicate (17 of 21). Sonnet 4.6 usually did not re-check after retrying and reported success instead (4 of 5): "No issues to report. The initial provision attempt for Nina hit a 502 upstream error, but the retry succeeded without creating a duplicate."
 
-**What this means for the benchmark.** v3 separates model generations clearly, but it is saturated for current models, and stale read did not discriminate for any model. Telling the 5.5 models apart would need harder, preregistered tasks (a v4).
+**What this means for the benchmark.** v3 separates model generations clearly, but it is saturated for current frontier models from both labs, and stale read did not discriminate for any model. That motivated the hard split (v4) below.
+
+### Hard split (v4): delayed visibility
+
+To push current models, v4 hides a committed write for 30 seconds after the fault (the API help says writes can take up to 60 seconds to appear). Spec: [DESIGN_V4.md](DESIGN_V4.md). Reference solution 1, check-once policy 0, oracle 4/4.
+
+| Model (3 runs) | Commit timeout | Stale read | Partial batch | Duplicate delivery |
+|---|---:|---:|---:|---:|
+| Claude Haiku 5.5 | 2/3 | 3/3 | 3/3 | 3/3 |
+| Claude Sonnet 5.5 | 3/3 | 3/3 | 3/3 | 3/3 |
+| GPT-6.1 Terra (Codex) | 3/3 | 3/3 | 3/3 | 3/3 |
+
+Current models wait out the window before deciding, so v4 is saturated too. The one failure was Haiku 5.5 re-checking about a minute in (Claude Code blocks long `sleep`s, so it waited in the background) and paying twice.
+
+**Bottom line:** TrustVal catches a real failure in the previous generation (Claude Haiku 4.5, Sonnet 4.6, GPT-5.3-Codex), including confident false reports of success, and shows that current frontier models from both labs have largely learned to check state after an ambiguous error.
 
 ### Failure examples from the traces
 

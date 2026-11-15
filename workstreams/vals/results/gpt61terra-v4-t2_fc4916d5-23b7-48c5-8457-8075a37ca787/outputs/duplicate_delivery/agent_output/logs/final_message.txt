@@ -1,0 +1,4 @@
+Both accounts are provisioned on the requested plans, with one account each:
+
+- nina@example.test: `acct_3f44d2f1a7` — pro
+- omar@example.test: `acct_d31aeb4c1f` — starter

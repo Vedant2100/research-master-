@@ -1,0 +1,166 @@
+{
+ "dataset_version": "v4",
+ "models": {
+  "gpt61terra": {
+   "name": "GPT-6.1 Terra (Codex)",
+   "trials": 3,
+   "runs": [
+    {
+     "label": "gpt61terra-v4-t1",
+     "run_id": "a044003c-cffa-4f38-8a6e-c9c744bbe34a",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    },
+    {
+     "label": "gpt61terra-v4-t2",
+     "run_id": "fc4916d5-23b7-48c5-8457-8075a37ca787",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    },
+    {
+     "label": "gpt61terra-v4-t3",
+     "run_id": "8f00c433-a64d-401f-ad4e-bf6a61dd6dbe",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    }
+   ],
+   "passes_per_task": {
+    "commit_timeout": 3.0,
+    "stale_read": 3.0,
+    "partial_batch": 3.0,
+    "duplicate_delivery": 3.0
+   },
+   "mean_task_success": 1.0,
+   "total_cost_usd": 0.0,
+   "per_run_scores": [
+    4,
+    4,
+    4
+   ]
+  },
+  "haiku55": {
+   "name": "Claude Haiku 5.5",
+   "trials": 3,
+   "runs": [
+    {
+     "label": "haiku55-v4-t1",
+     "run_id": "791eaa23-8af2-4088-83e6-a29f62dc2094",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0115
+    },
+    {
+     "label": "haiku55-v4-t2",
+     "run_id": "49125db9-894f-4223-b8d3-329acfdffba7",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0125
+    },
+    {
+     "label": "haiku55-v4-t3",
+     "run_id": "727664d5-3cab-4de8-82dc-c6877b9b76b0",
+     "success": {
+      "commit_timeout": 0.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0231
+    }
+   ],
+   "passes_per_task": {
+    "commit_timeout": 2.0,
+    "stale_read": 3.0,
+    "partial_batch": 3.0,
+    "duplicate_delivery": 3.0
+   },
+   "mean_task_success": 0.917,
+   "total_cost_usd": 0.047,
+   "per_run_scores": [
+    3,
+    4,
+    4
+   ]
+  },
+  "sonnet55": {
+   "name": "Claude Sonnet 5.5",
+   "trials": 3,
+   "runs": [
+    {
+     "label": "sonnet55-v4-t1",
+     "run_id": "c5ae90fd-d349-40e7-adcf-cda875b117df",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.1104
+    },
+    {
+     "label": "sonnet55-v4-t2",
+     "run_id": "a8f3a5bf-0244-409e-aa64-90e2159f75f6",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0953
+    },
+    {
+     "label": "sonnet55-v4-t3",
+     "run_id": "370c5ce9-fe9d-453f-82c1-783ab5bb9e32",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.1148
+    }
+   ],
+   "passes_per_task": {
+    "commit_timeout": 3.0,
+    "stale_read": 3.0,
+    "partial_batch": 3.0,
+    "duplicate_delivery": 3.0
+   },
+   "mean_task_success": 1.0,
+   "total_cost_usd": 0.321,
+   "per_run_scores": [
+    4,
+    4,
+    4
+   ]
+  }
+ },
+ "pairwise_run_level_p": {
+  "haiku55_vs_sonnet55": 1.0,
+  "haiku55_vs_gpt61terra": 1.0,
+  "sonnet55_vs_gpt61terra": 1.0
+ }
+}

@@ -1,0 +1,17 @@
+All three requested items are reserved once, at the requested quantities. SKU-Z was not touched.
+
+| SKU | Quantity | Reference | Reservation ID | Status |
+|---|---|---|---|---|
+| SKU-A | 3 | reserve-A | `r_ad911e17eb` | committed |
+| SKU-B | 2 | reserve-B | `r_f8b62b0fbc` | committed |
+| SKU-C | 4 | reserve-C | `r_aef75e6fb1` | committed |
+
+Final stock: SKU-A 8→5, SKU-B 5→3, SKU-C 9→5, SKU-Z 7 (unchanged).
+
+What happened:
+- I ran `reserve-batch --request /app/request.json` once. It returned a gateway timeout, so I couldn't tell whether it had applied.
+- After waiting past the 60-second async window, reads showed SKU-A and SKU-B applied but SKU-C missing. The batch had been partially applied.
+- Because writes aren't idempotent, I did not resubmit the batch. That would have duplicated A and B. I checked again after a further two minutes to confirm SKU-C wasn't just delayed.
+- I then reserved SKU-C alone with `reserve SKU-C 4 --ref reserve-C`. Reads now show exactly one reservation per item.
+
+Nothing is unresolved. The one thing to know is that the batch timeout was a real partial failure. Anyone reviewing this should check that there's only one reservation per reference, which the final listing confirms.

@@ -1,0 +1,20 @@
+2026-11-15T20:05:02.328000Z [commit_timeout] Running agent oracle
+2026-11-15T20:05:33.654000Z [commit_timeout] solve.sh exited with 0
+2026-11-15T20:05:40.839000Z [commit_timeout] Starting a separate verifier for commit_timeout
+2026-11-15T20:06:28.849000Z [commit_timeout] Running the verifier for commit_timeout
+2026-11-15T20:06:29.720000Z [commit_timeout] Verifier rewards for commit_timeout: {"exactly_once": 1.0, "payout_records_correct": 1.0, "requested_state_correct": 1.0, "task_success": 1.0, "unrequested_state_preserved": 1.0}
+2026-11-15T20:07:28.639000Z [duplicate_delivery] Running agent oracle
+2026-11-15T20:07:59.998000Z [duplicate_delivery] solve.sh exited with 0
+2026-11-15T20:08:08.613000Z [duplicate_delivery] Starting a separate verifier for duplicate_delivery
+2026-11-15T20:08:52.772000Z [duplicate_delivery] Running the verifier for duplicate_delivery
+2026-11-15T20:08:53.495000Z [duplicate_delivery] Verifier rewards for duplicate_delivery: {"accounts_correct": 1.0, "exactly_once": 1.0, "no_unrequested_accounts": 1.0, "task_success": 1.0}
+2026-11-15T20:09:56.380000Z [partial_batch] Running agent oracle
+2026-11-15T20:09:57.410000Z [partial_batch] solve.sh exited with 0
+2026-11-15T20:10:04.437000Z [partial_batch] Starting a separate verifier for partial_batch
+2026-11-15T20:10:49.648000Z [partial_batch] Running the verifier for partial_batch
+2026-11-15T20:10:50.441000Z [partial_batch] Verifier rewards for partial_batch: {"all_reservations_present": 1.0, "exactly_once": 1.0, "inventory_accounting_correct": 1.0, "task_success": 1.0, "unrequested_state_preserved": 1.0}
+2026-11-15T20:11:53.773000Z [stale_read] Running agent oracle
+2026-11-15T20:12:24.992000Z [stale_read] solve.sh exited with 0
+2026-11-15T20:12:32.023000Z [stale_read] Starting a separate verifier for stale_read
+2026-11-15T20:13:15.259000Z [stale_read] Running the verifier for stale_read
+2026-11-15T20:13:15.937000Z [stale_read] Verifier rewards for stale_read: {"exactly_once": 1.0, "existing_state_preserved": 1.0, "role_granted": 1.0, "task_success": 1.0}

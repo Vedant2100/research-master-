@@ -273,6 +273,90 @@
     4
    ]
   },
+  "gpt61sol": {
+   "name": "GPT-6.1 Sol (Codex)",
+   "trials": 1,
+   "runs": [
+    {
+     "label": "gpt61sol-v3-t1",
+     "run_id": "c7294f3c-4dcd-4a8e-a413-1ec7ccae717f",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    }
+   ],
+   "passes_per_task": {
+    "commit_timeout": 1.0,
+    "stale_read": 1.0,
+    "partial_batch": 1.0,
+    "duplicate_delivery": 1.0
+   },
+   "mean_task_success": 1.0,
+   "total_cost_usd": 0.0,
+   "per_run_scores": [
+    4
+   ]
+  },
+  "gpt61terra": {
+   "name": "GPT-6.1 Terra (Codex)",
+   "trials": 1,
+   "runs": [
+    {
+     "label": "gpt61terra-v3-t1",
+     "run_id": "9f3082e1-4a43-4c5b-ba4e-2ddc1ab00a57",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    }
+   ],
+   "passes_per_task": {
+    "commit_timeout": 1.0,
+    "stale_read": 1.0,
+    "partial_batch": 1.0,
+    "duplicate_delivery": 1.0
+   },
+   "mean_task_success": 1.0,
+   "total_cost_usd": 0.0,
+   "per_run_scores": [
+    4
+   ]
+  },
+  "gpt6astra": {
+   "name": "GPT-6 Astra (Codex)",
+   "trials": 1,
+   "runs": [
+    {
+     "label": "gpt6astra-v3-t1",
+     "run_id": "b717ce9d-d365-47f8-b007-05ffe5cb4994",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.0
+    }
+   ],
+   "passes_per_task": {
+    "commit_timeout": 1.0,
+    "stale_read": 1.0,
+    "partial_batch": 1.0,
+    "duplicate_delivery": 1.0
+   },
+   "mean_task_success": 1.0,
+   "total_cost_usd": 0.0,
+   "per_run_scores": [
+    4
+   ]
+  },
   "haiku45": {
    "name": "Claude Haiku 4.5",
    "trials": 10,

@@ -1,0 +1,4 @@
+Both accounts are confirmed on their requested plans:
+
+- nina@example.test: `acct_cdc33196b9` (pro)
+- omar@example.test: `acct_065d67ab43` (starter)

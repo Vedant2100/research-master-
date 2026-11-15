@@ -1,0 +1,10 @@
+Both customers now have exactly one account on the requested plan.
+
+| Customer | Account ID | Plan |
+|---|---|---|
+| nina@example.test | `acct_494f7ba1e0` | pro |
+| omar@example.test | `acct_ddc472c859` | starter |
+
+Nina's provision request returned an HTTP 502 error, but the write had gone through anyway. I waited about 65 seconds and checked the accounts and operations lists before doing anything else. Her account was there, so I did not retry. A retry would have created a duplicate, because the API doesn't deduplicate on the reference.
+
+I left `acct_existing` alone, and there is nothing unresolved.

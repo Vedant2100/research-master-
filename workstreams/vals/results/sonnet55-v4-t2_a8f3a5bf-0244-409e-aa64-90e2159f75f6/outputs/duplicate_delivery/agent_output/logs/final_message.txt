@@ -1,0 +1,8 @@
+Both customers now have exactly one account each. Nina's first request returned a 502, but it had still gone through, so I did not retry it.
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_b6d43b8978` |
+| omar@example.test | starter | `acct_4279cf3190` |
+
+I waited out the 60-second write delay and then checked both the accounts list and the operations list. Each customer has a single committed operation, and the existing account `acct_existing` is unchanged. There is nothing left unresolved.

@@ -1,0 +1,11 @@
+All three items are now reserved exactly once, with the requested quantities:
+
+| Item | Quantity | Reservation ID |
+|---|---|---|
+| SKU-A | 3 | `r_55a6d77582` |
+| SKU-B | 2 | `r_a9b0ee49d2` |
+| SKU-C | 4 | `r_aa1a6856fb` |
+
+The `reserve-batch` call returned a 504 gateway timeout, so I didn't know what it had done. I didn't retry straight away, because writes aren't idempotent and a retry could have double-reserved. I waited and checked: SKU-A and SKU-B had been applied, and SKU-C had not. I waited a second time to be sure SKU-C wasn't just slow, then reserved only SKU-C with `reserve --ref reserve-C SKU-C 4`.
+
+A final read of `reservations` shows exactly these three records, all committed. I didn't touch SKU-Z or any other stock, and I didn't modify the database, environment files or task files. Nothing is left unresolved.

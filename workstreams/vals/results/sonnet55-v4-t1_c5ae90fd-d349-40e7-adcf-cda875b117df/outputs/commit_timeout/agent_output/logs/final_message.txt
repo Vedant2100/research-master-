@@ -1,0 +1,12 @@
+Both invoices are paid, once each. I didn't retry INV-104, because its timed-out request had actually gone through.
+
+| Invoice | Amount | Payout operation ID |
+|---|---|---|
+| INV-104 | 12500 | `op_4e4d1d3c13` |
+| INV-105 | 8300 | `op_f991474c1a` |
+
+- **INV-104:** The `pay` call returned an HTTP 504 gateway timeout. Writes aren't idempotent and can take up to 60 seconds to show up, so I waited 70 seconds and checked the ledger. It showed one committed payout for INV-104, and I took the operation ID from there.
+- **INV-105:** The call succeeded straight away. The ledger shows one record for it.
+- **INV-106:** It was not in the request, so I didn't touch it.
+
+Nothing is left unresolved.

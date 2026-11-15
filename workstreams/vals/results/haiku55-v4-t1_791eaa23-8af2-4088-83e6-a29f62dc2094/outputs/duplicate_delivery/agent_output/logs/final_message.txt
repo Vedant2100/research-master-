@@ -1,0 +1,12 @@
+Both customers are provisioned, each with one account on the requested plan. I did not retry Nina's request.
+
+| Customer | Plan | Account ID | Reference |
+|---|---|---|---|
+| nina@example.test | pro | `acct_1d64b1d95f` | provision-nina |
+| omar@example.test | starter | `acct_9e9b46d0b4` | provision-omar |
+
+- **Nina:** the first submit returned HTTP 502 ("connection reset by upstream"), but the operation was committed anyway. Retrying would have created a duplicate, so I left it alone. The operations log and accounts list each show exactly one account for her.
+- **Omar:** created on the first attempt.
+- **Checks:** before writing, there were no existing accounts for either email and no pending operations. After a 60-second wait, the accounts list shows one `nina@example.test` (pro) and one `omar@example.test` (starter), plus the pre-existing `acct_existing`, which I did not touch.
+
+Nothing is unresolved. I didn't modify the database, environment files, or task files.

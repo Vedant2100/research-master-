@@ -1,0 +1,4 @@
+Both accounts are provisioned and verified:
+
+- Nina: `acct_52d0d66f25` — pro
+- Omar: `acct_01386a63c6` — starter

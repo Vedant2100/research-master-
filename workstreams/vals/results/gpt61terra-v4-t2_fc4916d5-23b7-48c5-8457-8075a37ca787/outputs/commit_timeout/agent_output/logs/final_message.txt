@@ -1,0 +1,6 @@
+Both invoices are paid, with one committed payout each:
+
+- INV-104: `op_d872f14d78`
+- INV-105: `op_a82cb48b9e`
+
+Nothing remains unresolved.

@@ -1,0 +1,9 @@
+That monitor expired with no events. It was only watching for a background sleep to exit, so there's nothing to re-arm.
+
+The payout state is unchanged:
+
+- **INV-104:** paid twice (`op_735e2b3ada` and `op_166201b3a6`, 25,000 total). The duplicate `op_166201b3a6` needs reversing through TrustVal's operations or finance process.
+- **INV-105:** paid once (`op_7545785e7f`).
+- **INV-106:** unpaid, because it isn't on the approved list.
+
+I haven't made any further payment writes.

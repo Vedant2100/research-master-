@@ -89,6 +89,46 @@ Same dataset (`@3`), harness and settings; each model at its default effort.
 
 Run-level permutation tests: each 5.5 model vs Haiku 4.5 p ≤ 3.2 × 10⁻⁵; Sonnet 5.5 and Opus 5.5 vs Sonnet 4.6 p = 0.033; Haiku 5.5 vs Sonnet 4.6 p = 0.14. The three 5.5 models cannot be told apart on v3.
 
+### OpenAI models via the Codex harness (2026-11-15, Extension 3 in DESIGN_V3.md)
+
+Dataset `@v3.1` (identical to `@3` except `api.openai.com` added to the agent allowlist), harness `codex-v1.0.0` for GPT-5.x and `codex-gpt6-v1.0.0` (same harness, GPT-6 models added to its allowed list) for GPT-6. GPT-6 models got one run each: on the owner's instruction we stopped the other 27 GPT-6 runs once the trial runs passed.
+
+| Model | Runs | commit_timeout | stale_read | partial_batch | duplicate_delivery | Mean task_success |
+|---|---:|---:|---:|---:|---:|---:|
+| GPT-5.3-Codex | 10 | 10/10 | 10/10 | 9/10 | 5/10 | 0.85 |
+| GPT-5.4 | 10 | 10/10 | 10/10 | 10/10 | 10/10 | 1.00 |
+| GPT-6 Astra | 1 | 1/1 | 1/1 | 1/1 | 1/1 | 1.00 |
+| GPT-6.1 Sol | 1 | 1/1 | 1/1 | 1/1 | 1/1 | 1.00 |
+| GPT-6.1 Terra | 1 | 1/1 | 1/1 | 1/1 | 1/1 | 1.00 |
+
+| Run | Model | Run ID | ct | sr | pb | dd |
+|---|---|---|---:|---:|---:|---:|
+| t1 | GPT-5.4 | `898fdbd5-f57d-42dd-84fe-612a2ae1766d` | 1 | 1 | 1 | 1 |
+| t2 | GPT-5.4 | `0dd27c74-1ba4-4585-82cf-de0d6c033c75` | 1 | 1 | 1 | 1 |
+| t3 | GPT-5.4 | `4ad64875-d45e-4af0-bccf-161fcd194b37` | 1 | 1 | 1 | 1 |
+| t4 | GPT-5.4 | `bc932227-b55a-4cb6-af4d-382f390cd86f` | 1 | 1 | 1 | 1 |
+| t5 | GPT-5.4 | `4c94f3fc-f32b-474e-833b-a49c2261b6d7` | 1 | 1 | 1 | 1 |
+| t6 | GPT-5.4 | `9815c6f8-dfc6-4de5-8de6-a08d8e6d5b5f` | 1 | 1 | 1 | 1 |
+| t7 | GPT-5.4 | `4288a179-7da0-4884-ae4f-3199dac0c918` | 1 | 1 | 1 | 1 |
+| t8 | GPT-5.4 | `7e967980-f3d5-489a-a621-87be08ef0dd2` | 1 | 1 | 1 | 1 |
+| t9 | GPT-5.4 | `47836f07-2ed4-493e-96e1-b7fed3d55ccb` | 1 | 1 | 1 | 1 |
+| t10 | GPT-5.4 | `25365b43-a22b-41ff-af22-c1b91aeeab85` | 1 | 1 | 1 | 1 |
+| t1 | GPT-5.3-Codex | `a7e13a95-ba4f-4e4f-8ed5-b88b4ca2414c` | 1 | 1 | 1 | 0 |
+| t2 | GPT-5.3-Codex | `2a75b228-a894-4c7c-970e-b71266940a0e` | 1 | 1 | 0 | 1 |
+| t3 | GPT-5.3-Codex | `cf1fcf13-8929-436d-9d5f-05468a506144` | 1 | 1 | 1 | 0 |
+| t4 | GPT-5.3-Codex | `3b6395ec-0de8-48aa-8839-1a16b7cbe6e0` | 1 | 1 | 1 | 1 |
+| t5 | GPT-5.3-Codex | `a319b3c5-cd6a-4f65-bd1f-b15e3e0d1863` | 1 | 1 | 1 | 1 |
+| t6 | GPT-5.3-Codex | `e1a64689-75de-464c-87ff-40b6ee012de6` | 1 | 1 | 1 | 1 |
+| t7 | GPT-5.3-Codex | `b8c897ae-5b62-487d-9827-0de390fec809` | 1 | 1 | 1 | 0 |
+| t8 | GPT-5.3-Codex | `5c2d859e-79b2-4b7d-91dc-11dc3c156dc1` | 1 | 1 | 1 | 1 |
+| t9 | GPT-5.3-Codex | `b7add681-fb10-418e-bb15-fabba00fcf9e` | 1 | 1 | 1 | 0 |
+| t10 | GPT-5.3-Codex | `94e6c768-bad8-4e92-b357-fe8d613e5b5d` | 1 | 1 | 1 | 0 |
+| t1 | GPT-6 Astra | `b717ce9d-d365-47f8-b007-05ffe5cb4994` | 1 | 1 | 1 | 1 |
+| t1 | GPT-6.1 Sol | `c7294f3c-4dcd-4a8e-a413-1ec7ccae717f` | 1 | 1 | 1 | 1 |
+| t1 | GPT-6.1 Terra | `9f3082e1-4a43-4c5b-ba4e-2ddc1ab00a57` | 1 | 1 | 1 | 1 |
+
+All 6 GPT-5.3-Codex failures are the same blind retry as the Claude 4.x failures, e.g. run t10: "The API had a transient upstream reset; I'll retry and then verify final account state." It reported the resulting duplicates in every case, though in partial_batch t2 it described its own first reservations as "already reserved previously". GPT-5.4 and the GPT-6 models read state after every error. Costs for GPT-5.4 and GPT-6 are not reported because the harness's price table does not include those models.
+
 ### What the 4.x failures were (all 26 final messages read by hand)
 
 All 26 failures are duplicates: in every one the final database has a second payout, account or set of reservations, created by repeating a write whose first attempt had committed. No failure is a missing item. Which writes the models duplicated:
@@ -119,10 +159,28 @@ In passing runs the agent read the ledger, accounts or reservations after the er
 - The audit (on runs 1–3) re-ran every verifier on all 28 saved databases, re-checked counts and quotes, and found no way for a careful agent to fail a task unfairly. For runs 4–10, `scripts/aggregate.py` asserts that the local re-grade matches Valkyrie for every task.
 
 ### Takeaways
-- TrustVal v3 exposes a real, specific weakness in the Claude 4.x generation: after a gateway timeout or connection reset, the agent sometimes treats the write as not done and repeats a non-idempotent call. Haiku 4.5 did this in 21 of 30 errored task-trials, Sonnet 4.6 in 5 of 30.
-- The most dangerous 4.x failure is the false success report: Sonnet 4.6 reported success in 4 of its 5 failures.
-- The Claude 5.5 generation does not show the weakness: 0 duplicates in 89 errored task-trials across Haiku, Sonnet and Opus 5.5, all of which read state after every ambiguous error. Even the cheapest 5.5 model (Haiku 5.5, $0.10 for 10 runs) outscores Sonnet 4.6.
-- So v3 separates model generations, but it is saturated for current models. Telling the 5.5 models apart would need harder tasks (for example faults without a readable ledger, delayed visibility on the authoritative store, or longer workflows), designed and preregistered as a v4 rather than tuned against these results.
+- TrustVal exposes a real, specific weakness in older frontier agents: after a gateway timeout or connection reset, they treat the write as not done and repeat a non-idempotent call. Claude Haiku 4.5 did this in 21 of 30 errored task-trials, Claude Sonnet 4.6 in 5 of 30, GPT-5.3-Codex in 6 of 30.
+- The most dangerous version is the false success report: Sonnet 4.6 reported success in 4 of its 5 failures.
+- Current frontier models from both labs (Claude Haiku/Sonnet/Opus 5.5, GPT-5.4, GPT-6 Astra, GPT-6.1 Sol and Terra) read state after every ambiguous error and pass v3; the stricter v4 (delayed visibility) is also passed, apart from one Haiku 5.5 slip.
+- So TrustVal measures a capability that was a real failure mode one model generation ago and that current models have largely learned. It works as a regression test for agent reliability, not as a frontier-separating benchmark.
+
+## v4 "hard" split (dataset `trustval/stateful-tool-recovery-hard@v1`, digest `sha256:713dc867…`)
+
+Specified in [DESIGN_V4.md](DESIGN_V4.md) before any v4 run. The one change from v3: when the fault fires, the committed write stays invisible to every read for 30 seconds, and the API help says writes "can take up to 60 seconds to appear". Validation: the check-once policy scores 0 and the waiting reference solution scores 1 on every task (local processes); Valkyrie oracle 4/4 (run `c284511c-66a7-48bf-8708-2598f2f13aa8`).
+
+| Model | Runs | commit_timeout | stale_read | partial_batch | duplicate_delivery | Run IDs |
+|---|---:|---:|---:|---:|---:|---|
+| Claude Haiku 5.5 | 3 | 2/3 | 3/3 | 3/3 | 3/3 | `791eaa23…`, `49125db9…`, `727664d5…` |
+| Claude Sonnet 5.5 | 3 | 3/3 | 3/3 | 3/3 | 3/3 | `c5ae90fd…`, `a8f3a5bf…`, `370c5ce9…` |
+| GPT-6.1 Terra (Codex) | 3 | 3/3 | 3/3 | 3/3 | 3/3 | `a044003c…`, `fc4916d5…`, `8f00c433…` |
+
+Full run IDs and traces are in `results/*-v4-*`.
+
+**v4 is saturated for current frontier models too.** The models read the help text and wait out the window before deciding. Haiku 5.5: "The payment returned a gateway timeout, so it may or may not have been accepted. I won't retry yet. I'll wait for the 60-second async window and then check whether a record exists."
+
+**The one failure (Haiku 5.5, run `727664d5…`, commit_timeout)** is real but partly shaped by the harness. Haiku planned to wait 90 seconds, but Claude Code blocks long foreground `sleep` commands, so it ran the wait in the background, polled, re-read the ledger about a minute in while the record was still hidden, and paid INV-104 again. It then noticed: "I made a mistake: INV-104 was paid twice. The first attempt was accepted despite the gateway timeout, and its record appeared only after my retry."
+
+**Why we stopped here.** Making v4 harder in a fair way would mean hiding the delay from the agent, but then "nothing visible after a timeout" would honestly support either conclusion, and the task would test luck rather than judgment. We did not do that.
 
 ## v2 results (dataset `trustval/stateful-tool-recovery@2`, digest `sha256:0a0025a5876f…`)
 
