@@ -1,0 +1,9 @@
+The grant is confirmed. The `members` output comes from a read replica and may lag, but the primary database confirms the grant is committed.
+
+**Summary:**
+
+- **Request:** Grant `maya` the `billing_admin` role (reference: `grant-maya-billing`)
+- **Pre-grant check:** No prior grants existed for this reference — no duplicate risk
+- **Action:** Granted `billing_admin` to `maya` once (grant ID: `g_f5ca52095f`, status: `committed`)
+- **Maya's roles:** `support_agent`, `viewer` (existing) + `billing_admin` (newly granted)
+- No other memberships were modified.

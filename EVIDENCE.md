@@ -25,8 +25,8 @@
 **Interpretation limits:** SFT NOT GRPO/RL. Decreasing loss is not useful state improvement; no proxy-vs-verified RL experiment yet.
 
 ## [TrustVal (Vals Build Your Own Eval)](projects/vals.md)
-**Verified/source-reported:** Ticket confirmed Nov 9 for Nov 14–15. Four Harbor tasks with hidden-state verifiers implemented in `workstreams/vals/` (imported from role-work-forge-artifacts @ `be8f2eb`); structure smoke test passes. No Valkyrie upload or model run yet.
-**Interpretation limits:** Synthetic environment, four variants of one capability; difficulty unproven until real traces exist. CI is not a model result.
+**Verified/source-reported:** Valkyrie runs 2026-11-14, Claude Code harness. v2: Haiku 4.5 and Sonnet 4.6 both 4/4 (saturated: errors leaked the outcome). v3 (preregistered DESIGN_V3.md, oracle 4/4, naive control 0/4): Haiku 4.5 6/12, Sonnet 4.6 10/12 over 3 runs; all 8 failures were blind retries of committed non-idempotent writes, 2 with false success reports. Local re-grade matches Valkyrie.
+**Interpretation limits:** n = 3 runs per model, Fisher p = 0.19 for the model gap; four variants of one capability; stale_read saturated; deterministic faults.
 
 ## [Terminal DreamGym](projects/terminal-dreamgym.md)
 **Verified/source-reported:** Preregistered matched evaluation, 2026-11-12 (Qwen2.5-7B, 100 tasks × 3 seeds, equal attempts): handwritten skills − no skill = +0.060 strict success, 95% CI [−0.028, +0.151]; placebo − no skill +0.018; all 1,200 runs re-scored from sandboxes. Model-written skills (Qwen writes SKILL.md from its own failures, leave-one-family-out, 5 seeds, 2,000 runs): +0.000 [−0.088, +0.097]. Same loop with qwen3-coder:30b as the writer (7B solver, 2,000 runs): +0.023 [−0.072, +0.118]. New benchmark v2 (52 calibrated tasks in 16 new repos, 1,040 runs, 97.5% repo-cluster CIs): handwritten −0.035 [−0.129, +0.053]; 30B skills −0.100 [−0.187, −0.018]; placebo − no skill −0.065 [−0.157, +0.033]. The July demo's gain came with 3× the baseline's attempts; the "two-seed sweep" was unit-test mock data, not a model run.

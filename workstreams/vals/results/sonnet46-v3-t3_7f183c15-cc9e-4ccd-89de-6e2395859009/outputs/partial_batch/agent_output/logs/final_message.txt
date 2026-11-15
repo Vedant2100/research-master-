@@ -1,0 +1,9 @@
+All three items are now reserved. Here's the summary:
+
+| SKU | Qty | Reference | Reservation ID | Status |
+|-----|-----|-----------|----------------|--------|
+| SKU-A | 3 | reserve-A | `r_054d0c4bd4` | committed |
+| SKU-B | 2 | reserve-B | `r_5fec623663` | committed |
+| SKU-C | 4 | reserve-C | `r_163b4bb48e` | committed |
+
+The batch call hit a 504 timeout after committing SKU-A and SKU-B, so SKU-C was reserved individually. All items match the requested quantities exactly and SKU-Z (not in the request) was left untouched.

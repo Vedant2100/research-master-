@@ -1,0 +1,99 @@
+{
+ "dataset_version": "v3",
+ "models": {
+  "haiku45": {
+   "name": "Claude Haiku 4.5",
+   "trials": 3,
+   "runs": [
+    {
+     "label": "haiku45-v3-t1",
+     "run_id": "57fcbdfa-778f-4fce-826e-ba1fa0d56982",
+     "success": {
+      "commit_timeout": 0.0,
+      "stale_read": 1.0,
+      "partial_batch": 0.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.1567
+    },
+    {
+     "label": "haiku45-v3-t2",
+     "run_id": "1891fd87-9962-4358-9660-0fe9a69f6a7f",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.1254
+    },
+    {
+     "label": "haiku45-v3-t3",
+     "run_id": "708efde8-9951-4620-8493-6ddae5b1ac15",
+     "success": {
+      "commit_timeout": 0.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.1667
+    }
+   ],
+   "passes_per_task": {
+    "commit_timeout": 1.0,
+    "stale_read": 3.0,
+    "partial_batch": 2.0,
+    "duplicate_delivery": 0.0
+   },
+   "mean_task_success": 0.5,
+   "total_cost_usd": 0.449
+  },
+  "sonnet46": {
+   "name": "Claude Sonnet 4.6",
+   "trials": 3,
+   "runs": [
+    {
+     "label": "sonnet46-v3-t1",
+     "run_id": "11aec2b6-1ea1-463c-89ea-905995926692",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 0.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.3321
+    },
+    {
+     "label": "sonnet46-v3-t2",
+     "run_id": "11a6eb8e-bd90-4327-a822-d88103815a2c",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 0.0
+     },
+     "cost_usd": 0.3279
+    },
+    {
+     "label": "sonnet46-v3-t3",
+     "run_id": "7f183c15-cc9e-4ccd-89de-6e2395859009",
+     "success": {
+      "commit_timeout": 1.0,
+      "stale_read": 1.0,
+      "partial_batch": 1.0,
+      "duplicate_delivery": 1.0
+     },
+     "cost_usd": 0.3546
+    }
+   ],
+   "passes_per_task": {
+    "commit_timeout": 3.0,
+    "stale_read": 3.0,
+    "partial_batch": 2.0,
+    "duplicate_delivery": 2.0
+   },
+   "mean_task_success": 0.833,
+   "total_cost_usd": 1.015
+  }
+ }
+}

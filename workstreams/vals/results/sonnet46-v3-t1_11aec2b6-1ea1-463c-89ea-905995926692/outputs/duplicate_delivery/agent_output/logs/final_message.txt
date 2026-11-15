@@ -1,0 +1,10 @@
+Both accounts were committed successfully — the 502 was returned after the write completed on the server side.
+
+**Provisioned accounts:**
+
+| Customer | Email | Plan | Account ID |
+|---|---|---|---|
+| Nina | nina@example.test | pro | `acct_82b026d74d` |
+| Omar | omar@example.test | starter | `acct_dbb5368d06` |
+
+Both operations show status `committed`. No duplicates were created.

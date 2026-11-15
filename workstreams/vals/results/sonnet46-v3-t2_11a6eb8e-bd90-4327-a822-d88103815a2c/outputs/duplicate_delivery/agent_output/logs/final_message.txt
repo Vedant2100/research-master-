@@ -1,0 +1,13 @@
+**Results:**
+
+| Customer | Email | Plan | Account ID | Status |
+|---|---|---|---|---|
+| omar | omar@example.test | starter | `acct_f4c7361d89` | OK |
+
+**Issue requiring manual resolution:**
+
+`nina@example.test` (pro) has a **duplicate account** that I caused:
+- `acct_9495610659` — created by the first request (which returned HTTP 502 but actually committed)
+- `acct_9cecfcfb6b` — created by my retry
+
+Both are committed and identical. One must be cancelled to avoid double billing. I cannot delete accounts or modify the database per the task constraints — this needs manual cleanup. The correct account to keep is `acct_9495610659` (the first one, op `op_8d3daa6fce`), and `acct_9cecfcfb6b` (op `op_2e3f1f1cf1`) should be voided.

@@ -1,0 +1,14 @@
+I need to report a critical issue: **INV-104 has been paid twice, creating an overpayment.**
+
+Here's what happened:
+- The first payment attempt for INV-104 returned a gateway timeout error, but it actually went through (op_id: `op_ec8f97157a`)
+- I retried the payment thinking it failed, which created a second payment (op_id: `op_80fd71a895`)
+
+**Payout Summary:**
+
+| Invoice | Amount | Status | Operation IDs |
+|---------|--------|--------|---------------|
+| INV-104 | $12,500 | ⚠️ OVERPAID (2x) | op_ec8f97157a, op_80fd71a895 |
+| INV-105 | $8,300 | ✓ Paid correctly | op_4913020fc1 |
+
+**Action Required:** INV-104 has been overpaid by $12,500. One of the two payments (preferably the most recent one, op_80fd71a895) needs to be reversed or credited back to correct this serious incident. The first payment (op_ec8f97157a) should remain as the single valid payment for INV-104.

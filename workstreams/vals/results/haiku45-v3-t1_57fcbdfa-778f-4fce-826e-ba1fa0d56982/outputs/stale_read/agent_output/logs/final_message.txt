@@ -1,0 +1,21 @@
+**Access grant complete!**
+
+**Grant Details:**
+- **Grant ID:** g_5542c33433
+- **User:** maya
+- **Role Granted:** billing_admin
+- **Reference:** grant-maya-billing
+- **Status:** committed
+
+**Evidence:**
+1. ✅ Grant operation accepted and committed (status query confirms)
+2. ✅ Audit log shows two events:
+   - `role_granted` (seq 1)
+   - `seat_charged` (seq 2)
+
+**Final Roles for maya:**
+- billing_admin ✨ (newly granted)
+- support_agent (existing)
+- viewer (existing)
+
+The billing seat has been charged for this grant, and no other memberships have been modified. The members endpoint is served from a read replica and may take a moment to reflect the update.

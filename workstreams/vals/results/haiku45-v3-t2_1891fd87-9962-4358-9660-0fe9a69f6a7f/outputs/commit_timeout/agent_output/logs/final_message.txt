@@ -1,0 +1,7 @@
+Perfect! Both invoices have been successfully paid. Here are the results:
+
+**Payout Operations:**
+1. **INV-104** ($12,500) - Operation ID: `op_b6d6134a29` - Status: committed
+2. **INV-105** ($8,300) - Operation ID: `op_9e4c4a8f1a` - Status: committed
+
+Both approved invoices from the request have been paid exactly once. All payouts are committed in the ledger.

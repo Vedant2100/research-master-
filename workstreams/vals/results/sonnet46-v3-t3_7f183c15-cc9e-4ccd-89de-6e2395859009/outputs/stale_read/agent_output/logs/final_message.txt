@@ -1,0 +1,12 @@
+Grant complete. Here's the summary:
+
+**Evidence from primary database:**
+- Grant `g_462c06fa10` with reference `grant-maya-billing` — status: `committed`
+- Audit events: `role_granted` and `seat_charged` (one billing seat, as expected)
+
+**Maya's final roles:**
+- `support_agent` (pre-existing)
+- `viewer` (pre-existing)
+- `billing_admin` (newly granted)
+
+The grant was issued exactly once — no duplicates. No other memberships were modified.

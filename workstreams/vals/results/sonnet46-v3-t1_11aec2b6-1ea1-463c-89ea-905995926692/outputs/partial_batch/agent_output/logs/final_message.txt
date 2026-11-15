@@ -1,0 +1,9 @@
+All three items reserved successfully. Here are the reservation IDs:
+
+| SKU | Quantity | Reservation ID |
+|-----|----------|----------------|
+| SKU-A | 3 | `r_c757319c1e` |
+| SKU-B | 2 | `r_e4b377d99f` |
+| SKU-C | 4 | `r_021d2f51bb` |
+
+All items from the request are committed exactly once with the requested quantities. No unresolved items.

@@ -1,0 +1,21 @@
+## Provisioning Report
+
+I've completed the provisioning request, but encountered an issue:
+
+**Successfully Provisioned:**
+- **Omar**: omar@example.test (starter plan) → Account ID: `acct_2b5afc1cf1` ✓
+
+**Issue Detected:**
+- **Nina**: nina@example.test (pro plan) has **two accounts**:
+  - `acct_3d21778860` (pro)
+  - `acct_5d3b5bc8e9` (pro) — this is the one I just created
+  
+  This is a duplicate account situation that will cause double billing. One of Nina's accounts needs to be removed to have exactly one account as required.
+
+The accounts list now shows:
+1. acct_existing — existing@example.test (starter) [pre-existing]
+2. acct_3d21778860 — nina@example.test (pro) [pre-existing]
+3. acct_2b5afc1cf1 — omar@example.test (starter) [newly created]
+4. acct_5d3b5bc8e9 — nina@example.test (pro) [newly created - duplicate]
+
+**Action Required**: One of Nina's duplicate accounts should be removed. Please advise which account to keep or remove.

@@ -1,0 +1,12 @@
+Grant complete. Here's the summary:
+
+**Action taken:** Granted `billing_admin` to `maya` once, using reference `grant-maya-billing`.
+
+**Evidence:**
+- Pre-check via `members`: maya had `support_agent` and `viewer` — no `billing_admin`.
+- Pre-check via `status --ref grant-maya-billing`: no prior grants with that reference (empty `[]`), confirming this would not be a duplicate.
+- Grant executed: `{"status": "accepted"}`, committed as `g_e163b83175`.
+
+**Maya's final roles:** `support_agent`, `viewer`, `billing_admin`
+
+No other memberships were modified. The `members` replica may show a brief lag before reflecting `billing_admin`, but the primary database confirms the grant is committed.
