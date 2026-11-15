@@ -12,8 +12,12 @@
 
 - **Pinned Pre-Fix Baseline Commit SHA:**  
   `840d3fb682caa2ae811248c60d98c6f4a26870f2`
-- **Candidate Commit / HEAD SHA:**  
-  `dbf0d4bdca5cefae47385efea7ae87f744747719`
+- **Substantive Candidate Commit SHA:**  
+  `dbf0d4b3bff987569a5e1714f1d47dcb63d48b75`
+- **Subsequent Audit-Only Commit SHA:**  
+  `6ad40b003ac770f6491d344d097b7726081eca73`
+- **Current Final Verification Patch Commit SHA:**  
+  `528aab6985aeeae6bf04cf288cb43315a6b73812`
 - **Repository Branch:** `agent/proof-is-not-truth/apart-sprint`
 - **Remote:** `https://github.com/Vedant2100/research-master-`
 - **Pull Request:** PR #13 (`agent/proof-is-not-truth/apart-sprint` -> `main`)
@@ -47,6 +51,8 @@ The verifier script enforces an explicit allowlist of protected benchmark inputs
 
 ## 3. Exact Commands and Verifier Test Outputs
 
+*Scope Note:* The GitHub Actions check on PR #13 (`✓ Validate portfolio agent`) verifies repository portfolio structure. The local test suites and adversarial verifiers below directly validate the Python experiment harness, the verifier's fail-closed failure modes, and the evaluation artifacts.
+
 ### Test Run 1: Harness Regression Test Suite
 **Command:**
 ```bash
@@ -73,19 +79,37 @@ cd workstreams/proof-is-not-truth && python3 tests/test_harness.py -v
 
 **Summary:** 11 tests run, 0 errors, 0 failures.
 
-### Test Run 2: Strengthened Adversarial Verification Suite
+### Test Run 2: Verifier Negative Failure-Mode Tests
+**Command:**
+```bash
+cd workstreams/proof-is-not-truth && python3 tests/test_verifier_negative.py -v
+```
+**Execution Time:** 0.031s  
+**Exit Code:** 0  
+**Results:**
+- `test_tampered_hash_fails_closed`: **PASS (ok)** (fails closed on altered artifact hash)
+- `test_missing_manifest_entry_fails_closed`: **PASS (ok)** (fails closed on missing required path)
+- `test_duplicate_manifest_entry_fails_closed`: **PASS (ok)** (fails closed on duplicate manifest paths)
+- `test_invalid_baseline_commit_fails_closed`: **PASS (ok)** (fails closed on invalid baseline Git commit)
+- `test_corrupted_metric_in_documentation_fails_closed`: **PASS (ok)** (fails closed on corrupted table metric)
+- `test_prohibited_overclaim_in_documentation_fails_closed`: **PASS (ok)** (fails closed on injected causal/directive overclaim)
+
+**Summary:** 6 tests run, 0 errors, 0 failures.
+
+### Test Run 3: Strengthened Adversarial Verification Suite
 **Command:**
 ```bash
 cd workstreams/proof-is-not-truth && python3 scripts/verify_submission.py
 ```
 **Exit Code:** 0  
 **Summary of Checks:**
-- Section 1 (Real Immutability & Manifest Allowlist): All 13 protected artifacts verified against Git baseline `840d3fb682caa2ae811248c60d98c6f4a26870f2`. Zero git diff.
-- Section 2 (Harness Regression Tests): Re-ran all 11 tests programmatically; all pass.
+- Section 1 (Real Immutability & Manifest Allowlist): Confirmed pinned baseline commit `840d3fb682caa2ae811248c60d98c6f4a26870f2` exists in Git history; manifest entries match `EXPECTED_PROTECTED_PATHS` set exactly (13 items, no duplicates); all 13 protected artifacts match the Git baseline hash and disk hash. Zero git diff.
+- Section 2 (Harness Regression Tests): Programmatically ran all 11 harness regression tests; all pass.
+- Section 2b (Verifier Negative Failure-Mode Tests): Programmatically ran all 6 negative verifier tests; all pass.
 - Section 3 (Offline v2 Regrade Reproducibility): Executed `regrade_traces()` in a temporary directory; produced bit-for-bit identical CSV and JSON summaries.
 - Section 4 (Episode Cardinality & Denominators): Exactly 96 rows in CSV, 96 traces in JSON, 16 unique cases, 6 conditions (16 episodes each).
 - Section 5 (Independent Mathematical Metric Recomputation): Independently recomputed all accuracy, balanced accuracy, false trust rates, LTC rates, abstention counts, and action-ordering flags directly from raw CSV rows without using `agent_eval.py`. All recomputed values matched `metrics_summary_regraded_v2.json` to 4 decimal places.
-- Section 6 (Claim-to-Evidence & Calibration Verifier): Verified absence of unsupported causal or directive overclaims; verified presence of all required methodology qualifications; verified that status reflects "Awaiting human sign-off".
+- Section 6 (Claim-to-Evidence & Calibration Verifier): Verified absence of unsupported causal or directive overclaims in both report and submission package; verified programmatic presence of all quantitative metrics; verified presence of all required methodology qualifications; verified that status reflects "Awaiting human sign-off".
 
 ---
 
