@@ -30,3 +30,6 @@ Haiku 4.5 first (1 trial per task, concurrency 1), inspect traces, then Sonnet 4
 
 ## Extension (written 2026-11-15, after the 3-run results, before any further run)
 Owner decision: add 7 more independent runs per model on the unchanged `@3` dataset (same harness, models, provider and settings), for 10 runs per model in total. All 10 are reported, including the first 3. No task changes. The primary comparison is the pooled task_success count per model (40 task-trials each), with a two-sided Fisher exact test and per-task counts; task-trials within a run are not independent, so we also report the per-run score distribution.
+
+## Extension 2: Claude 5.5 models (written 2026-11-15, before any 5.5 run)
+Owner request: evaluate the Claude 5.5 generation on the unchanged `@3` dataset with the same harness (`claude_code-v1.0.0`), provider and settings: `anthropic/claude-haiku-5-5`, `anthropic/claude-sonnet-5-5`, `anthropic/claude-opus-5-5`. One smoke run per model first, to confirm the harness accepts the model; if it runs cleanly it counts as run 1. Then 9 more, for 10 runs per model. All runs are reported. The harness sets no effort level, so each model runs at its default (Claude Code's default for that model). Comparisons use the run-level permutation test as for the 4.x models.
