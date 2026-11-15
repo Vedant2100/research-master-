@@ -96,6 +96,43 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
 
+### 2026-11-15 — results: session-context GRPO extractor (3 seeds) and round-3 controls
+All numbers recomputed from raw eval files with `stalestream/report.py` (outputs `$S/runs/reports/`). Bootstraps are paired over episodes, 10k resamples, seed-mean per episode.
+
+**Run incidents (no config change to the preregistered training):** ctx seed 1 hung in the NCCL weight sync after step 79 (log frozen 2 h, kept as `ctx_s1_hung_step79`); its restart hit CUDA OOM in backward at step 116 on a long session batch (kept as `ctx_s1_oom_step115`). Seeds 1–2 were rerun from scratch with `--micro-batch 2` (seed 0 used 4). The PG loss is normalized by the constant `max_new * len(gens)`, so the gradient is mathematically identical; only peak memory changes. Seeds 1 and 2 used the same seeds, data and hyperparameters.
+
+**(1) Session-context GRPO extractor — preregistered primary: worse than header context.**
+| | seeds | mean ± SD | vs header GRPO (0.691 test / 0.696 val) |
+|---|---|---|---|
+| test | 0.591 / 0.658 / 0.709 | 0.653 ± 0.059 | −0.038 [−0.057, −0.019] |
+| val | 0.571 / 0.669 / 0.716 | 0.652 | −0.044 [−0.065, −0.024] |
+Gain over its own untrained baseline is large (session ctx 0.192 → 0.653 test), but the extra context does not help the 1.7B extractor: `fact_date_ok` stays 0.70 (same as header), xref_date EM 0.559 vs 0.575, relative_date 0.686 vs 0.686. Fact check (test): correct 0.762 vs 0.790, stale 0.144 vs 0.164, missing 0.073 vs 0.030; memory at the 160-token budget 0.57 vs 0.38. Seed variance is 5× the header run's. Conclusion: date/cross-reference reasoning is not learned by either variant; seeing the whole session does not change that at 1.7B.
+
+**(2) Constrained decoding — the GRPO gain is mostly beyond format (preregistered rule: ≤ 0.40 ⇒ mainly beyond format).**
+| test (val) | EM | vs unconstrained |
+|---|---|---|
+| untrained 1.7B header, constrained | 0.300 (0.323) | +0.041 [+0.019, +0.063] (val +0.039 [+0.018, +0.061]) |
+| untrained 1.7B session, constrained | 0.259 (0.277) | +0.067 vs 0.192 |
+| header GRPO s0, constrained | 0.689 (0.701) | −0.001 [−0.017, +0.015] vs GRPO s0 |
+Forcing a valid label (relation_valid 0.63 → 1.00) recovers only +0.04 of the +0.43 GRPO gain: a valid label is not the right label. Constraining the trained model changes nothing. Header GRPO vs constrained untrained: +0.391 [+0.365, +0.418] test.
+
+**(3) Held-out reader (Phi-3.5-mini-instruct, never used for training/selection) — gains transfer; arm ordering preserved.**
+The held-out reader is weaker: oracle 0.623 test (0.587 val) vs 0.997 for Qwen3-4B, so EM is also reported as a fraction of its oracle.
+| test | Phi EM | /oracle | Qwen3-4B EM |
+|---|---|---|---|
+| oracle | 0.623 | 1.00 | 0.997 |
+| extract 32B session ctx | 0.532 | 0.85 | 0.783 |
+| extractor GRPO header (3 seeds) | 0.481 | 0.77 | 0.691 |
+| extractor GRPO session (3 seeds) | 0.464 | 0.74 | 0.653 |
+| extract 4B session ctx | 0.349 | 0.56 | 0.538 |
+| extractor DPO / RFT | 0.348 / 0.313 | 0.56 / 0.50 | 0.469 / 0.380 |
+| writer GRPO (3 seeds) | 0.258 | 0.41 | 0.292 |
+| untrained 1.7B extractor | 0.250 | 0.40 | 0.259 |
+| untrained 1.7B writer | 0.187 | 0.30 | 0.211 |
+Extractor GRPO vs untrained extractor under Phi: +0.231 [+0.197, +0.264] test (val +0.217 [+0.179, +0.255]); every seed significant. Writer GRPO vs untrained writer under Phi: +0.071 [+0.050, +0.092] test (Qwen: +0.081); val +0.095. Ordering matches Qwen3-4B except 4B-ctx and DPO tie. Neither GRPO gain is reader-specific.
+
+**What this changes.** The extractor gain is real (survives constrained decoding and a different-family reader). It is not stale-fact reasoning: date accuracy is flat at 0.70 in every extractor arm, and the dominant remaining error is stale values (0.16 vs 0.08 for 32B). Per NEXT_STEPS stop/go criterion 3, the claim is "RL improves structured extraction under a downstream QA reward", not "solves stale-memory conflict resolution", until a date-targeted change moves the date/stale metrics. Next: on-policy DPO (Priority 1), and a date-targeted intervention.
+
 ### 2026-11-14 — preregistration: round 3 controls (written before the run)
 Order chosen by the owner: audit the session-context run first, then these two controls, then on-policy DPO.
 Script `scripts/round3_controls.sh`, starts automatically after the round-2 driver exits. Test set use is evaluation only; nothing is tuned.

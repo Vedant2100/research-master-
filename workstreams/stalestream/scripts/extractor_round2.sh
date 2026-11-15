@@ -51,7 +51,7 @@ wait_up 8401 $RS
 log "servers up"
 for SEED in ${SEEDS:-0 1 2}; do
   CUDA_VISIBLE_DEVICES=0 python -m stalestream.grpo_extract --episodes $D/train_2s.jsonl --aliases $D/value_aliases.json \
-    --mquake $MQ --context session --steps ${STEPS:-200} --episodes-per-step 4 --lines-per-episode 64 --seed $SEED --save \
+    --mquake $MQ --context session --steps ${STEPS:-200} --episodes-per-step 4 --lines-per-episode 64 --micro-batch ${MB:-4} --seed $SEED --save \
     --out $R/ctx_s$SEED >|"$R/ctx_s$SEED.log" 2>&1 || log "CTX SEED $SEED FAILED"
   log "ctx seed $SEED done: $(tail -1 $R/ctx_s$SEED/train_log.jsonl | cut -c1-160)"
 done
