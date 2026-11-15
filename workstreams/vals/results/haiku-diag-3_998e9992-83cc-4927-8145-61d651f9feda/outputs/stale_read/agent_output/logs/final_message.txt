@@ -1,0 +1,21 @@
+I can see the eventual consistency issue here. Let me verify the situation:
+
+**Operation Status Verification:**
+- ✓ Audit log confirms: `grant_committed` event for key `grant-maya-billing`
+- ✓ Status check confirms: grant is in `committed` state
+- The membership replica read shows maya with `support_agent` and `viewer` roles, but not yet `billing_admin`
+
+This is expected eventual consistency behavior—the authoritative database has committed the grant, but the read replica hasn't caught up yet. Since the commit is verified through the operation status and audit log, the replica lag does not indicate a failed grant.
+
+**Final Membership State (from authoritative operations):**
+- liam: billing_admin (pre-existing)
+- maya: support_agent (pre-existing)
+- maya: viewer (pre-existing)
+- maya: billing_admin ✓ **(committed, pending replica replication)**
+
+**Evidence of Committed Grant:**
+1. **Audit Log**: Entry `seq=1, key=grant-maya-billing, event=grant_committed`
+2. **Operation Status**: `{status: committed}` for idempotency key `grant-maya-billing`
+3. **Grant Response**: `{status: committed, message: "Grant committed; read replica may lag"}`
+
+The grant has been successfully committed to the authoritative store. The membership replica will reflect maya's new `billing_admin` role once replication catches up.

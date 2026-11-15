@@ -1,0 +1,21 @@
+Perfect! The idempotency mechanism worked correctly. Despite the connection loss during nina's provision, the account was durably created and recorded. Here's the final state:
+
+## Provisioning Results
+
+**Created Accounts:**
+| Email | Account ID | Plan | Status |
+|-------|-----------|------|--------|
+| nina@example.test | acct_95440ca012 | pro | ✓ committed |
+| omar@example.test | acct_ac2dbfc91b | starter | ✓ committed |
+
+**Operation Evidence:**
+| Idempotency Key | Account ID | Email | Status |
+|---|---|---|---|
+| provision-nina | acct_95440ca012 | nina@example.test | committed |
+| provision-omar | acct_ac2dbfc91b | omar@example.test | committed |
+
+**Summary:**
+- Both accounts from the request were provisioned successfully
+- Each idempotency key created exactly one account and one operation record
+- The connection loss on nina's provision did not create a duplicate—the durable commit was preserved
+- No existing accounts were modified (existing@example.test remains unchanged)

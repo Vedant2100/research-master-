@@ -23,7 +23,7 @@ def main():
     lines = [
         "[dataset]",
         'name = "trustval/stateful-tool-recovery"',
-        'version = "v1"',
+        'version = "v2"',
         'description = "State-changing tool reliability under ambiguous outcomes"',
         'authors = [{ name = "TrustVal" }]',
         'keywords = ["agent-reliability", "idempotency", "tool-use", "state-recovery"]',

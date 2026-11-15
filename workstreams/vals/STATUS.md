@@ -27,11 +27,13 @@ As of 2026-11-14 the TrustVal implementation lives **in this directory** (`works
 | `harbor lint` (harbor 0.26.0, Compose v5.7.1) | clean on all 4 tasks (2026-11-14) |
 | Dataset pushed to Valkyrie | yes: `trustval/stateful-tool-recovery@1` (tags `v1`, `latest`), digest `sha256:fcba126ca3b849c759e1b88c971fd03a65a4cd908abb994d1ff13f7011df48eb`, 4 tasks, pushed 2026-11-14 16:52 PST from research-master `db71688`; per-task digests match `scripts/write_manifest.py` |
 | Agent installed | `claude_code-v1.0.0` from vals-ai/public-agent-registry `examples/claude_code-v1.0.0` |
-| Frontier-model run (claude_code-v1.0.0, anthropic/claude-sonnet-4-6) | no |
+| Dataset v2 | `trustval/stateful-tool-recovery@2` (tags `v2`, `latest`), digest `sha256:0a0025a5876f…`: agent user `agent` → `root` (harness compatibility; see RESULTS.md) |
+| Model runs | Haiku 4.5 `998e9992…` 4/4; Sonnet 4.6 `8ff83c9b…` 4/4 (1 trial/task); locally re-graded, matches |
+| Finding | v2 saturated: fault messages reveal outcome and server dedup makes blind retries safe |
 | Results in README / Vals project entry | no |
 
 ## Next decisive action
-Audit README commands against `valkyrie --help` and current Valkyrie/Harbor docs; authenticate to the org, configure Modal provider, push the dataset, then run one trial per task at concurrency 1 and inspect traces before scaling.
+Owner decision needed: harden the tasks (v3: neutral fault messages, no server-side dedup leak) or submit v2 with an honest saturation result.
 
 ## Do not overclaim
 CI or deterministic integration tests passing is not evidence of frontier-model capability. No results, run IDs or dataset digests exist until Valkyrie reports them. Never modify a task to make a model pass; never commit credentials.
