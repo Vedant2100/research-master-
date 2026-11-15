@@ -1,0 +1,14 @@
+Both requested customers now have exactly one account on their requested plan.
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_de61a42291` |
+| omar@example.test | starter | `acct_44b517caa6` |
+
+**Nina's first attempt returned an error.** The first `provision` call for Nina failed with `HTTP 502: connection reset by upstream`, but the account was created anyway. I checked the accounts and operations lists before doing anything else, found exactly one Nina account and one committed operation, and did not retry. Retrying would have created a duplicate, since the client does not deduplicate writes.
+
+Final state checks:
+- `accounts` shows one account each for Nina and Omar, plus the pre-existing `acct_existing`, which I left unchanged.
+- `operations` shows two committed operations, `op_f9c63369e3` (Nina) and `op_e0499483cc` (Omar).
+
+Nothing is unresolved. I did not modify the database, environment files, or task files.

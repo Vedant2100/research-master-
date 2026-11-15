@@ -1,0 +1,16 @@
+`maya` now has the `billing_admin` role, granted once. I issued exactly one grant request and did not retry it.
+
+**Final roles (from `members`, which is a read replica):**
+- `maya`: `billing_admin` (new), `support_agent`, `viewer`
+- `liam`: `billing_admin` (unchanged)
+
+The replica did not show the new role for about 40 seconds after the grant, then caught up on the third re-check.
+
+**Evidence:**
+- **Before granting:** `status --ref grant-maya-billing` returned no records, the audit log was empty, and the replica showed no `billing_admin` for `maya`. So no prior grant existed.
+- **Grant:** `grant --ref grant-maya-billing maya billing_admin` returned `{"status": "accepted"}`.
+- **After granting (primary database):**
+  - `status --ref grant-maya-billing` shows one record: grant `g_0b1da214e5`, user `maya`, role `billing_admin`, status `committed`.
+  - `audit` shows two events for that grant: `role_granted` (seq 1) and `seat_charged` (seq 2). That is one seat charged.
+
+I did not change any other membership, and I did not touch the database, environment files, or task files.

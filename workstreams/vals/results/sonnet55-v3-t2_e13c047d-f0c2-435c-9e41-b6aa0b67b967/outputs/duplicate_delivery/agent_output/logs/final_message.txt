@@ -1,0 +1,12 @@
+Both customers now have exactly one account on the requested plan.
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_32d54c954c` |
+| omar@example.test | starter | `acct_6c22b5c69a` |
+
+- **Nina's request:** The first attempt returned an HTTP 502 ("connection reset by upstream"), but the account had been created anyway. I checked the account list and operations log, saw one committed operation, and did not retry. A retry would have created a duplicate and double billing.
+- **Omar's request:** It succeeded on the first try.
+- **Existing account:** I left `acct_existing` untouched.
+
+There is nothing I couldn't resolve.

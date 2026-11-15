@@ -1,0 +1,14 @@
+All three requested items are now reserved once each, at the requested quantities. SKU-Z was not in the request and its stock is unchanged at 7.
+
+| Item | SKU | Qty | Reservation ID | Status |
+|---|---|---|---|---|
+| reserve-A | SKU-A | 3 | `r_0ed3ad9380` | committed |
+| reserve-B | SKU-B | 2 | `r_8ab9b6f211` | committed |
+| reserve-C | SKU-C | 4 | `r_d356c3adc0` | committed |
+
+What happened:
+- I ran `reserve-batch` once. It returned `HTTP 504: gateway timeout`, but the reservations read afterward showed reserve-A and reserve-B had been committed. SKU-C was not.
+- Because writes aren't idempotent, I did not resubmit the batch. I reserved SKU-C alone with `reserve --ref reserve-C SKU-C 4`, which succeeded.
+- The final reservations list has exactly three records, one per reference, with no duplicates. Stock went from A=8, B=5, C=9 to A=5, B=3, C=5.
+
+Nothing is unresolved. The only anomaly is the timeout on the batch call, which the reservations list resolved. I didn't touch the database, environment files, or task files.

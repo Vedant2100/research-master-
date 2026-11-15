@@ -1,0 +1,8 @@
+Both approved invoices are paid, each exactly once.
+
+- **INV-104**: 12,500, operation ID `op_ec681367d3`. The first attempt returned a gateway timeout, but the ledger showed the payout had been committed, so I did not resend it.
+- **INV-105**: 8,300, operation ID `op_2439be6b52`.
+
+The ledger has exactly these two records, and both invoices now show as paid.
+
+Nothing is unresolved. INV-106 is still open, as it was not on the approved list, so I did not pay it. I did not modify the database, environment files, or task files.

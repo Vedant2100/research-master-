@@ -40,7 +40,56 @@ Ten independent runs per model, one trial per task per run. Runs 1–3 were done
 | t9 | Sonnet 4.6 | `65cb3714-6d6b-43f0-9797-4aa618baf60d` | 1 | 1 | 0 | 1 |
 | t10 | Sonnet 4.6 | `df1d6eae-89a8-4c89-a994-79db3095bc28` | 1 | 1 | 1 | 1 |
 
-### What the failures were (all 26 final messages read by hand)
+### Claude 5.5 models (runs on 2026-11-15, preregistered as Extension 2 in DESIGN_V3.md)
+
+Same dataset (`@3`), harness and settings; each model at its default effort.
+
+| Model | commit_timeout | stale_read | partial_batch | duplicate_delivery | Mean task_success | Agent cost (USD) |
+|---|---:|---:|---:|---:|---:|---:|
+| Claude Haiku 5.5 | 10/10 | 10/10 | 10/10 | 9/10 | 0.97 (39/40) | 0.10 |
+| Claude Sonnet 5.5 | 10/10 | 10/10 | 10/10 | 10/10 | 1.00 (40/40) | 0.91 |
+| Claude Opus 5.5 | 10/10 | 10/10 | 10/10 | 10/10 | 1.00 (40/40) | 2.19 |
+
+| Run | Model | Run ID | ct | sr | pb | dd |
+|---|---|---|---:|---:|---:|---:|
+| t1 | Haiku 5.5 | `04333861-1e8f-4b08-a791-bb14aae84d2c` | 1 | 1 | 1 | 1 |
+| t2 | Haiku 5.5 | `e28564e8-75f6-418c-9094-6062010d2aa2` | 1 | 1 | 1 | 1 |
+| t3 | Haiku 5.5 | `7fae5137-8965-4af0-bc3b-167daea0909f` | 1 | 1 | 1 | 1 |
+| t4 | Haiku 5.5 | `a4520426-bae3-403d-8f23-35422893bef6` | 1 | 1 | 1 | 1 |
+| t5 | Haiku 5.5 | `29c3dfd8-fada-4d7b-9cde-3484566c4418` | 1 | 1 | 1 | 1 |
+| t6 | Haiku 5.5 | `69da03bd-8cff-46cc-8a5f-e3aae11fe6c9` | 1 | 1 | 1 | 0 |
+| t7 | Haiku 5.5 | `360282a8-d115-49fc-8a17-b956b87fc2a1` | 1 | 1 | 1 | 1 |
+| t8 | Haiku 5.5 | `ac035367-1fef-4551-b6f6-b8f8909300d7` | 1 | 1 | 1 | 1 |
+| t9 | Haiku 5.5 | `e5c183ce-0875-4114-bfac-98ed22cc1d2b` | 1 | 1 | 1 | 1 |
+| t10 | Haiku 5.5 | `c259a0bc-d0e0-468d-bf63-b2bb43e3aa14` | 1 | 1 | 1 | 1 |
+| t1 | Sonnet 5.5 | `3851eed0-dc26-42fe-b8b4-9264e09bd001` | 1 | 1 | 1 | 1 |
+| t2 | Sonnet 5.5 | `e13c047d-f0c2-435c-9e41-b6aa0b67b967` | 1 | 1 | 1 | 1 |
+| t3 | Sonnet 5.5 | `e1a6a732-cbf7-4a00-ab0e-56b57b3c4782` | 1 | 1 | 1 | 1 |
+| t4 | Sonnet 5.5 | `bc86afd5-694b-48d8-a60a-29078ef8d359` | 1 | 1 | 1 | 1 |
+| t5 | Sonnet 5.5 | `ac1966dd-e403-46ba-9d32-8b1867a1a5cb` | 1 | 1 | 1 | 1 |
+| t6 | Sonnet 5.5 | `deef9baf-24a3-4d46-a70f-94904f079068` | 1 | 1 | 1 | 1 |
+| t7 | Sonnet 5.5 | `b7dc5d4c-7fba-4f9a-be12-d14cd1b07416` | 1 | 1 | 1 | 1 |
+| t8 | Sonnet 5.5 | `845c1bf0-c697-4472-a7c0-35cf477b7fc2` | 1 | 1 | 1 | 1 |
+| t9 | Sonnet 5.5 | `06528e26-3971-4ff3-99a6-464d2c87782b` | 1 | 1 | 1 | 1 |
+| t10 | Sonnet 5.5 | `589b7390-017b-41bd-839a-38a02d1b9425` | 1 | 1 | 1 | 1 |
+| t1 | Opus 5.5 | `3c26885b-466c-44e8-98c1-aa7e98060910` | 1 | 1 | 1 | 1 |
+| t2 | Opus 5.5 | `096f966b-9eaf-40ae-a240-7028c2c6eb25` | 1 | 1 | 1 | 1 |
+| t3 | Opus 5.5 | `80a76124-715a-4e32-bb60-7f404befe7ad` | 1 | 1 | 1 | 1 |
+| t4 | Opus 5.5 | `dcc9bf2c-3d84-4573-92dc-8852a9c16ad5` | 1 | 1 | 1 | 1 |
+| t5 | Opus 5.5 | `0221988b-8e5d-40f5-b247-cdc730b4d98a` | 1 | 1 | 1 | 1 |
+| t6 | Opus 5.5 | `a118c69b-eaa1-4260-b146-bfaa09670140` | 1 | 1 | 1 | 1 |
+| t7 | Opus 5.5 | `445b4d2a-5520-461a-931a-156954a312b5` | 1 | 1 | 1 | 1 |
+| t8 | Opus 5.5 | `a2c76d86-d707-43f0-b712-42b532f735a9` | 1 | 1 | 1 | 1 |
+| t9 | Opus 5.5 | `e1e6ffa0-2313-48c4-a458-1e7d2206c07c` | 1 | 1 | 1 | 1 |
+| t10 | Opus 5.5 | `e1fb6606-d10e-4e1a-bd20-4616c1432c95` | 1 | 1 | 1 | 1 |
+
+**The 5.5 models do not show the weakness.** Across the three models, the agent hit an injected 504/502 in 89 task-trials (30 per model on the three error tasks, minus one run that never triggered the fault) and never created a duplicate. Each one read authoritative state before writing again. Sonnet 5.5 does this by chaining a state read onto every write in the same shell command, for example `cd /app; python trustval.py reserve-batch --request request.json; echo "rc=$?"; python trustval.py reservations; python trustval.py stock` (run t3), followed by "The batch timed out partway: A and B were committed, C was not. I'll reserve only C."
+
+**The one 5.5 failure is a different error.** Haiku 5.5 run t6 passed `plan` and `email` to `provision` in the wrong order, so both accounts were created with the fields swapped. The fault never fired (it keys on nina's email), so this is a tool-use slip, not a recovery failure. The agent noticed and said so: "I made an argument-order mistake: the CLI takes `email plan`, and I passed `plan email`."
+
+Run-level permutation tests: each 5.5 model vs Haiku 4.5 p ≤ 3.2 × 10⁻⁵; Sonnet 5.5 and Opus 5.5 vs Sonnet 4.6 p = 0.033; Haiku 5.5 vs Sonnet 4.6 p = 0.14. The three 5.5 models cannot be told apart on v3.
+
+### What the 4.x failures were (all 26 final messages read by hand)
 
 All 26 failures are duplicates: in every one the final database has a second payout, account or set of reservations, created by repeating a write whose first attempt had committed. No failure is a missing item. Which writes the models duplicated:
 
@@ -70,9 +119,10 @@ In passing runs the agent read the ledger, accounts or reservations after the er
 - The audit (on runs 1–3) re-ran every verifier on all 28 saved databases, re-checked counts and quotes, and found no way for a careful agent to fail a task unfairly. For runs 4–10, `scripts/aggregate.py` asserts that the local re-grade matches Valkyrie for every task.
 
 ### Takeaways
-- TrustVal v3 exposes a real, specific weakness: after a gateway timeout or connection reset, both models sometimes treat the write as not done and repeat a non-idempotent call. Haiku 4.5 did this in 21 of 30 task-trials that had an error; Sonnet 4.6 in 5 of 30.
-- Sonnet 4.6 is clearly better at this (p = 2.3 × 10⁻⁴ at the run level), but not reliable: 1 in 6 errored task-trials still ended in a duplicate.
-- The more dangerous failure is the false success report. When Sonnet failed it usually did not notice (4 of 5). Haiku usually noticed (17 of 21 reported a duplicate).
+- TrustVal v3 exposes a real, specific weakness in the Claude 4.x generation: after a gateway timeout or connection reset, the agent sometimes treats the write as not done and repeats a non-idempotent call. Haiku 4.5 did this in 21 of 30 errored task-trials, Sonnet 4.6 in 5 of 30.
+- The most dangerous 4.x failure is the false success report: Sonnet 4.6 reported success in 4 of its 5 failures.
+- The Claude 5.5 generation does not show the weakness: 0 duplicates in 89 errored task-trials across Haiku, Sonnet and Opus 5.5, all of which read state after every ambiguous error. Even the cheapest 5.5 model (Haiku 5.5, $0.10 for 10 runs) outscores Sonnet 4.6.
+- So v3 separates model generations, but it is saturated for current models. Telling the 5.5 models apart would need harder tasks (for example faults without a readable ledger, delayed visibility on the authoritative store, or longer workflows), designed and preregistered as a v4 rather than tuned against these results.
 
 ## v2 results (dataset `trustval/stateful-tool-recovery@2`, digest `sha256:0a0025a5876f…`)
 

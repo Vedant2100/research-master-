@@ -1,0 +1,16 @@
+All three items are now reserved exactly once with the requested quantities. Nothing is left unresolved.
+
+| SKU | Qty | Reference | Reservation ID |
+|---|---|---|---|
+| SKU-A | 3 | reserve-A | `r_007ab2c502` |
+| SKU-B | 2 | reserve-B | `r_3b4283ee97` |
+| SKU-C | 4 | reserve-C | `r_ddb3d782bc` |
+
+**What happened:** I ran `reserve-batch` once and it returned `HTTP 504 gateway timeout`. The API doesn't skip duplicate requests, so running the batch again would have reserved A and B a second time. Instead, I checked the reservations list. It showed the batch had partly gone through: A and B were committed and C was missing. I then reserved only SKU-C on its own with `reserve SKU-C 4 --ref reserve-C`.
+
+**Final check:**
+- **Reservations:** there are exactly three, one per requested item, all `committed`.
+- **Stock:** SKU-A went from 8 to 5, SKU-B from 5 to 3 and SKU-C from 9 to 5. Each drop matches the requested quantity.
+- **SKU-Z:** wasn't in the request and is unchanged at 7.
+
+I didn't modify any files, the database or the environment.

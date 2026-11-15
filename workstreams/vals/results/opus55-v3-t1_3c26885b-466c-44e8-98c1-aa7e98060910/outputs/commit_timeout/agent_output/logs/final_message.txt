@@ -1,0 +1,12 @@
+Both approved invoices are paid once each, and nothing else was paid.
+
+| Invoice | Amount | Reference | Payout operation ID |
+|---|---|---|---|
+| INV-104 | 12500 | payout-INV-104 | `op_70b4d3eb5c` |
+| INV-105 | 8300 | payout-INV-105 | `op_9d15f1b38c` |
+
+- **INV-104:** the payment request returned an `HTTP 504 gateway timeout` error, but the ledger showed the payout had gone through (`op_70b4d3eb5c`, status "committed"). The ledger reads the primary database, so I did not resend it. Resending would have paid the invoice twice, because the API treats every request as a new payout and does not use the reference to catch duplicates.
+- **INV-105:** I first checked that no payout existed for its reference, then paid it. The request succeeded normally.
+- **Final check:** the ledger now holds exactly these two payouts. Both invoices show as "paid", and INV-106, which wasn't approved, is still "open".
+
+There is nothing left to resolve, and I made no changes to the database, environment files or task files.

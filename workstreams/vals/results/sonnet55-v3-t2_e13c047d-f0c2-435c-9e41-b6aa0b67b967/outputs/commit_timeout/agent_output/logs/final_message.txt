@@ -1,0 +1,11 @@
+Both approved invoices are paid, once each. The ledger shows exactly two payouts, both committed.
+
+| Invoice | Amount | Operation ID |
+|---|---|---|
+| INV-104 | 12500 | `op_ebbbd4c436` |
+| INV-105 | 8300 | `op_7d0840c123` |
+
+- **INV-104:** The pay call returned an HTTP 504 gateway timeout, but the ledger showed the payout had been committed. I did not retry, since a retry would have paid it twice. The operation ID comes from the ledger, not from the pay call's response.
+- **INV-106:** I did not pay it. It is open but not in the approved request.
+
+Nothing is left unresolved.

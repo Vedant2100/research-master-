@@ -1,0 +1,13 @@
+All three items are now reserved once each, with the requested quantities.
+
+| SKU | Qty | Reference | Reservation ID |
+|---|---|---|---|
+| SKU-A | 3 | reserve-A | `r_d0868a51ed` |
+| SKU-B | 2 | reserve-B | `r_49be9e8715` |
+| SKU-C | 4 | reserve-C | `r_8bcb9089dc` |
+
+**What happened:** I ran `reserve-batch` once and it failed with `HTTP 504 gateway timeout`. Writes to this API aren't idempotent, so resending the batch could have reserved some items twice. Instead I checked the reservations list. SKU-A and SKU-B had already been saved; SKU-C had not. I reserved only SKU-C, with a single `reserve` call, and that worked.
+
+**Final check:** The reservations list has exactly these three records, all with status "committed". Stock went from A 8, B 5, C 9 to A 5, B 3, C 5, which matches the requested quantities. SKU-Z was not touched and is still at 7.
+
+Nothing is left unresolved. I did not change the database, environment files or task files.

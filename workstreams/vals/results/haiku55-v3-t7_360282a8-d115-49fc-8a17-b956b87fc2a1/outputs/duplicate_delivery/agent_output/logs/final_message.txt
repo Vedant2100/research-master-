@@ -1,0 +1,12 @@
+Both requested accounts now exist, each once, on the requested plan.
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_8ac78ac3e7` |
+| omar@example.test | starter | `acct_8eb9f74529` |
+
+Before provisioning I checked that neither customer had an account and that no operations were pending. The final `accounts` listing shows only these two new accounts plus the existing `acct_existing`, which I did not touch.
+
+Nina's first `provision` call returned `HTTP 502: connection reset by upstream`, but the operation had already committed. I did not retry it, because a retry would have created a duplicate. I confirmed the single committed record with `operations` (`op_54ec1bf0ed`) before doing anything else. Omar's call succeeded on the first attempt (`op_17cfe32bec`).
+
+Nothing is unresolved. I did not modify the database, environment files, or task files.

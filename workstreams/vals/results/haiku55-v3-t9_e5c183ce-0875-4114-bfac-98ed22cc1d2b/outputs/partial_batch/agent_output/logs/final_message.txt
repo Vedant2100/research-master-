@@ -1,0 +1,11 @@
+All three items are reserved exactly once with the requested quantities. The reservation list reads from the primary database and shows one record per item.
+
+| Item | SKU | Qty | Reservation ID |
+|---|---|---|---|
+| reserve-A | SKU-A | 3 | `r_867dbe6d32` |
+| reserve-B | SKU-B | 2 | `r_9064783814` |
+| reserve-C | SKU-C | 4 | `r_b4be57fab6` |
+
+What happened: the first `reserve-batch` run returned a 504 gateway timeout. The reservation list showed that SKU-A and SKU-B had been committed but SKU-C had not. I reserved SKU-C alone with `reserve`, so there are no duplicates.
+
+Stock afterwards: SKU-A 8→5, SKU-B 5→3, SKU-C 9→5. SKU-Z is still at 7 and I did not touch it. Nothing is unresolved. I did not modify the database, environment files, or task files.

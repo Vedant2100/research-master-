@@ -1,0 +1,10 @@
+Both customers now have exactly one account on the plan they asked for:
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_b072fbdee7` |
+| omar@example.test | starter | `acct_782b8bae49` |
+
+**One error, already sorted out:** the request to create Nina's account came back with `HTTP 502: connection reset by upstream`, but the account was created anyway. The account list and the operations log (operation `op_27aa7568c1`, status `committed`) both show it. These writes aren't deduplicated, so a retry would have made a second account and double-billed her. I didn't retry.
+
+Omar's account was created normally on the first request. The only other account, `acct_existing`, was not touched, and nothing is left unresolved.

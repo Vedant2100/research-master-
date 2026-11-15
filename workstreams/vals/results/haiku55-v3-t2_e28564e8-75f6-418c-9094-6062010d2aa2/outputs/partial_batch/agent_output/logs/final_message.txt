@@ -1,0 +1,13 @@
+All three items are reserved once each with the requested quantity, and nothing else was touched.
+
+| SKU | Quantity | Reference | Reservation ID |
+|---|---|---|---|
+| SKU-A | 3 | reserve-A | `r_89d3df8b46` |
+| SKU-B | 2 | reserve-B | `r_8a9244338f` |
+| SKU-C | 4 | reserve-C | `r_09de3e5fb6` |
+
+The first `reserve-batch` call returned an HTTP 504 gateway timeout. It had applied SKU-A and SKU-B but not SKU-C. I checked the reservation list before doing anything else, then reserved only SKU-C with `reserve`. I did not resubmit the batch, because writes aren't idempotent and that would have double-reserved A and B.
+
+Stock now reads SKU-A 5, SKU-B 3, SKU-C 5, and SKU-Z 7. SKU-Z was not in the request and is unchanged. The reservation list shows exactly three records, one per item.
+
+Nothing is unresolved. The database, environment files, and task files were not modified.

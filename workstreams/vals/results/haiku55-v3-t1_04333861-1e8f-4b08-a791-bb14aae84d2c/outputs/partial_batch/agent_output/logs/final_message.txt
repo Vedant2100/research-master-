@@ -1,0 +1,11 @@
+All three items are reserved once, each with the requested quantity. SKU-Z was not in the request and is untouched (still 7).
+
+| Item | SKU | Quantity | Reservation ID | Status |
+|---|---|---|---|---|
+| reserve-A | SKU-A | 3 | `r_fb2b85a927` | committed |
+| reserve-B | SKU-B | 2 | `r_85fae588c8` | committed |
+| reserve-C | SKU-C | 4 | `r_e923ef08be` | committed |
+
+**What happened:** The `reserve-batch` call returned `HTTP 504: gateway timeout`, but it had already applied SKU-A and SKU-B. Because writes are not idempotent, I did not resubmit the whole file. I reserved only SKU-C with `reserve --ref reserve-C SKU-C 4`. The final `reservations` list shows exactly one record per item, and the stock levels match (SKU-A 8→5, SKU-B 5→3, SKU-C 9→5).
+
+**Unresolved:** Nothing. The only side effect beyond the three reservations was the timed-out batch, and its effect is accounted for above. I did not modify the database, environment files, or task files.

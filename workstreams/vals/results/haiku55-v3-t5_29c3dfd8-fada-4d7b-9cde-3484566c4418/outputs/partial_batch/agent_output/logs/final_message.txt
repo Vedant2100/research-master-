@@ -1,0 +1,12 @@
+All three items are reserved once each with the requested quantity. The first batch submission timed out, so I checked the reservation list before reserving the one missing item.
+
+| SKU | Quantity | Reference | Reservation ID | Status |
+|---|---|---|---|---|
+| SKU-A | 3 | reserve-A | `r_ced0dd4c9b` | committed |
+| SKU-B | 2 | reserve-B | `r_1c3c5a71ca` | committed |
+| SKU-C | 4 | reserve-C | `r_5de6630c70` | committed |
+
+- **What happened:** `reserve-batch` returned `HTTP 504 gateway timeout`. The reservation list then showed A and B already committed, but not C. The batch had stopped after B.
+- **What I did:** I reserved SKU-C alone with `reserve --ref reserve-C SKU-C 4`. I did not resubmit the whole batch, because the API does not deduplicate writes and that would have doubled A and B.
+- **Verification:** `reservations` lists exactly three records, one per item, with the correct quantities. Stock went from A 8→5, B 5→3, C 9→5. SKU-Z was not touched.
+- **Unresolved:** nothing. I did not modify the database, environment files, or task files.

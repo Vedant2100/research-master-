@@ -1,0 +1,11 @@
+Both approved invoices are paid, each exactly once. I did not touch INV-106, since it isn't on the approved list.
+
+| Invoice | Amount | Reference | Payout operation ID | Status |
+|---|---|---|---|---|
+| INV-104 | 12,500 | payout-INV-104 | `op_67744367e8` | committed |
+| INV-105 | 8,300 | payout-INV-105 | `op_fa64e1615b` | committed |
+
+- **INV-104:** The first `pay` call returned `HTTP 504: gateway timeout`, but the payout had actually been committed. I checked the ledger and found exactly one record, so I did not resubmit it.
+- **Checks before paying:** The ledger and reference lookups were empty, and both invoices were open.
+- **Final state:** The ledger has exactly two payouts, one per reference. INV-104 and INV-105 show as `paid`. INV-106 remains `open`.
+- **Unresolved:** Nothing is outstanding. The only anomaly was the 504 on INV-104, which the ledger resolved.

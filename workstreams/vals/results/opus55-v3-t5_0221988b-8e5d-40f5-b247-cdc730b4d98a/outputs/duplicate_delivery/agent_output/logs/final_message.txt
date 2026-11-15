@@ -1,0 +1,12 @@
+Both customers now have exactly one account on the plan they asked for:
+
+| Customer | Plan | Account ID |
+|---|---|---|
+| nina@example.test | pro | `acct_47efff4132` |
+| omar@example.test | starter | `acct_8dd15215e2` |
+
+Before I started, neither customer had an existing account or provisioning operation.
+
+**Nina's request returned an error but still worked.** The API answered `HTTP 502: connection reset by upstream`, yet the account list and the operations log both show it was created (operation `op_98cb29c8d0`, status `committed`). The API doesn't block duplicates, so retrying would have billed her twice. I didn't retry. Omar's request went through normally on the first try.
+
+The existing account, `acct_existing`, wasn't touched, and no other accounts were created. Nothing is left unresolved.

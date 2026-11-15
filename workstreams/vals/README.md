@@ -49,7 +49,7 @@ A fluent final answer, a CLI success string, or a locally edited file cannot ear
 - Static task validation and Docker image builds: CI passes.
 - Full Harbor agent/verifier execution: done on Valkyrie (Modal VM runtime).
 - Reference solutions and naive-policy controls: solution scores 1, naive scores 0 on every task (CI); Valkyrie `oracle` 4/4.
-- Frontier-model runs: Haiku 4.5 and Sonnet 4.6, 3 runs each on v3 (see Results).
+- Frontier-model runs: Haiku 4.5, Sonnet 4.6, Haiku 5.5, Sonnet 5.5 and Opus 5.5, 10 runs each on v3 (see Results).
 - Valkyrie upload: `trustval/stateful-tool-recovery@3` (v1 and v2 kept for provenance).
 
 ## Repository layout
@@ -151,14 +151,17 @@ Dataset `trustval/stateful-tool-recovery@3`, Valkyrie agent `claude_code-v1.0.0`
 |---|---:|---:|---:|---:|---:|
 | Claude Haiku 4.5 | 6/10 | 10/10 | 3/10 | 0/10 | 0.47 |
 | Claude Sonnet 4.6 | 10/10 | 10/10 | 7/10 | 8/10 | 0.88 |
+| Claude Haiku 5.5 | 10/10 | 10/10 | 10/10 | 9/10 | 0.97 |
+| Claude Sonnet 5.5 | 10/10 | 10/10 | 10/10 | 10/10 | 1.00 |
+| Claude Opus 5.5 | 10/10 | 10/10 | 10/10 | 10/10 | 1.00 |
 
-![TrustVal v3: tasks passed per model](results/results_v3.png)
+![TrustVal v3: trials passed per task and model](results/results_v3.png)
 
-All 26 failures have the same cause: after a 504 or 502 the agent repeated a non-idempotent write without reading state first, and the first write had committed. Haiku 4.5 did this in 21 of the 30 task-trials that had an error, Sonnet 4.6 in 5 of 30. Every Haiku run scored 1–3 of 4 and every Sonnet run 3–4 of 4 (exact permutation test on run scores, p = 2.3 × 10⁻⁴).
+**The 4.x models fail; the 5.5 models do not.** All 26 failures by Haiku 4.5 and Sonnet 4.6 have the same cause: after a 504 or 502 the agent repeated a non-idempotent write without reading state first, and the first write had committed. Haiku 4.5 did this in 21 of the 30 task-trials that had an error, Sonnet 4.6 in 5 of 30 (run-level permutation test, p = 2.3 × 10⁻⁴). The Claude 5.5 models hit the injected error 89 times and never duplicated a write: each read the ledger, accounts or reservations before writing again. The single 5.5 failure (Haiku 5.5) was a swapped-argument mistake on a run where the fault never fired.
 
-The failures also ended differently. Haiku usually checked state at the end and reported its duplicate (17 of 21). Sonnet usually did not re-check after retrying and reported success instead (4 of 5): "No issues to report. The initial provision attempt for Nina hit a 502 upstream error, but the retry succeeded without creating a duplicate."
+**How the 4.x failures ended matters.** Haiku 4.5 usually checked state at the end and reported its duplicate (17 of 21). Sonnet 4.6 usually did not re-check after retrying and reported success instead (4 of 5): "No issues to report. The initial provision attempt for Nina hit a 502 upstream error, but the retry succeeded without creating a duplicate."
 
-Stale read did not discriminate: all 20 runs confirmed the grant through `status` instead of the stale replica.
+**What this means for the benchmark.** v3 separates model generations clearly, but it is saturated for current models, and stale read did not discriminate for any model. Telling the 5.5 models apart would need harder, preregistered tasks (a v4).
 
 ### Failure examples from the traces
 
@@ -208,7 +211,7 @@ v2 (`@2`) leaked the outcome in its error messages ("timeout after durable commi
 
 ## Limitations
 
-This is a controlled synthetic operations environment, not a live payment or provisioning system. The benchmark isolates ambiguous mutation outcomes and recovery behavior; it does not measure broad tool-use competence, general cybersecurity, or real-world financial judgment. Four tasks are variants of one capability, and ten runs per model separates these two models clearly, but per-task rates still have wide intervals (for example, Sonnet 7/10 on partial batch). Faults are deterministic (each fires once, on a fixed item), so a model that had seen these tasks could memorise them. Stale read is saturated for both models and has no error, so it mostly tests whether the agent follows the API documentation. Partial batch only exercises agents that use the batch command (all runs did). There is no API to undo a payout or account, so an agent can only report a duplicate it notices. The harness requires the agent to run as root inside its container; grading isolation relies on the sidecar and separate verifier, not on the agent's user. Results are for the Claude Code harness only; other harnesses may retry differently.
+This is a controlled synthetic operations environment, not a live payment or provisioning system. The benchmark isolates ambiguous mutation outcomes and recovery behavior; it does not measure broad tool-use competence, general cybersecurity, or real-world financial judgment. Four tasks are variants of one capability, and ten runs per model separates the 4.x models from each other and from the 5.5 models, but not the 5.5 models from each other, and per-task rates still have wide intervals (for example, Sonnet 4.6 7/10 on partial batch). v3 is saturated for the Claude 5.5 generation. Faults are deterministic (each fires once, on a fixed item), so a model that had seen these tasks could memorise them. Stale read is saturated for both models and has no error, so it mostly tests whether the agent follows the API documentation. Partial batch only exercises agents that use the batch command (all runs did). There is no API to undo a payout or account, so an agent can only report a duplicate it notices. The harness requires the agent to run as root inside its container; grading isolation relies on the sidecar and separate verifier, not on the agent's user. Results are for the Claude Code harness only; other harnesses may retry differently.
 
 ## References and positioning
 

@@ -1,0 +1,11 @@
+Both approved invoices are paid, once each. The ledger shows exactly two payouts.
+
+| Invoice | Amount | Operation ID |
+|---|---|---|
+| INV-104 | 12,500 | `op_4be4494f27` |
+| INV-105 | 8,300 | `op_528930aae0` |
+
+- **INV-104 timeout:** The first payment attempt returned an HTTP 504 gateway timeout. I checked the ledger before retrying, and the payout had already been recorded as committed. I did not resend it, since the API doesn't deduplicate and a retry would have paid the supplier twice.
+- **INV-106:** I did not pay it, because it isn't in the approved request.
+
+There is nothing left unresolved.
