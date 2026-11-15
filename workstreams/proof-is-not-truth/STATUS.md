@@ -3,7 +3,7 @@
 **Area:** Model Epistemics & Trust Infrastructure  
 **Event:** Apart Research AI × Epistemics Sprint (November 13–15, 2026)  
 **Owner agent:** `proof-is-not-truth`  
-**Current agent state:** FULL 96-EPISODE RUN COMPLETE; ADVERSARIAL VERIFICATION & V2 REGRADE VERIFIED; READY FOR SUBMISSION REVIEW
+**Current agent state:** FULL 96-EPISODE RUN COMPLETE; ADVERSARIAL VERIFICATION & V2 REGRADE VERIFIED; AWAITING HUMAN SIGN-OFF
 
 ## Research aim
 
@@ -53,4 +53,4 @@ Measure whether tool-using agents distinguish origin authenticity from factual c
 
 The 96-episode run, v2 offline regrade, action-ordering regression tests, and report/handoff corrections are complete. The original run artifacts remain immutable; v2 outputs are stored separately. The raw trace set contains 96 unique case/configuration pairs (16 × 6).
 
-All adversarial verification checks (11/11 tests, v2 offline regrade reproducibility, 96-episode cardinality, independent metric recomputation, original artifact immutability, and documentation consistency) have passed via `scripts/verify_submission.py`. The final Apart submission package is assembled in `reports/APART_SUBMISSION_PACKAGE.md` and presented for user review and sign-off.
+All adversarial verification checks (11/11 tests, v2 offline regrade reproducibility, 96-episode cardinality, independent metric recomputation, original artifact immutability against pinned baseline commit 840d3fb682caa2ae811248c60d98c6f4a26870f2, and documentation consistency) have passed via `scripts/verify_submission.py`. The final Apart submission package is assembled in `reports/APART_SUBMISSION_PACKAGE.md` and verification audit documented in `reports/SUBMISSION_VERIFICATION.md`. The project is awaiting human review and sign-off; PR #13 remains open and unmerged.

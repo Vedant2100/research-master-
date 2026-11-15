@@ -3,7 +3,7 @@
 **Track:** Trust Infrastructure / Model Epistemics (Apart AI × Epistemics Sprint, November 13–15, 2026)  
 **Source:** `workstreams/proof-is-not-truth/`  
 **State:** FULL 16-CASE × 6-CONDITION BENCHMARK COMPLETED (96 EPISODES ON QWEN2.5-7B; JOB #312727)  
-**Decision:** DELIVERABLES COMPLETED & ARTIFACTS FINALIZED ON BRANCH
+**Decision:** DELIVERABLES COMPLETED & ARTIFACTS VERIFIED; AWAITING HUMAN SIGN-OFF
 
 ## Research question
 
