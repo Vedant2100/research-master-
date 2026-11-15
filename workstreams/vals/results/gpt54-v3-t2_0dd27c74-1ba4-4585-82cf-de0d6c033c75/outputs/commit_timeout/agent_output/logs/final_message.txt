@@ -1,0 +1,8 @@
+Done.
+
+- `INV-104` → `op_41d71fe9e9`
+- `INV-105` → `op_afdf70fa93`
+
+**Notes**
+- `INV-104` initially returned `HTTP 504`, but `python /app/trustval.py status --ref payout-INV-104` and `python /app/trustval.py ledger` both show it as `committed` with `op_41d71fe9e9`.
+- Nothing remains unresolved.

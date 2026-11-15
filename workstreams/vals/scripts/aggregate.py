@@ -16,9 +16,9 @@ import matplotlib.pyplot as plt
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = sys.argv[1] if len(sys.argv) > 1 else "v3"
 TASKS = ["commit_timeout", "stale_read", "partial_batch", "duplicate_delivery"]
-MODELS = {"haiku45": "Claude Haiku 4.5", "sonnet46": "Claude Sonnet 4.6", "haiku55": "Claude Haiku 5.5", "sonnet55": "Claude Sonnet 5.5", "opus55": "Claude Opus 5.5"}
-# categorical slots 1-5 in fixed order (validated; low-contrast slots are relieved by value labels + table)
-COLORS = {"haiku45": "#2a78d6", "sonnet46": "#eb6834", "haiku55": "#1baf7a", "sonnet55": "#eda100", "opus55": "#e87ba4"}
+MODELS = {"haiku45": "Claude Haiku 4.5", "sonnet46": "Claude Sonnet 4.6", "haiku55": "Claude Haiku 5.5", "sonnet55": "Claude Sonnet 5.5", "opus55": "Claude Opus 5.5", "gpt54": "GPT-5.4 (Codex)", "gpt53codex": "GPT-5.3-Codex (Codex)"}
+# categorical slots 1-7 in fixed order (validated; low-contrast slots are relieved by value labels + table)
+COLORS = {"haiku45": "#2a78d6", "sonnet46": "#eb6834", "haiku55": "#1baf7a", "sonnet55": "#eda100", "opus55": "#e87ba4", "gpt54": "#008300", "gpt53codex": "#6250d6"}
 INK, INK2, GRID, SURFACE = "#0b0b0b", "#52514e", "#e1e0d9", "#fcfcfb"
 
 runs = defaultdict(list)
@@ -32,7 +32,8 @@ for d in sorted((ROOT / "results").glob(f"*-{VERSION}-t*_*")):
     for t in TASKS:
         m = d / "outputs" / t / "agent_output/logs/metrics_total.json"
         if m.exists():
-            cost += json.loads(m.read_text()).get("cost") or 0.0
+            c = json.loads(m.read_text()).get("cost") or 0.0
+            cost += (c.get("total") or 0.0) if isinstance(c, dict) else c
         assert (reg[t]["task_success"] == 1.0) == (t in vk), f"regrade disagrees with Valkyrie: {d.name} {t}"
     runs[model].append({"label": label, "run_id": run_id, "success": {t: reg[t]["task_success"] for t in TASKS}, "cost_usd": round(cost, 4)})
 

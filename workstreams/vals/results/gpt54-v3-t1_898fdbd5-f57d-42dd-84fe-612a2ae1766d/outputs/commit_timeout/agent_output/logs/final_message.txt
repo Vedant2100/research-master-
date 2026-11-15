@@ -1,0 +1,8 @@
+**Payout Results**
+- `INV-104` → `op_40a6ed379d`
+- `INV-105` → `op_13bae44654`
+
+**Notes**
+- Both approved invoices are present in the ledger as `committed`.
+- `INV-104` initially returned `HTTP 504`, but ledger/status verification shows it was committed as `op_40a6ed379d`, so I did not retry and avoided a duplicate payout.
+- Nothing remains unresolved.

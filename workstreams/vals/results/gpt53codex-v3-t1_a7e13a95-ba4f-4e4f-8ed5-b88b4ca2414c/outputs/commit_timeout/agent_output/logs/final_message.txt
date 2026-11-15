@@ -1,0 +1,6 @@
+Completed. I paid each approved invoice exactly once and verified by reference.
+
+- `INV-104` → operation ID `op_3bc347a8dd` (status `committed`)
+- `INV-105` → operation ID `op_6575a831e3` (status `committed`)
+
+Note: The initial `INV-104` pay call returned `HTTP 504 gateway timeout`, but status lookup confirmed it was committed, so I did not retry that invoice (to avoid duplicate payout). All listed invoices are now resolved.

@@ -70,9 +70,14 @@ workstreams/vals/          (research-master; canonical since 2026-11-14)
     write_manifest.py
 ```
 
-## Why this harness
+## Why these harnesses
 
-Claude Code is an appropriate first harness because it is an officially supported Valkyrie agent and can operate the task's documented CLI with shell commands. We use a single model/harness for the initial pilot, concurrency 1, and inspect full traces before scaling. During agent execution, egress is allowlisted to the Anthropic API and the private sidecar only. Setup is allowed to download the Claude Code runtime and base-image dependencies; the verifier has no network access.
+TrustVal tests what an agent does after a tool call fails ambiguously, so the harness must give the model a real shell and must not add its own retry or verification logic on top. Both harnesses we use are official Valkyrie agents and meet that bar:
+
+- **Claude Code (`claude_code-v1.0.0`)** for the Claude models. It runs `claude -p` with Bash and file tools, so the model calls the task CLI directly and every retry decision is the model's own.
+- **Codex (`codex-v1.0.0`)** for the OpenAI models. It runs `codex exec` with `--sandbox danger-full-access`, so Codex's own sandbox does not get between the agent and the task API; isolation comes from the task containers and the network allowlist.
+
+Each model runs at its harness's default settings, with no prompt changes. During agent execution, egress is allowlisted to the Anthropic API, the OpenAI API (dataset `@v3.1` only) and the private task sidecar; the agent has no other internet access. Setup may download the harness runtime and base-image dependencies. The verifier has no network access.
 
 ## Local machine: run with Harbor
 

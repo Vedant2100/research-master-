@@ -17,6 +17,14 @@ for traj in sorted(run_dir.glob("outputs/*/agent_output/logs/trajectory.jsonl"))
             event = json.loads(line)
         except json.JSONDecodeError:
             continue
+        item = event.get("item")
+        if isinstance(item, dict) and event.get("type") == "item.completed":  # Codex exec --json format
+            if item.get("type") == "command_execution":
+                print(">>", str(item.get("command"))[:width])
+                print("   <<", str(item.get("aggregated_output", "")).replace("\n", " | ")[:width])
+            elif item.get("type") == "agent_message":
+                print("AI:", str(item.get("text", "")).replace("\n", " ")[:width])
+            continue
         msg = event.get("message") or {}
         content = msg.get("content")
         if not isinstance(content, list):
