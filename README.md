@@ -10,7 +10,7 @@ The research portfolio coordinating **ten distinct workstreams across four conti
 | Alignment & Agent Safety | [ContagionBench](projects/contagionbench.md) | `contagionbench` |
 | Alignment & Agent Safety | [ProvenanceTrap](projects/provenancetrap.md) | `provenancetrap` |
 | RL Post-Training & Reward Design | [RewardHackLab](projects/rewardhacklab.md) | `rewardhacklab` |
-| RL Post-Training & Reward Design | [Vals Benchmaxxing](projects/vals.md) | `vals` |
+| RL Post-Training & Reward Design | [TrustVal (Vals Build Your Own Eval)](projects/vals.md) | `vals` |
 | RL Post-Training & Reward Design | [Adaptive Test-Time Compute (TTC)](projects/adaptive-ttc.md) | `adaptive-ttc` |
 | Autonomous Research & Self-Improvement | [Terminal DreamGym](projects/terminal-dreamgym.md) | `terminal-dreamgym` |
 | Autonomous Research & Self-Improvement | [Iterate Research Hack](projects/iterate.md) | `iterate` |

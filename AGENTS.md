@@ -4,7 +4,7 @@
 
 ## Mandatory upstream reuse (supersedes any suggestion to reimplement)
 
-Before writing code, every specialist MUST open [SOURCE_MAP.md](SOURCE_MAP.md), access the correct original upstream repository and any relevant experiment branches, inspect existing source/tests/configs/results, and continue the implementation from there. **Do not create duplicate harnesses, experiment pipelines, training code, or source copies in this master.** Only missing functionality is implemented, as scoped changes to the original upstream source. Vals reuses RewardHackLab/evaluation infrastructure; Iterate reuses Terminal DreamGym. If the original repo is private or unavailable, stop and report access needs, not an invented substitute.
+Before writing code, every specialist MUST open [SOURCE_MAP.md](SOURCE_MAP.md), access the correct original upstream repository and any relevant experiment branches, inspect existing source/tests/configs/results, and continue the implementation from there. **Do not create duplicate harnesses, experiment pipelines, training code, or source copies in this master.** Only missing functionality is implemented, as scoped changes to the original upstream source. Iterate reuses Terminal DreamGym. Exception: TrustVal (`vals`) keeps its canonical source in `workstreams/vals/` of this repo by owner decision (2026-11-14). If the original repo is private or unavailable, stop and report access needs, not an invented substitute.
 
 ## Workflow
 1. Read `README.md`, `AGENT_ROSTER.md`, `GOVERNANCE.md`, `EVIDENCE.md`, the assigned `projects/<slug>.md`, its `workstreams/<slug>/STATUS.md`, and the actual source repository.
