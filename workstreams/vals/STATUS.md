@@ -23,8 +23,10 @@ As of 2026-11-14 the TrustVal implementation lives **in this directory** (`works
 | Designed | yes |
 | Implemented (4 tasks, hidden-state verifiers) | yes |
 | Structure smoke test | passes locally at import (2026-11-14) |
-| Docker build + compose smoke test in CI | pending first CI run in this repo |
-| Dataset pushed to Valkyrie | no |
+| Docker build + compose smoke test in CI | passes (research-master- PR #14, run 43659141063) |
+| `harbor lint` (harbor 0.26.0, Compose v5.7.1) | clean on all 4 tasks (2026-11-14) |
+| Dataset pushed to Valkyrie | yes: `trustval/stateful-tool-recovery@1` (tags `v1`, `latest`), digest `sha256:fcba126ca3b849c759e1b88c971fd03a65a4cd908abb994d1ff13f7011df48eb`, 4 tasks, pushed 2026-11-14 16:52 PST from research-master `db71688`; per-task digests match `scripts/write_manifest.py` |
+| Agent installed | `claude_code-v1.0.0` from vals-ai/public-agent-registry `examples/claude_code-v1.0.0` |
 | Frontier-model run (claude_code-v1.0.0, anthropic/claude-sonnet-4-6) | no |
 | Results in README / Vals project entry | no |
 
