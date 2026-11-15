@@ -10,6 +10,9 @@
 
 As of 2026-11-14 the TrustVal implementation lives **in this directory** (`workstreams/vals/`) and all further work happens here. It was imported from `Vedant2100/role-work-forge-artifacts` `main` @ `be8f2eb` (PR #4, `hackathons/2026-11/trustval/`), byte-identical at import. That copy is frozen history; do not edit it or revive the discarded earlier implementation. The earlier "Vals Benchmaxxing" plan (baseline → training → eval) is superseded.
 
+## Standalone repository
+Published as https://github.com/Vedant2100/trustval (2026-11-15) with full history, from `git subtree split --prefix=workstreams/vals`. Development stays here in research-master; the standalone repo is updated by re-running the subtree push.
+
 ## Layout
 - `README.md`: benchmark description, setup, run commands
 - `RESULTS.md`: results ledger (no model results yet)

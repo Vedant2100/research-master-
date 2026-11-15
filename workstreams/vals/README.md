@@ -55,7 +55,7 @@ A fluent final answer, a CLI success string, or a locally edited file cannot ear
 ## Repository layout
 
 ```
-workstreams/vals/          (research-master; canonical since 2026-11-14)
+trustval/
   README.md
   RESULTS.md
   STATUS.md
