@@ -12,7 +12,7 @@ The defensible research framing is:
 
 This is a continual-learning-adjacent problem: the agent accumulates and revises persistent experience over time. It is not parameter-level continual learning yet. The current system trains an extractor/writer while the downstream reader is frozen.
 
-The strongest current result is GRPO on the 1.7B line-level extractor: test EM 0.691 ± 0.011 across three seeds, versus 0.259 for the untrained extractor. However, the gain is primarily relation-label validity (0.63 → 0.97); date accuracy moves only 0.68 → 0.70, and cross-referenced dates remain the weakest category (0.57 test EM). Do not describe this as a demonstrated solution to stale-fact reasoning until targeted conflict/date metrics improve.
+The strongest current result is GRPO on the 1.7B line-level extractor: test EM 0.691 ± 0.011 across three seeds, versus 0.259 for the untrained extractor. However, the gain is primarily relation-label validity (0.63 → 0.97); date accuracy moves only 0.68 → 0.70, and cross-referenced dates remain the weakest category (0.57 test EM). **[2026-11-15 correction: the 0.68 → 0.70 date figure was a broken metric (relative/cross-referenced dates were always scored wrong). With stream-resolved gold dates, GRPO raises date-driven conflict resolution 0.69 → 0.83; see STATUS.md CORRECTION.]** Do not describe this as a demonstrated solution to stale-fact reasoning until targeted conflict/date metrics improve.
 
 The v3 gate is a **marginal pass**: oracle 0.997, strongest non-privileged baseline 0.783, point-estimate gap 0.214, paired-bootstrap 95% CI [0.194, 0.234]. The point estimate passes the fixed 0.20 threshold; the interval straddles it. Do not hide that qualification or change the threshold.
 

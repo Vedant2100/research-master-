@@ -145,6 +145,7 @@ def main():
                          "session: the whole session's text is shown (resolves cross-references)")
     ap.add_argument("--constrained", action="store_true",
                     help="JSON-schema constrained decoding with the relation field limited to the label list")
+    ap.add_argument("--dump", type=Path, help="also write every line's raw extraction (for stalestream.diag)")
     args = ap.parse_args()
     from vllm import LLM, SamplingParams
     from vllm.sampling_params import StructuredOutputsParams
@@ -164,6 +165,10 @@ def main():
                         use_tqdm=False)
     items = defaultdict(list)
     acc = defaultdict(int)
+    if args.dump:
+        with args.dump.open("w") as f:
+            for (e, s, l), o in zip(jobs, outs):
+                f.write(json.dumps({"episode_id": eps[e]["episode_id"], "line": [s, l], "raw": o.outputs[0].text}) + "\n")
     for (e, s, l), o in zip(jobs, outs):
         it = parse_json(o.outputs[0].text)
         items[e].append(it)

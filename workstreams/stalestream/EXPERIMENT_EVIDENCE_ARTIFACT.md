@@ -124,7 +124,7 @@ Per-tag test EM (untrained → GRPO; 32B session-context reference):
 - Relative date: 0.29 → 0.69 (32B: 0.82).
 - Cross-referenced date: 0.22 → 0.57 (32B: 0.74).
 
-Interpretation: the largest extraction gain is relation-grammar mapping; date accuracy barely changes. The cross-referenced-date weakness remains material.
+Interpretation: the largest extraction gain is relation-grammar mapping. [2026-11-15 correction: "date accuracy barely changes" came from a broken metric that scored every relative/cross-referenced date as wrong; with stream-resolved gold dates GRPO raises date-driven conflict resolution 0.69 → 0.83 — see STATUS.md CORRECTION.] The cross-referenced-date weakness remains material.
 
 ## What is not yet in this artifact
 

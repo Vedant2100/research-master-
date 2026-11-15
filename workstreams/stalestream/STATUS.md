@@ -96,6 +96,32 @@ Preregistered learning-signal criterion: **met** (both CIs exclude 0). **But** t
 - **Paraphrase faithfulness:** Qwen3-32B-AWQ judges 400 random paraphrased test lines; > 2% unfaithful (point estimate) → regenerate before using the data.
 - **Known limitations:** extraction uses the same model family as the reader and paraphraser; BM25 is question-aware by design; one generator and one paraphrase seed.
 
+### 2026-11-15 — CORRECTION: the date metric was broken; GRPO does improve date-driven conflict resolution
+**What was wrong.** `extract.py`'s `fact_date_ok` compared the extracted date to the raw date expression, which only parses for absolute dates. Relative ("40 days ago") and cross-referenced ("441 days before Source-B's report on X") lines are 29% of fact lines and always counted as wrong, so the metric's ceiling was ~0.68. Audit-desk corrections were also counted as fact lines. Every earlier "date accuracy 0.68 → 0.70, dates not learned" statement (above, in EXPERIMENT_EVIDENCE_ARTIFACT.md and NEXT_STEPS_2026-11-14.md) is a measurement artifact and is withdrawn.
+
+**Fix.** `stalestream/dates.py` resolves every statement line's gold absolute date from the stream (session header, or the unique same-session anchor). Validated: latest-dated non-audited claim with gold dates reproduces every answer in all 2,600 v3 episodes (train/val/test). `stalestream/diag.py` scores per-kind date accuracy from `extract.py --dump` files, plus **winner_ok**: per asked slot, with every field at gold except the extracted dates, does the latest claim give the answer (= date-driven conflict resolution; 1.000 with gold dates). Test split, re-extracted with `scripts/date_diag.sh` (vLLM greedy reruns, so EM-level numbers can differ by ~0.01 from earlier evals).
+
+| arm (test) | exact date: abs / rel / xref | **winner_ok** all | rel-date Qs | xref-date Qs |
+|---|---|---|---|---|
+| untrained 1.7B header | 0.93 / 0.02 / 0.00 | 0.693 | 0.655 | 0.476 |
+| GRPO header s0/s1/s2 | 0.99 / 0.02 / 0.00 | 0.823 / 0.829 / 0.832 | 0.79 | 0.66 |
+| GRPO session s0/s1/s2 | 0.99 / 0.04 / 0.00 | 0.843 / 0.833 / 0.861 | 0.84 | 0.70 |
+| DPO / RFT header | 0.99 / 0.03 / 0.00 · 0.95 / 0.04 / 0.00 | 0.769 / 0.713 | 0.73 / 0.68 | 0.54 / 0.49 |
+| 4B session (untrained) | 0.98 / 0.08 / 0.00 | 0.830 | 0.760 | 0.708 |
+| 32B header (untrained) | 1.00 / 0.23 / 0.00 | 0.848 | 0.851 | 0.684 |
+| 32B session (untrained) | 1.00 / 0.19 / 0.02 | 0.952 | 0.956 | 0.906 |
+
+Reading: (1) GRPO raises date-driven conflict resolution from 0.69 to 0.83 (header) / 0.85 (session); nobody, including the 32B, gets relative/xref dates exactly right; ordering is what matters. (2) With header context the GRPO 1.7B matches the 32B (0.83 vs 0.85; about the per-line ceiling, since xref anchors are not visible). (3) Session context lifts the 32B to 0.95 (xref 0.91) but barely helps the 1.7B (0.85, xref 0.70) or 4B: the remaining gap is using the session to resolve cross-referenced dates.
+
+**Is that within RL's reach? pass@16 probe** (`stalestream/probe_dates.py`, val, 1,500 relative/xref lines, T=1):
+| model | rel: greedy exact · pass@16 exact · pass@16 ±30 d | xref: greedy exact · pass@16 exact · pass@16 ±30 d |
+|---|---|---|
+| 1.7B header | 0.027 · 0.037 · 0.319 | 0.000 · 0.000 · 0.048 |
+| 1.7B session | 0.007 · 0.015 · 0.277 | 0.000 · 0.000 · 0.043 |
+| GRPO session s2 | 0.035 · 0.057 · 0.526 | 0.003 · 0.006 · 0.142 |
+| 4B session | 0.084 · 0.126 · 0.479 | 0.005 · 0.015 · 0.227 |
+The untrained 1.7B almost never samples a near-correct cross-referenced date (4–5% within 30 days), and its samples barely vary (per-sample ≈ pass@16). GRPO widened that to 14%, so there is some signal for a date-targeted method, but exact cross-line date arithmetic is essentially out of reach at 1.7B.
+
 ### 2026-11-15 — results: session-context GRPO extractor (3 seeds) and round-3 controls
 All numbers recomputed from raw eval files with `stalestream/report.py` (outputs `$S/runs/reports/`). Bootstraps are paired over episodes, 10k resamples, seed-mean per episode.
 
@@ -106,7 +132,7 @@ All numbers recomputed from raw eval files with `stalestream/report.py` (outputs
 |---|---|---|---|
 | test | 0.591 / 0.658 / 0.709 | 0.653 ± 0.059 | −0.038 [−0.057, −0.019] |
 | val | 0.571 / 0.669 / 0.716 | 0.652 | −0.044 [−0.065, −0.024] |
-Gain over its own untrained baseline is large (session ctx 0.192 → 0.653 test), but the extra context does not help the 1.7B extractor: `fact_date_ok` stays 0.70 (same as header), xref_date EM 0.559 vs 0.575, relative_date 0.686 vs 0.686. Fact check (test): correct 0.762 vs 0.790, stale 0.144 vs 0.164, missing 0.073 vs 0.030; memory at the 160-token budget 0.57 vs 0.38. Seed variance is 5× the header run's. Conclusion: date/cross-reference reasoning is not learned by either variant; seeing the whole session does not change that at 1.7B.
+Gain over its own untrained baseline is large (session ctx 0.192 → 0.653 test), but the extra context does not help the 1.7B extractor: `fact_date_ok` stays 0.70 (same as header; metric later found broken, see CORRECTION), xref_date EM 0.559 vs 0.575, relative_date 0.686 vs 0.686. Fact check (test): correct 0.762 vs 0.790, stale 0.144 vs 0.164, missing 0.073 vs 0.030; memory at the 160-token budget 0.57 vs 0.38. Seed variance is 5× the header run's. Conclusion: date/cross-reference reasoning is not learned by either variant; seeing the whole session does not change that at 1.7B.
 
 **(2) Constrained decoding — the GRPO gain is mostly beyond format (preregistered rule: ≤ 0.40 ⇒ mainly beyond format).**
 | test (val) | EM | vs unconstrained |
@@ -131,7 +157,7 @@ The held-out reader is weaker: oracle 0.623 test (0.587 val) vs 0.997 for Qwen3-
 | untrained 1.7B writer | 0.187 | 0.30 | 0.211 |
 Extractor GRPO vs untrained extractor under Phi: +0.231 [+0.197, +0.264] test (val +0.217 [+0.179, +0.255]); every seed significant. Writer GRPO vs untrained writer under Phi: +0.071 [+0.050, +0.092] test (Qwen: +0.081); val +0.095. Ordering matches Qwen3-4B except 4B-ctx and DPO tie. Neither GRPO gain is reader-specific.
 
-**What this changes.** The extractor gain is real (survives constrained decoding and a different-family reader). It is not stale-fact reasoning: date accuracy is flat at 0.70 in every extractor arm, and the dominant remaining error is stale values (0.16 vs 0.08 for 32B). Per NEXT_STEPS stop/go criterion 3, the claim is "RL improves structured extraction under a downstream QA reward", not "solves stale-memory conflict resolution", until a date-targeted change moves the date/stale metrics. Next: on-policy DPO (Priority 1), and a date-targeted intervention.
+**What this changes.** The extractor gain is real (survives constrained decoding and a different-family reader). [Superseded by the CORRECTION entry: the 0.70 date figure was a metric artifact; GRPO improves date-driven conflict resolution 0.69 → 0.83.] The dominant remaining error is stale values (0.16 vs 0.08 for 32B), traced to cross-referenced dates. Per NEXT_STEPS stop/go criterion 3, the claim is "RL improves structured extraction under a downstream QA reward", not "solves stale-memory conflict resolution", until a date-targeted change moves the date/stale metrics. Next: on-policy DPO (Priority 1), and a date-targeted intervention.
 
 ### 2026-11-14 — preregistration: round 3 controls (written before the run)
 Order chosen by the owner: audit the session-context run first, then these two controls, then on-policy DPO.
