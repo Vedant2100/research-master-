@@ -13,7 +13,7 @@
 - **Pinned Pre-Fix Baseline Commit SHA:**  
   `840d3fb682caa2ae811248c60d98c6f4a26870f2`
 - **Candidate Commit / HEAD SHA:**  
-  `3f4449dcb82df323656e507e3ff3c9cb2db72a46`
+  `dbf0d4bdca5cefae47385efea7ae87f744747719`
 - **Repository Branch:** `agent/proof-is-not-truth/apart-sprint`
 - **Remote:** `https://github.com/Vedant2100/research-master-`
 - **Pull Request:** PR #13 (`agent/proof-is-not-truth/apart-sprint` -> `main`)
