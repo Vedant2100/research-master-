@@ -99,7 +99,8 @@
     }
   ],
   "status_counts": {
-    "active_or_conditional": 6,
+    "active_or_conditional": 5,
+    "incubation": 1,
     "completed_or_deprioritized": 3,
     "declined": 1
   }
