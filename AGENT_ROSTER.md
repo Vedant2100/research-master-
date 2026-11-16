@@ -1,6 +1,6 @@
 # Agent roster
 
-The repository retains ten specialist configurations for provenance, but only six workstreams are currently active or conditional. Closed/deprioritized/declined entries are not invitations to resume work.
+The repository retains ten specialist configurations for provenance, but five workstreams are active or conditional and one is in incubation. Closed/deprioritized/declined entries are not invitations to resume work.
 
 | Track | Thread-agent | Scope | Current state | Source | Work queue |
 |---|---|---|---|---|---|
