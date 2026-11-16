@@ -2,22 +2,19 @@
 
 **Track:** Autonomous Research & Self-Improvement  
 **Source:** https://luma.com/sht6n8du  
-**State:** event application/approval unverified  
-**Decision:** CONDITIONAL time-boxed
+**State:** DECLINED by owner; no participation claimed  
+**Decision:** CLOSED / NOT PLANNED
 
-## Research question
-Can a bounded research agent autonomously diagnose, design training worlds, and promote transferable skills with honest verifiable testing?
+## Historical scope
 
-## Existing evidence
-Event Nov 14–15. DreamGym existing repository is candidate; no evidence of accepted registration, attendance or official submission.
+The event was considered as a possible venue for demonstrating failure-conditioned practice and transferable skill promotion using the existing Terminal DreamGym repository.
 
-## Methods / comparisons
-Reuse DreamGym; demonstrate real failed task→generated practice→new procedural skill→heldout/adversarial pytest→promote/reject with logs.
+## Final status
 
-## Limitations and unproven claims
-Overlaps Vals; do not claim both attended or a general recursively self-improving agent.
+The owner declined Iterate on 2026-11-12. There is no verified registration, attendance, official submission or prize result. This event is not an active workstream and should not appear in opportunity recommendations.
 
-## Next decisive action
-Check approval and event rules; attend only if logistics permit or continue the same research outside the hack.
+## Reuse boundary
 
-See [evidence ledger](../EVIDENCE.md), [investment assessment](../DECISIONS.md) and [venues](../VENUES.md).
+DreamGym remains its own separate, deprioritized research record. Do not create a second self-improvement engine or reopen the event workstream. Any future research using the same ideas must be proposed as a new, independently justified project.
+
+See [evidence ledger](../EVIDENCE.md) and [agent roster](../AGENT_ROSTER.md).
