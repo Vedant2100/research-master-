@@ -1,23 +1,26 @@
 # Memory & Continual Learning
 
-**ACTIVE every week.** This area requires actual evidence-backed advancement, not a link collection.
+**Two workstreams remain active or conditional; one paper cycle is complete.** Keep evidence-backed advancement distinct from a list of ideas.
 
 ## [FrontierMemory Learning](../projects/frontiermemory.md)
-- **Current state:** executed official-style audit, drafted paper
-- **Priority:** HIGH—finish paper
-- **Next:** Finalize latest generator/blend arm and artifact, freeze figures, decide FORGE Nov 15 submission and save receipt; then per-task oracle-from-history and Word2Vec ablations.
-- **Stop/go:** Only 15 tasks, broken reference solutions for 4; ~8 tasks lacking related source history; no pooled gain ≠ proof memory useless. Generator attempts timed out and exploratory arms must be separately labeled.
+
+- **Current state:** FORGE submission #11 submitted 2026-11-16; current paper work queue complete.
+- **Priority:** closed for this paper cycle.
+- **Next:** no outstanding submission task. Per-task oracle-from-history and Word2Vec ablations would be a separate follow-up study.
+- **Limits:** 15 tasks; four reference solutions fail; about eight tasks lack related source history; pooled null is not proof memory is useless.
 
 ## [EvoMemBench](../projects/evomembench.md)
-- **Current state:** implemented harness and exploratory diagnostic; full matrix unverified
-- **Priority:** CONDITIONAL—competence gate first
-- **Next:** Run no-memory/playbook headroom (overall >=55%, category >=30%, avoid >95% ceiling), matched seeds, complete held-out core methods before large GPU matrix.
-- **Stop/go:** Planned full ~24,090 episode matrix not confirmed complete; synthetic hidden-rule tasks are NOT official ALFWorld; heldout vs sequential online protocols must not be pooled.
+
+- **Current state:** synthetic hidden-rule diagnostic complete; official ALFWorld pilot has 15 saved episodes and an unresolved reset/lifecycle blocker.
+- **Priority:** conditional; competence gate not passed (no-memory 3/6 = 50%, below 55%).
+- **Next:** verify the 25-reset stress workflow, then establish worker competence before resuming the three unfinished BM25 tasks.
+- **Limits:** hidden-rule tasks are not ALFWorld; playbook is static; small pilot cannot establish significance or generality.
 
 ## [StaleStream / CS258](../projects/stalestream.md)
-- **Current state:** proposal and preflight, not trained
-- **Priority:** HIGH—course deliverable
-- **Next:** Nov 12 proposal target; Nov 19 300 held-out episodes with oracle QA >=90% and >=20 point gap vs strongest fair baseline plus measured 20-step timing; Nov 24 GRPO pilot; Dec 3 freeze; Dec 10 report.
-- **Stop/go:** Must compute true state from timestamps not delivery order; no hidden-label exposure; memory update ≠ general recursive learning. Reader transfer and injection robustness unproven.
 
-**Cross-project rule:** Avoid duplicated experiments. Preserve a distinct falsifiable causal question and controls.
+- **Current state:** design and preregistration only; no trained writer or validated environment.
+- **Priority:** high course deliverable.
+- **Next:** timestamp-correct generator, disjoint held-out episodes, nonprivileged baselines, oracle QA >=90%, >=20 pp headroom and measured 20-step runtime before RL.
+- **Limits:** memory update is not continual weight learning; reader transfer and injection robustness remain unproven.
+
+**Cross-project rule:** avoid duplicated experiments. Preserve a distinct falsifiable question, source of truth and controls.
