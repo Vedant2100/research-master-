@@ -44,9 +44,13 @@
 
 ## [TrustVal](projects/vals.md)
 
-**Verified/source-reported:** Four Harbor tasks; v3 preregistered before runs, with naive policy 0/4 and reference solution 4/4. Ten runs per model: Claude Haiku 4.5 19/40; Sonnet 4.6 35/40 (run-level permutation p=2.3e-4); Claude Haiku 5.5 39/40; Sonnet 5.5 40/40; Opus 5.5 40/40; GPT-5.3-Codex 34/40; GPT-5.4 40/40. Three GPT-6 variants each passed 4/4 in one run each, which is only a pilot. All 26 Claude 4.x failures were blind retries of committed writes; Sonnet 4.6 reported false success in 4/5 failures. The Claude 5.5 models had zero duplicates in 89 errored task-trials. GPT-5.3-Codex duplicated writes in 5/10 duplicate-delivery cases; GPT-5.4 passed all 40 trials.
+**Verified/source-reported:** Four Harbor tasks; v3 preregistered before runs, with naive policy 0/4 and reference solution 4/4. Ten runs per model: Claude Haiku 4.5 19/40; Sonnet 4.6 35/40 (run-level permutation p=2.3e-4); Claude Haiku 5.5 39/40; Sonnet 5.5 40/40; Opus 5.5 40/40; GPT-5.3-Codex 34/40; GPT-5.4 40/40. Three GPT-6 variants each passed 4/4 in one run each, which is only a pilot. All 26 Claude 4.x failures were blind retries of committed writes; Sonnet 4.6 reported false success in 4/5 failures. Claude 5.5 produced zero duplicates in 89 errored task-trials. GPT-5.3-Codex duplicated writes in 5/10 duplicate-delivery trials.
 
-**Interpretation limits:** Four controlled variants of one underlying capability, synthetic environment, not a broad tool-use leaderboard. v3 is saturated for Claude 5.5 and GPT-5.4; GPT-6 has one run per variant. Per-task intervals remain wide. The benchmark and model-evaluation work are complete for the current event cycle. An external Vals submission/acceptance receipt has not been verified; do not claim either.
+**v4 delayed-visibility split:** Three runs each of Claude Haiku 5.5, Sonnet 5.5 and GPT-6.1 Terra. Sonnet and Terra passed 12/12 each. Haiku passed 11/12; its one failure duplicated a payment after the agent's background wait ended and it checked state before the 30-second visibility delay expired. The harness blocks long foreground sleeps, which shaped this failure. The project stopped rather than making the delay invisible, because that would turn the decision into guesswork. v4 is near-saturated for current models, with one observed failure whose interpretation is constrained by the harness.
+
+**Interpretation limits:** Four controlled variants of one capability in a synthetic environment, not a broad tool-use leaderboard. v3 is saturated for Claude 5.5 and GPT-5.4; GPT-6 v3 tests are one run per task. v4 has only three runs per model and is not a powered comparison. The current evidence does not establish general tool-use safety.
+
+**Status:** Benchmark and model-evaluation work for the event cycle are complete. An official Vals submission receipt or acceptance record has not been verified; do not claim external submission or acceptance without it.
 
 ## [Terminal DreamGym](projects/terminal-dreamgym.md)
 
