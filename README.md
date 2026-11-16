@@ -1,8 +1,8 @@
-# Research Portfolio — Six Active Workstreams Across Four Areas
+# Research Portfolio — Five Active Workstreams + One Incubation
 
 This repository is the **research portfolio control plane**: current project status, evidence, decisions and coordination. Canonical experiment code and raw results remain in the source repositories listed in [SOURCE_MAP.md](SOURCE_MAP.md).
 
-**Portfolio snapshot — 2026-11-16:** ten tracked workstreams across four research areas: **six active or conditional**, **three completed/deprioritized**, and **one declined**. A configured agent is not an executing agent; every scientific result must be backed by a run and its evidence.
+**Portfolio snapshot — 2026-11-16:** ten tracked workstreams across four research areas: **five active or conditional**, **one in incubation**, **three completed/deprioritized**, and **one declined**. A configured agent is not an executing agent; every scientific result must be backed by a run and its evidence.
 
 | Area | Workstream | Current state | Agent |
 |---|---|---|---|
