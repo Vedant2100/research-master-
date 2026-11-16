@@ -1,5 +1,5 @@
 {
-  "schema_version": "2026-11-11",
+  "schema_version": "2026-11-16",
   "track_counts": {
     "memory": 3,
     "safety": 2,
@@ -12,90 +12,95 @@
       "title": "FrontierMemory Learning",
       "track": "memory",
       "source": "https://github.com/Vedant2100/frontiermemory-learning",
-      "stage": "executed official-style audit, drafted paper",
-      "priority": "HIGH—finish paper",
-      "next": "Finalize latest generator/blend arm and artifact, freeze figures, decide FORGE Nov 15 submission and save receipt; then per-task oracle-from-history and Word2Vec ablations."
+      "stage": "submitted FORGE paper, submission #11 (2026-11-16)",
+      "priority": "COMPLETED — current paper cycle",
+      "next": "No outstanding submission task; follow-up ablations require separate scope."
     },
     {
       "id": "evomembench",
       "title": "EvoMemBench",
       "track": "memory",
       "source": "https://github.com/Vedant2100/evo-mem-bench",
-      "stage": "implemented harness and exploratory diagnostic; full matrix unverified",
-      "priority": "CONDITIONAL—competence gate first",
-      "next": "Run no-memory/playbook headroom (overall >=55%, category >=30%, avoid >95% ceiling), matched seeds, complete held-out core methods before large GPU matrix."
+      "stage": "partial official ALFWorld pilot (15 episodes); lifecycle stress run unverified; no-memory 3/6 below 55% gate",
+      "priority": "CONDITIONAL — lifecycle and competence gates first",
+      "next": "Verify 25-reset stress workflow; establish no-memory competence; then resume only three unfinished BM25 tasks."
     },
     {
       "id": "stalestream",
       "title": "StaleStream / CS258",
       "track": "memory",
       "source": "https://github.com/Vedant2100/f26/tree/main/cs258/stalestream",
-      "stage": "proposal and preflight, not trained",
-      "priority": "HIGH—course deliverable",
-      "next": "Nov 12 proposal target; Nov 19 300 held-out episodes with oracle QA >=90% and >=20 point gap vs strongest fair baseline plus measured 20-step timing; Nov 24 GRPO pilot; Dec 3 freeze; Dec 10 report."
+      "stage": "design and preregistration only; no trained writer or validated environment",
+      "priority": "ACTIVE — CS258 course deliverable",
+      "next": "Build timestamp-correct generator, disjoint held-out set, fair baselines; require oracle >=90%, >=20 pp headroom and measured runtime before RL."
     },
     {
       "id": "contagionbench",
       "title": "ContagionBench / Swarm",
       "track": "safety",
       "source": "https://github.com/Vedant2100/role-work-forge-artifacts/tree/main/hackathons/2026-11/contagionbench",
-      "stage": "executed pilot, needs causal replication",
-      "priority": "HIGH after independence fix",
-      "next": "Complete independent-seed and source/mediator replication; AGENT Nov 20 only if evidence strong; Dec Apart Agent Attribution requires truly new controller-attribution experiments."
+      "stage": "324-episode pilot; independent-case/seed and direct-vs-mediated replication remain",
+      "priority": "ACTIVE — causal replication required",
+      "next": "Run independent cases/seeds and mediated-vs-direct controls; report attempted/applied unsafe actions and benign utility."
     },
     {
       "id": "provenancetrap",
       "title": "ProvenanceTrap / micro1",
       "track": "safety",
       "source": "https://github.com/Vedant2100/role-work-forge-artifacts/tree/main/hackathons/2026-11/provenancetrap",
-      "stage": "executed diagnostic, agent competence blocker",
-      "priority": "CONDITIONAL",
-      "next": "Improve task completion then retest under same scoring; AGENTVERIFY/AGENT or later reliability venue only if evidence matures."
+      "stage": "96-episode diagnostic; legitimate task completion remains too low for safety conclusions",
+      "priority": "CONDITIONAL — competence blocker",
+      "next": "Improve authorized task completion before matched benign/adversarial rerun."
     },
     {
       "id": "rewardhacklab",
       "title": "RewardHackLab / Lexsi",
       "track": "post-training",
       "source": "https://github.com/Vedant2100/role-work-forge-artifacts/tree/main/hackathons/2026-11/rewardhacklab",
-      "stage": "completed SFT pilot, no RL run",
-      "priority": "CONDITIONAL—fix execution first",
-      "next": "Repair tool-call execution to get nonzero baseline, then try real RL; submit honest Lexsi Stage 1 packet by Nov 15 AoE if feasible."
+      "stage": "corrected 210-step SFT: base 0/18, SFT 18/18 on disjoint evaluation tasks; no RL comparison",
+      "priority": "ACTIVE / CONDITIONAL — SFT gate passed",
+      "next": "Run matched proxy-vs-verified reward pilot from same SFT checkpoint; verify nonzero reward variance and optimizer steps."
     },
     {
       "id": "vals",
       "title": "TrustVal (Vals Build Your Own Eval)",
       "track": "post-training",
       "source": "https://github.com/Vedant2100/trustval",
-      "stage": "implemented 4-task Harbor benchmark, not yet run on Valkyrie",
-      "priority": "HIGH time-boxed (Nov 14–15)",
-      "next": "Push trustval/stateful-tool-recovery@v1 to Valkyrie and run claude_code-v1.0.0 with claude-sonnet-4-6 on all four tasks; analyze traces honestly."
+      "stage": "four-task benchmark published to Valkyrie; v3 frontier-model evaluations complete; external Vals submission unverified",
+      "priority": "COMPLETED — current benchmark-execution cycle",
+      "next": "No outstanding execution task; do not claim external submission/acceptance without receipt."
     },
     {
       "id": "terminal-dreamgym",
       "title": "Terminal DreamGym",
       "track": "autonomous",
       "source": "https://github.com/Vedant2100/terminal_dreamgym",
-      "stage": "implemented live loop, conflicting result protocols",
-      "priority": "HIGH if replicated",
-      "next": "Reconcile test splits/prompts/protocol and repeat matched multiple seeds; compare no-skill, reflection, naive gate, heldout gate; then prepare genuine demo/paper."
+      "stage": "four preregistered experiments; no reliable skill-transfer gain; benchmark v2 30B skills harmed strict success",
+      "priority": "DEPRIORITIZED — no further runs planned",
+      "next": "No new runs planned on current loop."
     },
     {
       "id": "iterate",
       "title": "Iterate AI Research Hack",
       "track": "autonomous",
       "source": "https://luma.com/sht6n8du",
-      "stage": "event application/approval unverified",
-      "priority": "CONDITIONAL time-boxed",
-      "next": "Check approval and event rules; attend only if logistics permit or continue the same research outside the hack."
+      "stage": "owner declined event participation; no registration, attendance or submission claimed",
+      "priority": "DECLINED / CLOSED",
+      "next": "Do not treat as active opportunity."
     },
     {
       "id": "adaptive-ttc",
       "title": "Adaptive Test-Time Compute (TTC)",
       "track": "post-training",
       "source": "https://frontier-rl-project-atlas-2711vedant-6531.vercel.app/",
-      "stage": "conceptual research design; no dedicated TTC code or executed result verified",
-      "priority": "CONDITIONAL—cost/headroom pilot before RL spend",
-      "next": "Audit Atlas and prior art; reuse Terminal DreamGym or Role Work Forge verifiable tasks; test compute-sensitive headroom and cheap strong baselines; only then train RL controller."
+      "stage": "conceptual design/incubation; no dedicated code, trained policy or executed results",
+      "priority": "INCUBATION — low-cost pilot only",
+      "next": "Reuse existing harnesses; establish compute-sensitive headroom and strong cheap baselines before implementation or GPU training."
     }
-  ]
+  ],
+  "status_counts": {
+    "active_or_conditional": 6,
+    "completed_or_deprioritized": 3,
+    "declined": 1
+  }
 }
