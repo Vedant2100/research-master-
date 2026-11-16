@@ -1,6 +1,6 @@
 # Investment assessment
 
-**Portfolio review: 2026-11-16.** Four research areas remain in the portfolio, but not every historical workstream is active. Six projects remain active or conditional; three are completed/deprioritized; Iterate was declined.
+**Portfolio review: 2026-11-16.** Four research areas remain in the portfolio, but not every historical workstream is active. Five projects remain active or conditional; one is in incubation; three are completed/deprioritized; Iterate was declined.
 
 ## Current status and investment
 
