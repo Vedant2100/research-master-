@@ -1,21 +1,22 @@
 # Iterate Research Hack Agent
 
-**Area:** Autonomous Research & Self-Improvement
-**Source:** https://luma.com/sht6n8du
-**Owner agent:** `iterate`
-**Current agent state:** CONFIGURED, NOT YET DISPATCHED (no active session or actual model run assumed)
+**Area:** Autonomous Research & Self-Improvement  
+**Source:** https://luma.com/sht6n8du  
+**Owner agent:** `iterate`  
+**Current state:** DECLINED / CLOSED — owner decision 2026-11-12
 
-## Research aim
-Present evidence-backed agent improvement without a duplicated new research project.
+## Historical scope
 
-## Next decisive action
-Check approval and Vals conflict; assemble real failed-task→training-world→skill→heldout-eval demo.
+The event was considered as a possible venue for an evidence-backed failure-to-practice-to-skill-to-held-out-evaluation demonstration using the existing Terminal DreamGym work.
 
-## Experimental gate
-Verified participation, real model execution, heldout evaluation and submission evidence.
+## Final status
 
-## Do not overclaim
-No confirmed RSVP or prize result; do not fabricate venue participation.
+The owner declined participation. No verified registration, attendance, official submission or prize result exists in the accessible record. This is not an active workstream or opportunity.
+
+## Reuse boundary
+
+Terminal DreamGym remains a separate, deprioritized research record. Do not duplicate its engine or reopen the Iterate event workstream. Any future project must be independently proposed and scoped.
 
 ## Evidence handoff
-No master-repo independent agent handoff yet. After dispatch, include immutable source commits, commands, exact per-episode evidence, model results, matched comparisons, blockers, costs and PR links here.
+
+No event participation is claimed. The historical issue is closed as not planned.
