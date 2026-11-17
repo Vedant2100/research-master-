@@ -19,3 +19,6 @@ No overall demonstrated gain; 15 task sample and reference failures; no submissi
 
 ## Evidence handoff
 No master-repo independent agent handoff yet. After dispatch, include immutable source commits, commands, exact per-episode evidence, model results, matched comparisons, blockers, costs and PR links here.
+
+
+**2026-11-16 reconciliation:** Audit, paper and artifact finished; FORGE submission #11 user-reported (portal receipt absent from master). Canonical paper: https://github.com/Vedant2100/frontiermemory-forge-repo. Optional ablations do not block closure of this paper cycle.
