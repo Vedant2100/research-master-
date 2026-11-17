@@ -8,9 +8,13 @@
 **Verified/source-reported:** Official CROSSEP-EMB ALFWorld harness with pinned upstream. Full-arm branch includes retrieval, UCB/LinUCB, reflection, consolidation, structured state, evolutionary selection, native adapters. Exploratory hidden-rule diagnostic: no memory 16/36, Reflexion 26/36, UCB 22/36, LinUCB 21/36; heating 0/6. CI green is not model-result evidence.
 **Interpretation limits:** Planned full ~24,090 episode matrix not confirmed complete; synthetic hidden-rule tasks are NOT official ALFWorld; heldout vs sequential online protocols must not be pooled.
 
-## [StaleStream / CS258](projects/stalestream.md)
-**Verified/source-reported:** Design written, scoring/headroom checker exists. No verified trained LoRA writer or validated environment.
-**Interpretation limits:** Must compute true state from timestamps not delivery order; no hidden-label exposure; memory update ≠ general recursive learning. Reader transfer and injection robustness unproven.
+## [StaleStream](projects/stalestream.md)
+
+**Verified/source-reported (2026-11-15):** v3 gate marginal pass: oracle 0.997 vs strongest non-privileged 32B session-context extraction+rules 0.783; gap 0.214, paired-bootstrap 95% CI [0.194, 0.234]. Three-seed GRPO writer test EM 0.292 ± 0.026 vs 0.211 untrained; three-seed GRPO extractor 0.691 ± 0.011 vs 0.259 untrained. Corrected date-driven `winner_ok` improves about 0.69 → 0.83–0.85. Gains transfer to held-out Phi-3.5 reader.
+
+**Interpretation limits:** The gate is marginal because its CI crosses the 0.20 threshold. The 32B session-context pipeline remains stronger. Initial DPO/RFT extractor comparisons are one seed each and not a fair algorithm ranking; validation tuning and multi-seed comparisons remain open. Raw traces have not yet been exported and verified. Do not claim general-purpose agent memory, parameter-level continual learning or recursive self-improvement.
+
+**Canonical source/evidence:** [private StaleStream repository](https://github.com/Vedant2100/StaleStream), [STATUS.md](https://github.com/Vedant2100/StaleStream/blob/main/STATUS.md).
 
 ## [ContagionBench / Swarm](projects/contagionbench.md)
 **Verified/source-reported:** 324 logged Qwen2.5-3B synthetic episodes, 9/96 ungated unsafe choices, 6/96 prompt guard, 0/96 applied unsafe under independent gate; gate blocked nine attempted approvals.
@@ -24,13 +28,13 @@
 **Verified/source-reported:** Tiny Aya Global 4-bit QLoRA trained 16 steps on 84 examples; HF adapter published; 0/6 verified successes baseline and 0/6 after; all 12 evaluations left state untouched.
 **Interpretation limits:** SFT NOT GRPO/RL. Decreasing loss is not useful state improvement; no proxy-vs-verified RL experiment yet.
 
-## [TrustVal (Vals Build Your Own Eval)](projects/vals.md)
-**Verified/source-reported:** Valkyrie runs 2026-11-14, Claude Code harness. v2: Haiku 4.5 and Sonnet 4.6 both 4/4 (saturated: errors leaked the outcome). v3 (preregistered DESIGN_V3.md, oracle 4/4, naive control 0/4): 10 runs per model: Haiku 4.5 19/40, Sonnet 4.6 35/40 (run-level permutation p = 2.3e-4); all 26 failures were blind retries of committed non-idempotent writes; false success reports in 4/21 Haiku and 4/5 Sonnet failures. Claude 5.5 (10 runs each): Haiku 39/40, Sonnet 40/40, Opus 40/40, 0 duplicates in 89 errored task-trials. Local re-grade matches Valkyrie.
-**Interpretation limits:** v3 saturated for the 5.5 generation; per-task rates still have wide intervals at n = 10; four variants of one capability; stale_read saturated; deterministic faults.
+## [Vals AI Benchmaxxing](projects/vals.md)
+**Verified/source-reported:** Ticket confirmed Nov 9 for Nov 14–15 at 660 Alabama St, San Francisco; no model/eval/award yet.
+**Interpretation limits:** Not a codebase or completed result; must check exact official competition rules and avoid overfitting.
 
 ## [Terminal DreamGym](projects/terminal-dreamgym.md)
-**Verified/source-reported:** Preregistered matched evaluation, 2026-11-12 (Qwen2.5-7B, 100 tasks × 3 seeds, equal attempts): handwritten skills − no skill = +0.060 strict success, 95% CI [−0.028, +0.151]; placebo − no skill +0.018; all 1,200 runs re-scored from sandboxes. Model-written skills (Qwen writes SKILL.md from its own failures, leave-one-family-out, 5 seeds, 2,000 runs): +0.000 [−0.088, +0.097]. Same loop with qwen3-coder:30b as the writer (7B solver, 2,000 runs): +0.023 [−0.072, +0.118]. New benchmark v2 (52 calibrated tasks in 16 new repos, 1,040 runs, 97.5% repo-cluster CIs): handwritten −0.035 [−0.129, +0.053]; 30B skills −0.100 [−0.187, −0.018]; placebo − no skill −0.065 [−0.157, +0.033]. The July demo's gain came with 3× the baseline's attempts; the "two-seed sweep" was unit-test mock data, not a model run.
-**Interpretation limits:** One 7B solver; only the simplest self-improvement loop tested (7B and 30B skill writers). Original benchmark: held-out tasks share repos with train tasks, 9 of 19 base tasks tie. v2 fixes these; intervals remain about ±0.09, and the v2 harm is confounded with prompt length (placebo also lower).
+**Verified/source-reported:** Live Qwen2.5-7B demo baseline train/heldout/adv 2/8,1/6,2/6; reflection 4/8,2/6,1/6; gated 6/8,3/6,4/6. Later two-seed sweep reports zero deltas and 100% false promotion under its metric.
+**Interpretation limits:** Single positive demo and null sweep are not same protocol; cannot claim robust self-improvement. Mock runs not evidence of model learning.
 
 ## [Iterate AI Research Hack](projects/iterate.md)
 **Verified/source-reported:** Event Nov 14–15. DreamGym existing repository is candidate; no evidence of accepted registration, attendance or official submission.

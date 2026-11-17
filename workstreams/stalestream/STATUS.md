@@ -1,28 +1,16 @@
-# StaleStream RL Memory Agent
+# StaleStream — coordination pointer
 
-**Area:** Memory & Continual Learning
-**Source:** https://github.com/Vedant2100/f26/tree/main/cs258/stalestream
-**Owner agent:** `stalestream`
-**Current agent state:** CONFIGURED, NOT YET DISPATCHED (no active session or actual model run assumed)
+**Canonical repository (private):** https://github.com/Vedant2100/StaleStream  
+**Canonical evidence:** https://github.com/Vedant2100/StaleStream/blob/main/STATUS.md  
+**Project summary:** [projects/stalestream.md](../../projects/stalestream.md)
 
-## Research aim
-Learn a bounded memory rewrite policy for changing facts with downstream reader reward.
+## Latest verified summary (2026-11-15)
 
-## Next decisive action
-Build timestamp-correct episode generator and fair symbolic/LLM baselines; measure oracle QA and GRPO runtime.
+- v3 gate: **marginal pass** — oracle 0.997, strongest non-privileged baseline 0.783, gap 0.214, paired-bootstrap 95% CI [0.194, 0.234].
+- GRPO writer: 0.292 ± 0.026 test EM across three seeds, versus 0.211 untrained.
+- GRPO extractor: 0.691 ± 0.011 test EM across three seeds, versus 0.259 untrained.
+- Corrected date-driven conflict diagnostic: `winner_ok` improves from about 0.69 to 0.83–0.85.
+- Held-out Phi-3.5 evaluation confirms positive transfer.
+- The 32B session-context extraction-plus-rules pipeline remains stronger; DPO tuning and a fair multi-seed comparison remain open.
 
-## Experimental gate
-Oracle reader at least 90% EM and 20 percentage-point headroom over strongest nonprivileged baseline.
-
-## Do not overclaim
-No verified LoRA/GRPO checkpoint yet; do not leak hidden labels or overwrite unrelated coursework.
-
-## Evidence handoff
-No master-repo independent agent handoff yet. After dispatch, include immutable source commits, commands, exact per-episode evidence, model results, matched comparisons, blockers, costs and PR links here.
-
-## Canonical CS258 project documents
-
-- [Project proposal](./CS258_Project_Proposal.md) ([original DOCX](./CS258_Project_Proposal.docx); [Google Drive source](https://docs.google.com/document/d/17jOimeZCTgH-18bdfjEmTVXh46eGe8GB/edit))
-- [Design document](./CS258_Design_Doc.md) ([original DOCX](./CS258_Design_Doc.docx); [Google Drive source](https://docs.google.com/document/d/1LrRCf8crBVCljb5nkpis7SB3N10L8g87/edit))
-
-These copies capture the source documents at commit time. For subsequent edits, reconcile against the Google Drive sources before treating the snapshots as current.
+All code, detailed experiment records and future updates belong in the standalone repository. This file is only a coordination pointer; do not copy source code, hidden data, checkpoints or raw traces into this public master.
