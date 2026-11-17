@@ -22,3 +22,6 @@ Four controlled variants of one capability, synthetic environment, not a powered
 Owner review and Vals submission entry. See [STATUS](../workstreams/vals/STATUS.md).
 
 See [evidence ledger](../EVIDENCE.md), [investment assessment](../DECISIONS.md) and [venues](../VENUES.md).
+
+
+**2026-11-16 reconciliation:** Canonical repository: https://github.com/Vedant2100/trustval. v3/v4 benchmarking and saved regrading complete. GPT-5.3-Codex 34/40, GPT-5.4 40/40, GPT-6 Astra/Sol/Terra 4/4 each (one run); v4 delayed visibility Haiku 5.5 11/12, Sonnet 5.5 and GPT-6.1 Terra 12/12. Present as current-model-saturated regression benchmark. Vals event submission not verified. https://github.com/Vedant2100/trustval/blob/main/RESULTS.md
