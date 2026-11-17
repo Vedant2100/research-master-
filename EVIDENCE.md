@@ -8,9 +8,13 @@
 **Verified/source-reported:** Official CROSSEP-EMB ALFWorld harness with pinned upstream. Full-arm branch includes retrieval, UCB/LinUCB, reflection, consolidation, structured state, evolutionary selection, native adapters. Exploratory hidden-rule diagnostic: no memory 16/36, Reflexion 26/36, UCB 22/36, LinUCB 21/36; heating 0/6. CI green is not model-result evidence.
 **Interpretation limits:** Planned full ~24,090 episode matrix not confirmed complete; synthetic hidden-rule tasks are NOT official ALFWorld; heldout vs sequential online protocols must not be pooled.
 
-## [StaleStream / CS258](projects/stalestream.md)
-**Verified/source-reported:** Design written, scoring/headroom checker exists. No verified trained LoRA writer or validated environment.
-**Interpretation limits:** Must compute true state from timestamps not delivery order; no hidden-label exposure; memory update ≠ general recursive learning. Reader transfer and injection robustness unproven.
+## [StaleStream](projects/stalestream.md)
+
+**Verified/source-reported (2026-11-15):** v3 gate marginal pass: oracle 0.997 vs strongest non-privileged 32B session-context extraction+rules 0.783; gap 0.214, paired-bootstrap 95% CI [0.194, 0.234]. Three-seed GRPO writer test EM 0.292 ± 0.026 vs 0.211 untrained; three-seed GRPO extractor 0.691 ± 0.011 vs 0.259 untrained. Corrected date-driven `winner_ok` improves about 0.69 → 0.83–0.85. Gains transfer to held-out Phi-3.5 reader.
+
+**Interpretation limits:** The gate is marginal because its CI crosses the 0.20 threshold. The 32B session-context pipeline remains stronger. Initial DPO/RFT extractor comparisons are one seed each and not a fair algorithm ranking; validation tuning and multi-seed comparisons remain open. Raw traces have not yet been exported and verified. Do not claim general-purpose agent memory, parameter-level continual learning or recursive self-improvement.
+
+**Canonical source/evidence:** [private StaleStream repository](https://github.com/Vedant2100/StaleStream), [STATUS.md](https://github.com/Vedant2100/StaleStream/blob/main/STATUS.md).
 
 ## [ContagionBench / Swarm](projects/contagionbench.md)
 **Verified/source-reported:** 324 logged Qwen2.5-3B synthetic episodes, 9/96 ungated unsafe choices, 6/96 prompt guard, 0/96 applied unsafe under independent gate; gate blocked nine attempted approvals.
