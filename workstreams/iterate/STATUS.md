@@ -19,3 +19,6 @@ No confirmed RSVP or prize result; do not fabricate venue participation.
 
 ## Evidence handoff
 No master-repo independent agent handoff yet. After dispatch, include immutable source commits, commands, exact per-episode evidence, model results, matched comparisons, blockers, costs and PR links here.
+
+
+**2026-11-16 reconciliation:** Event Nov 14–15 ended; owner reported rejection. No accepted registration, attendance or submission verified. Close event queue as not pursued, without labeling separate DreamGym research as event submission.
