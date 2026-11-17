@@ -21,3 +21,5 @@ SFT NOT GRPO/RL. Decreasing loss is not useful state improvement; no proxy-vs-ve
 Repair tool-call execution to get nonzero baseline, then try real RL; submit honest Lexsi Stage 1 packet by Nov 15 AoE if feasible.
 
 See [evidence ledger](../EVIDENCE.md), [investment assessment](../DECISIONS.md) and [venues](../VENUES.md).
+
+**2026-11-16 reconciliation:** Original 0/6 SFT result is historical. Corrected shared action-history 210-step SFT yielded base 0/18, adapted 18/18 verified held-out ticket successes, zero forbidden resolutions, one seed. SFT competence gate passed, not an RL gain. Earlier GRPO pilot interrupted with no valid proxy-vs-verified reward comparison; compare both arms from same adapted checkpoint. https://github.com/Vedant2100/role-work-forge-artifacts/blob/main/hackathons/2026-11/results/modal-run-43647115920/tmp/modal-results/lexsi_tiny_aya_prompt_alignment_2026_11_14/metrics.json
