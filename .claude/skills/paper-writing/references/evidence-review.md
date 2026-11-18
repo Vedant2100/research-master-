@@ -51,6 +51,13 @@ If the closest prior art already establishes the central observation more rigoro
 - Related-work novelty compared using full relevant sections of primary sources.
 - No fabricated experiments, acceptance, preregistration, ethics approval, independent replication or statistical significance.
 
+### Technical comprehension and links
+- Every specialized term, acronym, metric, system/tool name and statistical method is explained in plain English on first use and linked to a primary source or official documentation.
+- Acronyms are expanded; statistical terms explain the actual unit, comparison and interpretation.
+- Captions define abbreviations locally; a reader can understand each table without hunting through the paper.
+- Links resolve to the original paper, standard, official docs or the project's exact implementation, not an unrelated overview.
+- Project-specific names are not presented as standard terminology; if no external source exists, the local meaning is stated and linked to the code/specification.
+
 ### Editorial
 - Reverse outline has one coherent line from research question to conclusion.
 - Abstract agrees exactly with table denominators, confidence intervals, limitations and model/tool versions.
