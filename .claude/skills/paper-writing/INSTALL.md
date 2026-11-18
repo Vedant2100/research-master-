@@ -1,6 +1,6 @@
 # Install and invoke the paper-writing skill
 
-The canonical skill is this `paper-writing/` directory. It uses the [Agent Skills](https://agentskills.io/specification) format and needs no runtime dependencies for its instructions. LaTeX, research-data and browser tools are optional task dependencies, not required for skill discovery.
+The canonical skill is this `paper-writing/` directory. It uses the [Agent Skills](https://agentskills.io/specification) format and needs no runtime dependencies for its instructions. LaTeX, research-data and browser tools are optional task dependencies, not required for skill discovery. Version 0.2 also requires a plain-English definition and an authoritative clickable source for every specialized term on first use, including table captions and README files.
 
 ## Project-scoped use
 
