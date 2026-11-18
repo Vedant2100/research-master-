@@ -27,7 +27,7 @@ This copies the **full canonical folder**, not the short in-repo Codex adapter, 
 
 - `/paper-writing Review the TrustVal manuscript against actual run traces; do not change experiment code.`
 - `/paper-writing Edit this Results section for unnatural AI phrasing. Keep every figure, p-value and qualifier unchanged.`
-- `$paper-writing Make a claim ledger and reviewer-style novelty critique before drafting an abstract.`
+- `$paper-writing Make a claim-to-evidence table and reviewer-style novelty critique before drafting an abstract.`
 - `/paper-writing Finalize the PDF for the selected workshop using the official short-paper rules. Report exactly which checks ran.`
 
 ## Test after installation
