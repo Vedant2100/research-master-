@@ -37,3 +37,31 @@ Muon can work well for some sparse-reward agentic RL configurations (Ruan et al.
 
 ## Risks and disclosures
 Muon modifies spectral geometry and update magnitude together. GRPO gradients can be sparse/low rank for reasons unrelated to the optimizer, and reward noise is distinct from gradient stochasticity. Split-half cosine from two half-batches is only a proxy. SFT loss is not verified RL success. Two GPUs in a public recipe do not guarantee fit on any particular A30 allocation. No GPU run or external paper submission is authorized by this plan.
+
+## Novelty gate / revised decisive experiment — 2026-11-17
+
+**Status: NOT YET NOVEL.** New October/November prior art (see LITERATURE.md) includes Ares (spectral adaptive rank in RLVR), structured-noise Muon theory, and RLVR rank/step-direction studies. Treat the original broad H1/H2 above as exploratory, **not as paper claims**.
+
+### Sharper scientific question
+When two or more independent on-policy rollout groups are sampled at an **identical frozen policy state**, are the *reproducible gradient directions* better predictors of downstream **held-out verified reward response to candidate optimizer steps** than the energy spectrum alone? Can optimizer failures be attributed to amplification of *unreproducible* directions rather than to effective step size, advantage estimator, task mix, or KL/clipping?
+
+This is a **hypothesis**, not a demonstration of novelty. Related split-batch subspace reproducibility work in low-rank pretraining must be cited and separated carefully.
+
+### Stage A — counterfactual directional diagnosis, without full training
+1. At multiple independently sampled, **fixed policy checkpoints**, generate at least three disjoint on-policy rollout/gradient groups for each selected task difficulty and reward/noise regime. Compute per-matrix gradients **before optimizer transformations**, controlling reward baseline, group size and advantage estimator. Prefer independent prompt groups or account for within-prompt correlation.
+2. For a selected matrix, compare (i) gradient spectral energy/effective rank (Ares), (ii) split-half gradient cosine, (iii) top-k **projector overlap / principal angles** across disjoint groups and (iv) cost-normalized update direction projected on the third **held-out** gradient group. Calibrate estimator repeatability using synthetic known-signal/noise positive and negative controls. Distinguish real gradient from checkpoint displacement.
+3. Generate **counterfactual single steps** with cloned identical weights **and optimizer states** for AdamW, Muon, Pion, and Ares where implementable. Control applied-update norms, comparable parameter routing, and KL trust-region displacement; evaluate next-step held-out policy surrogate plus a separate sampled **verified reward** estimate with uncertainty. A surrogate improvement is not assumed to improve environment reward.
+4. Use fixed, preregistered predictors/thresholds based only on training/validation checkpoints to predict a ranking or failure regime on a held-out task family/checkpoint. Compare against always-AdamW, always-Pion, update-RMS only, LR/clip/KL metrics, gradient norm, spectral effective rank and a simple task-difficulty/advantage predictor.
+5. If predictors do not beat these cheap baselines on out-of-distribution conditions, publish a negative diagnostic if rigorous or stop. If they do, run a **separate**, matched-budget multi-seed prospective intervention. No optimizer proposal before this.
+
+### Stage B — training confirmation (explicit compute approval required)
+- Use a **single fixed RL framework** and fair tuned AdamW, Muon, Pion and (if proposing spectral filtering) Ares. Three truly independent training seeds per key comparison; no test-set tuning; record task success, reward AUC, variance, wall-time/GPU-hours, KL, update RMS, clipping and failure denominator.
+- Test both clean and controlled noisy rewards, and at least two difficulty/advantage regimes. Transfer prediction to held-out task families and optimizer settings.
+- Separate **scientific utility** (reward at equal tokens/rollouts) from **systems cost** (additional backwards, SVDs, synchronization, optimizer-state copies). Two extra backward passes every step may erase any practical gain. A predictor must show *net* value or run only periodically.
+- Mark the hypothesis **falsified** if projectors are not repeatable, prediction fails out of distribution, differences disappear after tuned LR/update-RMS controls, or diagnostic overhead exceeds the savings.
+
+### Concrete acceptance criteria (proposals, not observed)
+A nontrivial mechanism requires: (i) reproducible independent-gradient statistic, (ii) prospectively held-out predictive gain over effective-rank and strong cheap controls, (iii) matched-step causal support beyond update magnitude and objective, and (iv) replicated verified-reward outcome. A paper submission must explicitly differentiate Ares, Pion and structured-noise Muon analysis. A new optimizer needs a demonstrably novel update rule, not just a renamed spectral filter.
+
+**Current hardware/run readiness:** CPU source and arithmetic checks are not a model-competence pilot; the Pion FSDP2/vLLM GPU fit, checkpoint availability, reliable reward harness, per-step gradient capture, cost budget and three-seed run plan remain unverified. **Do not start expensive training yet.**
+
