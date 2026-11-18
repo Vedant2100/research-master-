@@ -71,11 +71,11 @@ Compare edited passage to its source. Look for silently changed:
 - controls, ablations, protocols, baselines, sample dependencies and limitations;
 - citation attachment, quotes, code, formulas, LaTeX labels and generated tables.
 
-If an apparent factual error is found, put the proposed correction in the claim ledger with its source instead of quietly folding it into a style pass.
+If an apparent factual error is found, put the proposed correction in the claim-to-evidence table with its source instead of quietly folding it into a style pass.
 
 ## Edit log (when working in a repository)
 
-Use a brief ledger, not a prose-by-prose autobiography:
+Use a brief edit log, not a prose-by-prose autobiography:
 
 | Passage | Reader problem | Justified edit | Invariants rechecked |
 |---|---|---|---|
