@@ -18,3 +18,8 @@
 
 **Stop/no-go:** if fair tuning or matching applied-update RMS removes differences; no held-out predictive diagnostic; poor competence; excessive cost. Negative results must be reported.
 **Handoff:** use repository templates/EXPERIMENT_HANDOFF.md and do not claim run success from code or CI checks alone.
+
+## CPU-only verification (2026-11-17)
+- On a local, equivalent copy of the committed diagnostic and tests, Python unittest reported **4 tests passed** with NumPy 2.3.5; a synthetic identity-gradient NPZ produced split-half cosine 1.0, stable rank 4.0, tail-energy fraction 0.5. This verifies arithmetic only, not policy-gradient measurement.
+- The author's standalone theory_check.py was run with NumPy 2.3.5: momentum cosines 0.8997/0.9499/0.9899 for μ=0.9/0.95/0.99; finite-difference and analytic derivative both 0.568103. This is original source's toy check, not an independently reproduced optimizer-training result.
+- Source audit verified exact Git blob SHA identity for vendored ss.py, drive.py, theory_check.py and LICENSE against the pinned author commit.
