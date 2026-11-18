@@ -22,3 +22,11 @@
 - **Question:** can a persistent RL compute-allocation policy learn from prior tasks, then transfer to held-out task families at matched token, latency and tool budgets?
 - **Next:** reuse existing terminal/tool evaluation source, audit the [Atlas](https://frontier-rl-project-atlas-2711vedant-6531.vercel.app/) and prior work, run an honest cheap cost/utility diagnostic. [Owner issue #10](https://github.com/Vedant2100/research-master-/issues/10).
 - **Stop/go:** stop if heuristics or per-task routers already saturate the compute-quality Pareto frontier, if the model cannot solve tasks, or if transfer disappears.
+
+
+## [RL Optimizer Geometry](../projects/rl-optimizer-geometry.md)
+- **Stage:** pinned original author reference and diagnostic utility; no actual model result.
+- **Question:** can gradient geometry/coherence predict optimizer benefit or failure under controlled RLVR?
+- **Priority:** CONDITIONAL pilot; scientific novelty requires prospective held-out evidence.
+- **Next:** CPU tests, FSDP/hardware/competence/cost audit, then explicitly approved optimizer comparison. [Issue #22](https://github.com/Vedant2100/research-master-/issues/22).
+- **Stop/go:** do not displace higher-priority deadlines or run a large sweep without credible headroom and matched baselines.

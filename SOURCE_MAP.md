@@ -41,3 +41,9 @@ This map is an index, not a synchronization system. No Git submodules, copies of
 | `adaptive-ttc` | [Terminal DreamGym](https://github.com/Vedant2100/terminal_dreamgym) `main` — `terminal_dreamgym/`, `task_templates/`, `tests/`, `runs/`, `reports/`; [private Role Work Forge artifacts](https://github.com/Vedant2100/role-work-forge-artifacts) `main` — `hackathons/2026-11/rewardhacklab/`, `experiments/`, `tests/`; [Frontier Agent Learning Atlas](https://frontier-rl-project-atlas-2711vedant-6531.vercel.app/) as conceptual design artifact, **not code verified available**. | Read original repos and tests first, choose a verifiable task harness with measurable compute sensitivity, then implement only the missing TTC action-router module **in that source repository**. Coordinate with `terminal-dreamgym` and `rewardhacklab`; do not copy their code into this public master. |
 
 The Vercel Atlas deployment exists and is READY but its deployment file-reader truncates the HTML. Do not claim a full Atlas audit until an authorized full-page read is available.
+
+
+## Eleventh stream — RL Optimizer Geometry (2026-11-17)
+| Agent | Pinned code provenance | Instructions |
+|---|---|---|
+| rl-optimizer-geometry | [Vuk Rosić MIT reference](https://github.com/vukrosic/llm-research-paper-drafts/tree/d0dc052749a97061f6daa6907371bd0a2ec33405/02-muon-hypergradient-learning-rate) (imported exact to workstreams/rl-optimizer-geometry/vendor/vukrosic/); [Pion official RL/verl](https://github.com/OPTML-Group/Pion/tree/87965014b360bde604632cba0aa12e423c6c63c6/RL/verl) (primary); [agentic verl-muon](https://github.com/x66ccff/verl-muon/tree/6692817d594d45af8558f719261edde14fcb63b2) (secondary) | Use same-trainer AdamW/Muon/Pion controls, no wholesale RL framework duplication or private data. Audit Pion FSDP2 vs agentic FSDP NO_SHARD, baseline competence, update RMS and GPU budget before running. |

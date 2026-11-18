@@ -1,6 +1,6 @@
 # Scientific validity and privacy
 
-1. Treat four tracks as always active; nine named workstreams include two hackathons. Supporting Fleet-Mem is separate.
+1. Treat four tracks as always active; eleven named workstreams include two hackathons. Supporting Fleet-Mem is separate.
 2. Truthful stage: plan, code/CI, actual model run, replication, portal submission, acceptance.
 3. Freeze evaluation split, seeds, task order, worker/prompts, memory budget and evaluator source SHA. Distinguish online-memory from held-out protocols.
 4. Require task competence and positive/negative controls before a large GPU matrix. Count independent cases, not deterministic greedy seed replays.

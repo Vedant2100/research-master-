@@ -3,7 +3,7 @@
   "track_counts": {
     "memory": 3,
     "safety": 2,
-    "post-training": 3,
+    "post-training": 4,
     "autonomous": 2
   },
   "projects": [
@@ -96,6 +96,15 @@
       "stage": "conceptual research design; no dedicated TTC code or executed result verified",
       "priority": "CONDITIONAL—cost/headroom pilot before RL spend",
       "next": "Audit Atlas and prior art; reuse Terminal DreamGym or Role Work Forge verifiable tasks; test compute-sensitive headroom and cheap strong baselines; only then train RL controller."
+    },
+    {
+      "id": "rl-optimizer-geometry",
+      "title": "RL Optimizer Geometry",
+      "track": "post-training",
+      "source": "https://github.com/Vedant2100/research-master-/tree/main/workstreams/rl-optimizer-geometry",
+      "stage": "incubation: source imported and offline diagnostic implemented; RL training unexecuted",
+      "priority": "CONDITIONAL—scientific and hardware preflight before GPU",
+      "next": "Run CPU checks, verify baseline competence/VRAM and pinned trainer, precommit fair optimizer controls and obtain explicit GPU approval; seek held-out diagnostic prediction"
     }
   ]
 }

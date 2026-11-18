@@ -1,6 +1,6 @@
 # Master agent contract
 
-**Four active research tracks; ten thread-specific specialists.** Each role owns one research question and one status file. This repo is the single home for all research work: code, configs, results and coordination live here.
+**Four active research tracks; eleven thread-specific specialists.** Each role owns one research question and one status file. This repo is the single home for all research work: code, configs, results and coordination live here.
 
 ## All work lives in research-master (owner decision 2026-11-14, applies always)
 
@@ -23,8 +23,12 @@ Work happens in this repository, under `workstreams/<slug>/`. Do not keep or sta
 - Codex: one project-scoped role at `.codex/agents/<slug>.toml`; explicitly delegate from a session with the necessary repo permissions.
 - Parallelism is permitted only when resources and assignments are independently isolated. Never invent agent sessions, submissions or model runs.
 
-Supporting Fleet-Mem governance is prior work, **not an eleventh agent**.
+Supporting Fleet-Mem governance is prior work, **not an additional agent**.
 
 
 ## Tenth specialist — TTC
 `adaptive-ttc` is a **design-stage conditional pilot** under RL Post-Training, not an existing trained model. Read [TTC brief](projects/adaptive-ttc.md) and [Source Map](SOURCE_MAP.md); use original DreamGym/reward verifier code rather than making another generic agent harness. Cross-episode policy learning, matched compute budgets, and held-out transfer are the scientific differentiators. Import the reused code into `workstreams/adaptive-ttc/` and coordinate with the DreamGym and RewardHackLab agents. [Issue #10](https://github.com/Vedant2100/research-master-/issues/10).
+
+
+## Eleventh specialist — RL Optimizer Geometry
+The rl-optimizer-geometry lane is a **conditional incubation** under RL Post-Training, not a confirmed new optimizer or trained result. Read [project brief](projects/rl-optimizer-geometry.md), [pinned source audit](workstreams/rl-optimizer-geometry/UPSTREAM_REUSE.md) and [issue #22](https://github.com/Vedant2100/research-master-/issues/22). The author's exact MIT code is present under workstreams/rl-optimizer-geometry/vendor/vukrosic/ but not RL-ready. Use official RL implementations only after budget authorization and trainer/hardware preflight. Do not self-merge or claim GPU runs.
