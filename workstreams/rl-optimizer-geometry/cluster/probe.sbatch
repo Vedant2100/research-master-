@@ -20,7 +20,7 @@ EXTRA=${EXTRA:-}
 VERL=$ROG/Pion/RL/verl
 LOG=$ROG/probe/${OPT}_${SLURM_JOB_ID}.jsonl
 # Local snapshot path: transformers 4.57.3 calls the Hub API for a hub id (Mistral regex check) even with HF_HUB_OFFLINE=1.
-MODEL=$(ls -d "$ROG"/hf/hub/models--Qwen--Qwen3-1.7B/snapshots/*/ | head -1)
+MODEL=$(ls -d "$ROG"/hf/hub/models--Qwen--Qwen3-1.7B/snapshots/*/ | head -1); MODEL=${MODEL%/}  # verl asserts no trailing slash
 RAYTMP=/tmp/rog_ray_$SLURM_JOB_ID  # node-local: Ray sockets misbehave on NFS
 mkdir -p "$ROG/probe" "$RAYTMP"
 nvidia-smi --query-gpu=name,memory.total --format=csv
