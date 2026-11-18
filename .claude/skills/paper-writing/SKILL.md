@@ -19,6 +19,20 @@ Produce a readable, defensible research manuscript from **what was actually done
 6. **Human voice, academic register.** Remove mechanical writing patterns because they obscure the argument, not to fool AI detectors. Preserve legitimate hedging, Methods passive voice where appropriate, technical terminology, and the author's distinctive wording.
 7. **Never self-certify.** A green CI check is not an experiment; a successful LaTeX command is not a visual PDF review; a draft PR is not a submission. No merge or external submission without authorization.
 
+
+## Technical terms must be explained and linked
+
+This is a **hard publication-readability rule**, not an optional polish pass:
+
+- On first use, every specialized technical term, acronym, metric, protocol, tool/framework name, statistical procedure, and domain-specific phrase must be explained in ordinary language **and linked** to a reliable source.
+- Use the pattern: **term** + a short explanation of what it means in this paper + a clickable link to the best source. A link alone is not an explanation; an expansion of an acronym alone is not an explanation.
+- Prefer primary sources: official technical documentation or standards for protocols and tools; the original paper or official project page for methods and benchmarks; the actual repository implementation for project-specific behavior. Avoid generic search-result pages and low-quality glossaries.
+- For a project-specific term with no external definition, explain the local meaning and link to the relevant code, task specification, or experiment record. Never imply that an implementation-specific label is a field-wide standard.
+- Expand acronyms on first use. Explain unfamiliar statistical language in terms of the actual analysis unit and comparison. Define abbreviations and symbols in tables/captions as well as in the main text when a reader could encounter the exhibit first.
+- Do not attach links to every repeated occurrence. Define and link at first use, then use the term consistently. In a short paper, prefer concise parenthetical explanations or a compact linked glossary over bloated exposition.
+- If no trustworthy explanatory link exists, replace the term with plain language or state the local definition and link to the project's own source. **Do not leave it unexplained.**
+- Audit the title, abstract, body, tables, figure captions, footnotes, README, and supplementary instructions. A reader should not need to search independently to decode the paper.
+
 ## Choose the requested mode
 
 - **Plan:** Give research questions, defensible contribution, venue fit, closest prior art, proposed structure, evidence gaps, page budget and go/no-go criteria. Do not silently create results.
