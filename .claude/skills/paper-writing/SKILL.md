@@ -13,7 +13,7 @@ Produce a readable, defensible research manuscript from **what was actually done
 
 1. **Do not invent** experiments, baselines, results, citations, run counts, significance, methods, model versions, approvals, or submission status. Distinguish designed, implemented, executed, verified, submitted, and accepted.
 2. **Preserve scientific invariants.** Keep all numbers, units, denominators, confidence intervals, test definitions, seeds, splits, qualified claims, citations, equations, code, and LaTeX macros unchanged unless a source-backed correction is explicitly justified.
-3. **Read before editing.** Read the whole draft, relevant repository files, run ledger, protocol, and existing PR diff before proposing prose edits. When the user asks for a limited pass, do not rewrite unrelated sections.
+3. **Read before editing.** Read the whole draft, relevant repository files, run records, protocol, and existing PR diff before proposing prose edits. When the user asks for a limited pass, do not rewrite unrelated sections.
 4. **No invented novelty.** Compare directly with the nearest published/preprint work. A useful negative result or engineering case study is legitimate, but it must be described as such.
 5. **The venue wins.** Verify the specific current CFP/track and its length, format, anonymity, references, appendix, artifact, ethics, AI-assistance, dual-submission and deadline rules. Do not inherit another conference's template.
 6. **Human voice, academic register.** Remove mechanical writing patterns because they obscure the argument, not to fool AI detectors. Preserve legitimate hedging, Methods passive voice where appropriate, technical terminology, and the author's distinctive wording.
@@ -36,7 +36,7 @@ This is a **hard publication-readability rule**, not an optional polish pass:
 ## Choose the requested mode
 
 - **Plan:** Give research questions, defensible contribution, venue fit, closest prior art, proposed structure, evidence gaps, page budget and go/no-go criteria. Do not silently create results.
-- **Draft:** Write a real manuscript grounded in a claim ledger. Prefer a concrete motivating example and an explicit measured question over broad motivational slogans.
+- **Draft:** Write a real manuscript grounded in a claim-to-evidence table. Prefer a concrete motivating example and an explicit measured question over broad motivational slogans.
 - **Edit / de-Clauding / humanize:** Preserve the scientific content. Scope edits to passages with a concrete reader-facing problem. Consult [editing.md](references/editing.md).
 - **Review:** Act as a skeptical peer reviewer: novelty, construct validity, controls, sample units, baseline fairness, reporting gaps, alternative interpretations and hard reviewer objections. Consult [evidence-review.md](references/evidence-review.md).
 - **Finalize:** Reconcile exact source, regenerated figures/tables, citations and target venue; compile and inspect every PDF page. Keep a clear list of unresolved gates.
@@ -85,9 +85,9 @@ If you did not execute a check, say **not checked**. A local mirror is not autom
 
 ## Deliverables
 
-Return the manuscript/diff and a concise status: **verified facts**, **editorial decisions**, **open scientific risks**, **format/build checks actually run**, and **what still blocks submission**. For substantial edits, retain a compact edit ledger of passage → problem → change → fact-preservation check. Do not dump long self-praise or generic checklists into the paper.
+Return the manuscript/diff and a concise status: **verified facts**, **editorial decisions**, **open scientific risks**, **format/build checks actually run**, and **what still blocks submission**. For substantial edits, retain a compact edit log of passage → problem → change → fact-preservation check. Do not dump long self-praise or generic checklists into the paper.
 
-Read [evidence-review.md](references/evidence-review.md) for the ledger and reviewer pass. Read [case-notes.md](references/case-notes.md) only when an example of the workflow helps. Both are general lessons from prior papers, not facts to import into a new paper.
+Read [evidence-review.md](references/evidence-review.md) for the evidence table and reviewer pass. Read [case-notes.md](references/case-notes.md) only when an example of the workflow helps. Both are general lessons from prior papers, not facts to import into a new paper.
 
 ## Scope of this skill
 
