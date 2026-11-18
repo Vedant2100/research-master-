@@ -2,7 +2,7 @@
 name: paper-writing
 description: Plan, draft, edit, audit, and finalize scientific papers, workshop submissions, abstracts, and rebuttals. Use for academic manuscript writing, paper review, "declauding", "humanize this paper", venue-fit checks, claim-to-evidence checks, or LaTeX/PDF submission preparation. Keeps the user's actual experiments and voice intact while removing formulaic AI prose and checking novelty, evidence, statistics, citations, and page limits.
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # Paper writing
