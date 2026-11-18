@@ -23,3 +23,11 @@
 - On a local, equivalent copy of the committed diagnostic and tests, Python unittest reported **4 tests passed** with NumPy 2.3.5; a synthetic identity-gradient NPZ produced split-half cosine 1.0, stable rank 4.0, tail-energy fraction 0.5. This verifies arithmetic only, not policy-gradient measurement.
 - The author's standalone theory_check.py was run with NumPy 2.3.5: momentum cosines 0.8997/0.9499/0.9899 for μ=0.9/0.95/0.99; finite-difference and analytic derivative both 0.568103. This is original source's toy check, not an independently reproduced optimizer-training result.
 - Source audit verified exact Git blob SHA identity for vendored ss.py, drive.py, theory_check.py and LICENSE against the pinned author commit.
+
+## Updated novelty/readiness gate — 2026-11-17
+
+- **Scientific readiness:** suitable for Phase 0 diagnostic engineering; **not yet** an original, defensible optimizer contribution or a fair RL training comparison.
+- **New overlap discovered:** Ares (Oct 12, 2026) already performs RLVR gradient spectral tracking and adaptive-rank updates; Chen et al. (Oct 22) studies structured gradient-noise effects on Muon; Khalil & Hoque (Nov 9) analyzes post-training rank and update alignment. Added to LITERATURE.md, with an updated prospective counterfactual/independent-rollout test in RESEARCH_PLAN.md.
+- **Existing diagnostic is insufficient by itself:** two split gradients, stable rank and cosine alone do not demonstrate a predictive signal. Next code work must add disjoint-group gradient capture, principal-angle/projector overlap and a held-out third-split target, followed by calibrated controls. Do not claim novelty or training success.
+- **Compute gate unchanged:** full-model RLVR, Ares/Pion integration and GPU budget/hardware feasibility are not verified. No new GPU job is authorized by this status update.
+
