@@ -19,6 +19,8 @@ STEPS=${STEPS:-3}
 EXTRA=${EXTRA:-}
 VERL=$ROG/Pion/RL/verl
 LOG=$ROG/probe/${OPT}_${SLURM_JOB_ID}.jsonl
+# Local snapshot path: transformers 4.57.3 calls the Hub API for a hub id (Mistral regex check) even with HF_HUB_OFFLINE=1.
+MODEL=$(ls -d "$ROG"/hf/hub/models--Qwen--Qwen3-1.7B/snapshots/*/ | head -1)
 RAYTMP=/tmp/rog_ray_$SLURM_JOB_ID  # node-local: Ray sockets misbehave on NFS
 mkdir -p "$ROG/probe" "$RAYTMP"
 nvidia-smi --query-gpu=name,memory.total --format=csv
@@ -27,7 +29,7 @@ apptainer exec --nv --cleanenv -B "$ROG" -B /tmp \
   --env HF_HOME="$ROG/hf",PYTHONPATH="$VERL",WANDB_MODE=disabled,TOKENIZERS_PARALLELISM=false,VERL_FILE_LOGGER_PATH="$LOG",RAY_TMPDIR="$RAYTMP",HF_HUB_OFFLINE=1 \
   "$ROG/verl.sif" bash "examples/grpo_trainer/run_qwen3-1.7b_fsdp2_${OPT}.sh" \
   "trainer.logger=['console','file']" trainer.save_freq=-1 trainer.val_before_train=False \
-  "trainer.total_training_steps=$STEPS" trainer.test_freq=-1 \
+  "trainer.total_training_steps=$STEPS" trainer.test_freq=-1 "actor_rollout_ref.model.path=$MODEL" \
   "+ray_kwargs.ray_init._temp_dir=$RAYTMP" "ray_kwargs.ray_init.num_cpus=$SLURM_CPUS_PER_TASK" $EXTRA
 echo "jsonl: $LOG"
 python3 - "$LOG" <<'EOF'
