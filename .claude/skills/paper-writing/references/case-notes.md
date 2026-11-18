@@ -23,7 +23,7 @@ Writing lessons:
 - Do not claim originality for a failure type already studied by larger prior work. Frame the actual engineering experience narrowly.
 - The v2-to-v3 redesign changed multiple factors together. It shows an instrument problem; it is not a controlled one-variable ablation.
 - State **exactly which outcomes the test injects**. A timeout after commit without a matched timeout after no commit does not test the full ambiguity decision.
-- Distinguish the full manual run-ledger classification, independent spot checks of raw traces, all-run verifier checks, and direct SQL inspection. Those are different evidence levels.
+- Distinguish the manual classification in the results notes, independent spot checks of raw traces, all-run verifier checks, and direct inspection of saved database files. Those are different evidence levels.
 - Report the small number of fixed tasks and repeated runs honestly; don't treat all task-trials as independent domains.
 - Show a concrete failed retry and a concrete verified recovery from actual trajectories.
 - A successful LaTeX build and visual PDF audit make a review draft; they do not establish scientific originality or that a paper was submitted.
