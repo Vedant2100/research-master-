@@ -26,3 +26,6 @@ Run offline diagnostic (NPZ file contains grad_a and grad_b, each a same-shaped 
     python workstreams/rl-optimizer-geometry/diagnostics/gradient_audit.py --input sample.npz
 
 The primary **future** RL implementation is official Pion's RL/verl fork, which already provides AdamW/Muon/Pion. The secondary ALFWorld transfer is x66ccff/verl-muon. Those separate trainer forks are pinned references, not vendored or silently equated. No GPU runs initiated.
+
+## Results so far
+- 2026-11-18: The official Pion-fork GRPO recipe (Qwen3-1.7B, GSM8K, MuonAdamW) runs end to end on 2× RTX 6000 Ada: ~20 min/step, 34 GB peak. A full 105-step run takes ~36 h, which would be ~$140 on Modal 2×L40S, so the pilot runs on the free cluster. No optimizer comparison yet. Details in [STATUS.md](STATUS.md).
