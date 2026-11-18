@@ -41,7 +41,7 @@ Verified on CPU: all trainer, FSDP-worker, vLLM async rollout and muon imports; 
 
 Not verifiable on CPU: FSDP2 + vLLM sleep/wake on GPU, Muon/Pion on DTensor shards, real memory fit. Those are the GPU probe's job (3 Muon steps, timing only).
 
-Budget: Modal CPU preflights only, < $1. Modal GPU is blocked (workspace has no payment method); the timing probe runs on the free cluster instead (RTX 6000 Ada 48 GB, same AD102 chip as Modal L40S).
+Budget: Modal CPU preflights only, < $1. Modal GPU was blocked at the time (no payment method; since fixed), and the owner chose the free cluster anyway (RTX 6000 Ada 48 GB, same AD102 chip as Modal L40S).
 
 ## GPU timing probe on the cluster (2026-11-18)
 Scripts: `cluster/setup.sh`, `cluster/probe.sbatch` (same pinned image as the Modal preflight, run with Apptainer). Official Muon recipe, unchanged except no wandb, no checkpoints, no validation, and the model loaded from the local snapshot. Cost: $0.
@@ -57,5 +57,10 @@ Scripts: `cluster/setup.sh`, `cluster/probe.sbatch` (same pinned image as the Mo
 - **Format-learning confound:** 47–59% of responses hit the 1024-token limit (Qwen3 thinking), and the strict GSM8K reward needs `#### N`, so the starting reward is ~0. Reward rose to 0.25 by step 3. Early curves mostly measure format learning, and optimizer differences there are not evidence of a geometry effect. Compare plateau and held-out val accuracy, not early slope.
 - Bugs fixed on the way: `/scratch` is node-local on this cluster (everything now under `~/rog` on NFS); transformers 4.57.3 calls the Hub API for a model id even with `HF_HUB_OFFLINE=1` (load from the local snapshot path); verl rejects a model path with a trailing `/`.
 
-## Go/no-go pilot (submitted 2026-11-18)
-`cluster/pilot.sbatch`: official 105-step recipe for AdamW, Muon and Pion, 1 seed each, run one at a time under `fm-serial` on the Ada partition. Same lr=1e-6 for all three, as in the fork, plus `data.seed=1` so all three see the same data order (the recipe leaves it null). This is a competence pilot, not a fairly tuned comparison. The jobs are queued behind two FrontierMemory jobs on the same serial lock. Kill criterion: if final GSM8K val accuracy differs by less than ~2–3 points across optimizers, stop the training-comparison track.
+## Go/no-go pilot: cancelled (2026-11-18)
+`cluster/pilot.sbatch` was set up to run the official 105-step recipe for AdamW, Muon and Pion, 1 seed each, one at a time on 2 Ada GPUs, with `data.seed=1` so all three see the same data order. The owner cancelled it before it started (jobs 314871-314873) because it would take too long: ~36 h per run, ~4.5 days of serial GPU time plus queue waits. No optimizer comparison was run, so the workstream has no evidence for or against an optimizer-geometry effect in GRPO.
+
+What exists for anyone who picks this up:
+- Working cluster pipeline (`cluster/`), with the recipe verified end to end for Muon only. AdamW and Pion recipes have passed the CPU preflight but have never run on a GPU.
+- Raw per-step metrics of the three probe runs in `results/cluster_probe/` (verl FileLogger JSONL).
+- Cheaper options if revisited: fewer steps (e.g. 30-40 steps, past the format-learning phase), a smaller batch, or a smaller model. Each departs from the official recipe and would need to be reported as such.
