@@ -13,3 +13,13 @@ Workarounds baked into the probe:
 - The trailing `/` is stripped from that path because verl asserts against it.
 - Ray's temp dir is node-local `/tmp`, because Ray's Unix sockets misbehave on NFS.
 - The `DataLoader worker ... killed` traceback at the end of a run is shutdown noise. It appears after the last step has logged.
+
+`pilot.sbatch` runs one full official run (105 steps, validation every 5) for `OPT=adamw|muon|pion`:
+
+    for o in adamw muon pion; do sbatch --export=ALL,OPT=$o --output=$HOME/rog/logs/pilot-$o-%j.out workstreams/rl-optimizer-geometry/cluster/pilot.sbatch; done
+
+The jobs share the `fm-serial` name with `singleton`, so only one runs at a time (the 2-GPU cap). On 2× RTX 6000 Ada a step takes ~20 min, so a run takes ~36 h. The recipe is unchanged except:
+- logging goes to a JSONL file at `$ROG/pilot/$OPT.jsonl` instead of wandb;
+- the model loads from the local snapshot (same workarounds as the probe);
+- `data.seed=1`. The recipe leaves it null, which gives every run an unseeded shuffle. Pinning it gives all three optimizers the same data order and keeps the order across resumes;
+- checkpoints go to `$ROG/ckpt/$OPT`, keeping only the latest (each is ~20–30 GB with optimizer state). Resubmitting the same `OPT` resumes from it (`resume_mode=auto`) and appends to the same JSONL.
