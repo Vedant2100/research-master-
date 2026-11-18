@@ -28,6 +28,10 @@ Do not perform a global rewrite just because a heuristic detects a word. A style
 | Overloaded dash interruptions or dash-as-transition | Prefer a period, comma or parenthesis where clarity improves. Avoid em/en dashes in user-facing prose unless the venue or quotation requires them. Do not corrupt mathematical minus, code, compound names or numeric ranges. |
 | Generic conclusion: "Together, these findings underscore the importance..." | State what was observed and precisely what it supports or does not support. |
 
+## Technical language and links
+
+Never equate natural prose with removing technical vocabulary. Keep the precise term when it is needed, but explain it at first use and attach a clickable primary-source link. For example: "an idempotent request (repeating it has the same effect as sending it once; [API retry guidance](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/))." A hyperlink without a plain-language explanation is insufficient. If the term describes this project's own implementation, explain it and link to the exact code or task definition. Check captions and README files too.
+
 ## Tiny original examples
 
 **Before:** "Importantly, this is not merely a timeout problem, but a fundamental challenge to agent reliability."
@@ -67,11 +71,11 @@ Compare edited passage to its source. Look for silently changed:
 - controls, ablations, protocols, baselines, sample dependencies and limitations;
 - citation attachment, quotes, code, formulas, LaTeX labels and generated tables.
 
-If an apparent factual error is found, put the proposed correction in the claim ledger with its source instead of quietly folding it into a style pass.
+If an apparent factual error is found, put the proposed correction in the claim-to-evidence table with its source instead of quietly folding it into a style pass.
 
 ## Edit log (when working in a repository)
 
-Use a brief ledger, not a prose-by-prose autobiography:
+Use a brief edit log, not a prose-by-prose autobiography:
 
 | Passage | Reader problem | Justified edit | Invariants rechecked |
 |---|---|---|---|
