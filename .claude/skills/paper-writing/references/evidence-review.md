@@ -2,7 +2,7 @@
 
 Use for planning, drafting, reviewing or finalizing any research paper. This is a **scientific audit**, not just grammar editing.
 
-## Minimal claim-to-evidence ledger
+## Claim-to-evidence table
 
 Maintain a working table outside the manuscript:
 
@@ -77,6 +77,6 @@ If the closest prior art already establishes the central observation more rigoro
 
 ## Output discipline
 
-Mark check states precisely: **verified**, **checked by representative sample**, **based on reported ledger**, **blocked/unverified**, **not applicable**. Never collapse them into a single "all verified".
+Mark check states precisely: **verified**, **checked by representative sample**, **based on a reported summary**, **blocked/unverified**, **not applicable**. Never collapse them into a single "all verified".
 
 For a paper review report, give the top 3–5 blockers first, proposed precise changes, and any credible residual novelty risk. For an edit-only task, do not turn it into a research redesign unless an unsupported claim needs flagging.
