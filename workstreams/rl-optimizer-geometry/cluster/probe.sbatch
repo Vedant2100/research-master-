@@ -2,6 +2,8 @@
 # Timing probe on 2 cluster GPUs (RTX 6000 Ada 48 GB, same AD102 chip as Modal's L40S).
 # Same recipe and overrides as modal/cost_probe.py --mode probe: 3 steps, no val, no checkpoints.
 #   sbatch --export=ALL,OPT=muon workstreams/rl-optimizer-geometry/cluster/probe.sbatch
+# Correctness-only smoke on a 24 GB card (not for timing): set EXTRA to shrink the batch, e.g.
+#   EXTRA="data.train_batch_size=32 actor_rollout_ref.actor.ppo_mini_batch_size=16 ..."
 #SBATCH --job-name=fm-serial
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:2
@@ -14,6 +16,7 @@ set -euo pipefail
 ROG=${ROG:-/scratch/$USER/rog}
 OPT=${OPT:-muon}
 STEPS=${STEPS:-3}
+EXTRA=${EXTRA:-}
 VERL=$ROG/Pion/RL/verl
 LOG=$ROG/probe/${OPT}_${SLURM_JOB_ID}.jsonl
 mkdir -p "$ROG/probe" "$ROG/ray_tmp"
@@ -24,7 +27,7 @@ apptainer exec --nv --cleanenv -B "$ROG" \
   "$ROG/verl.sif" bash "examples/grpo_trainer/run_qwen3-1.7b_fsdp2_${OPT}.sh" \
   "trainer.logger=['console','file']" trainer.save_freq=-1 trainer.val_before_train=False \
   "trainer.total_training_steps=$STEPS" trainer.test_freq=-1 \
-  "+ray_kwargs.ray_init._temp_dir=$ROG/ray_tmp" "ray_kwargs.ray_init.num_cpus=$SLURM_CPUS_PER_TASK"
+  "+ray_kwargs.ray_init._temp_dir=$ROG/ray_tmp" "ray_kwargs.ray_init.num_cpus=$SLURM_CPUS_PER_TASK" $EXTRA
 echo "jsonl: $LOG"
 python3 - "$LOG" <<'EOF'
 import json, sys
