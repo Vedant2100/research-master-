@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # One-time CPU setup on the login node for the cluster timing probe (mirrors modal/cost_probe.py's image).
 # Clones Pion at the pinned SHA, restores the config file its .gitignore dropped, prepares GSM8K and
-# caches Qwen3-1.7B. Everything lives under $ROG (default /scratch/$USER/rog).
+# caches Qwen3-1.7B. Everything lives under $ROG (default $HOME/rog: /scratch is node-local here, so use the shared NFS home).
 set -euo pipefail
-ROG=${ROG:-/scratch/$USER/rog}
+ROG=${ROG:-$HOME/rog}
 SIF=$ROG/verl.sif
 PION_SHA=87965014b360bde604632cba0aa12e423c6c63c6
 VERL=$ROG/Pion/RL/verl

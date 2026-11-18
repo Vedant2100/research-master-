@@ -11,23 +11,24 @@
 #SBATCH --mem=128G
 #SBATCH --time=00:45:00
 #SBATCH --dependency=singleton
-#SBATCH --output=/scratch/%u/rog/logs/probe-%j.out
+#SBATCH --output=/home/csgrad/%u/rog/logs/probe-%j.out
 set -euo pipefail
-ROG=${ROG:-/scratch/$USER/rog}
+ROG=${ROG:-$HOME/rog}
 OPT=${OPT:-muon}
 STEPS=${STEPS:-3}
 EXTRA=${EXTRA:-}
 VERL=$ROG/Pion/RL/verl
 LOG=$ROG/probe/${OPT}_${SLURM_JOB_ID}.jsonl
-mkdir -p "$ROG/probe" "$ROG/ray_tmp"
+RAYTMP=/tmp/rog_ray_$SLURM_JOB_ID  # node-local: Ray sockets misbehave on NFS
+mkdir -p "$ROG/probe" "$RAYTMP"
 nvidia-smi --query-gpu=name,memory.total --format=csv
 cd "$VERL"
-apptainer exec --nv --cleanenv -B "$ROG" \
-  --env HF_HOME="$ROG/hf",PYTHONPATH="$VERL",WANDB_MODE=disabled,TOKENIZERS_PARALLELISM=false,VERL_FILE_LOGGER_PATH="$LOG",RAY_TMPDIR="$ROG/ray_tmp",HF_HUB_OFFLINE=1 \
+apptainer exec --nv --cleanenv -B "$ROG" -B /tmp \
+  --env HF_HOME="$ROG/hf",PYTHONPATH="$VERL",WANDB_MODE=disabled,TOKENIZERS_PARALLELISM=false,VERL_FILE_LOGGER_PATH="$LOG",RAY_TMPDIR="$RAYTMP",HF_HUB_OFFLINE=1 \
   "$ROG/verl.sif" bash "examples/grpo_trainer/run_qwen3-1.7b_fsdp2_${OPT}.sh" \
   "trainer.logger=['console','file']" trainer.save_freq=-1 trainer.val_before_train=False \
   "trainer.total_training_steps=$STEPS" trainer.test_freq=-1 \
-  "+ray_kwargs.ray_init._temp_dir=$ROG/ray_tmp" "ray_kwargs.ray_init.num_cpus=$SLURM_CPUS_PER_TASK" $EXTRA
+  "+ray_kwargs.ray_init._temp_dir=$RAYTMP" "ray_kwargs.ray_init.num_cpus=$SLURM_CPUS_PER_TASK" $EXTRA
 echo "jsonl: $LOG"
 python3 - "$LOG" <<'EOF'
 import json, sys
