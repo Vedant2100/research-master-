@@ -9,7 +9,7 @@ The **canonical project skill** lives at `.claude/skills/paper-writing/SKILL.md`
 
 When the task needs detail, read the linked local references:
 - `.claude/skills/paper-writing/references/editing.md` for scoped de-Clauding and academic prose editing.
-- `.claude/skills/paper-writing/references/evidence-review.md` for claim ledgers, skeptical peer review and PDF/release gates.
+- `.claude/skills/paper-writing/references/evidence-review.md` for claim-to-evidence tables, skeptical peer review and PDF/release gates.
 - `.claude/skills/paper-writing/references/case-notes.md` for transferable lessons, not claims to reuse.
 
 If the canonical files are not present in the working repository, do not claim this adapter ran. Install the standalone `paper-writing` skill folder in the Codex user's recognized skills location instead.
