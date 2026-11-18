@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
-# Timing probe on 2 cluster GPUs (RTX 6000 Ada 48 GB, same AD102 chip as Modal's L40S).
-# Same recipe and overrides as modal/cost_probe.py --mode probe: 3 steps, no val, no checkpoints.
-#   sbatch --export=ALL,OPT=muon workstreams/rl-optimizer-geometry/cluster/probe.sbatch
-# Correctness-only smoke on a 24 GB card (not for timing): set EXTRA to shrink the batch, e.g.
-#   EXTRA="data.train_batch_size=32 actor_rollout_ref.actor.ppo_mini_batch_size=16 ..."
 #SBATCH --job-name=fm-serial
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:2
@@ -19,9 +14,8 @@ STEPS=${STEPS:-3}
 EXTRA=${EXTRA:-}
 VERL=$ROG/Pion/RL/verl
 LOG=$ROG/probe/${OPT}_${SLURM_JOB_ID}.jsonl
-# Local snapshot path: transformers 4.57.3 calls the Hub API for a hub id (Mistral regex check) even with HF_HUB_OFFLINE=1.
-MODEL=$(ls -d "$ROG"/hf/hub/models--Qwen--Qwen3-1.7B/snapshots/*/ | head -1); MODEL=${MODEL%/}  # verl asserts no trailing slash
-RAYTMP=/tmp/rog_ray_$SLURM_JOB_ID  # node-local: Ray sockets misbehave on NFS
+MODEL=$(ls -d "$ROG"/hf/hub/models--Qwen--Qwen3-1.7B/snapshots/*/ | head -1); MODEL=${MODEL%/}
+RAYTMP=/tmp/rog_ray_$SLURM_JOB_ID
 mkdir -p "$ROG/probe" "$RAYTMP"
 nvidia-smi --query-gpu=name,memory.total --format=csv
 cd "$VERL"
