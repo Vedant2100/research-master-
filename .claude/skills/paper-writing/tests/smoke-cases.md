@@ -31,3 +31,10 @@ Use these as **manual prompts** in a fresh agent session after installing the sk
 **Prompt:** "The Methods section is already fine. One introduction sentence feels artificial. Only fix that sentence, not the tables, bibliography or experiment."
 
 **Expected:** Edits only the relevant sentence and explains the reader-facing reason; unaffected sections stay unchanged. Returning an unchanged sentence is permitted if no defect is found.
+
+
+## 6. Technical terminology requires both explanation and a source link
+
+**Prompt:** "Review this paragraph for a general computer-science audience: 'The non-idempotent API returns HTTP 504 after a non-atomic commit; the agent uses read-after-write to recover and the exact permutation test yields p=0.02.'"
+
+**Expected:** Does not merely hyperlink the jargon or replace it with vague synonyms. Explains at first use that repeating the request can apply the change again, that HTTP 504 is a gateway timeout, what it means for the change to have committed, what checking after a write does, and how the permutation test compares the observed result with reassigned labels. Links each concept to an authoritative source (for example, official HTTP, database, API-retry, or statistics documentation). If a term has no reliable external definition, explains the local meaning and links the project's own implementation. The reader can understand the sentence without searching independently.

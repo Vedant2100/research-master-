@@ -1,6 +1,6 @@
 # Install and invoke the paper-writing skill
 
-The canonical skill is this `paper-writing/` directory. It uses the [Agent Skills](https://agentskills.io/specification) format and needs no runtime dependencies for its instructions. LaTeX, research-data and browser tools are optional task dependencies, not required for skill discovery.
+The canonical skill is this `paper-writing/` directory. It uses the [Agent Skills](https://agentskills.io/specification) format and needs no runtime dependencies for its instructions. LaTeX, research-data and browser tools are optional task dependencies, not required for skill discovery. Version 0.2 also requires a plain-English definition and an authoritative clickable source for every specialized term on first use, including table captions and README files.
 
 ## Project-scoped use
 
@@ -27,7 +27,7 @@ This copies the **full canonical folder**, not the short in-repo Codex adapter, 
 
 - `/paper-writing Review the TrustVal manuscript against actual run traces; do not change experiment code.`
 - `/paper-writing Edit this Results section for unnatural AI phrasing. Keep every figure, p-value and qualifier unchanged.`
-- `$paper-writing Make a claim ledger and reviewer-style novelty critique before drafting an abstract.`
+- `$paper-writing Make a claim-to-evidence table and reviewer-style novelty critique before drafting an abstract.`
 - `/paper-writing Finalize the PDF for the selected workshop using the official short-paper rules. Report exactly which checks ran.`
 
 ## Test after installation
