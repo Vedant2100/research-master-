@@ -42,3 +42,20 @@ Verified on CPU: all trainer, FSDP-worker, vLLM async rollout and muon imports; 
 Not verifiable on CPU: FSDP2 + vLLM sleep/wake on GPU, Muon/Pion on DTensor shards, real memory fit. Those are the GPU probe's job (3 Muon steps, timing only).
 
 Budget: Modal CPU preflights only, < $1. Modal GPU is blocked (workspace has no payment method); the timing probe runs on the free cluster instead (RTX 6000 Ada 48 GB, same AD102 chip as Modal L40S).
+
+## GPU timing probe on the cluster (2026-11-18)
+Scripts: `cluster/setup.sh`, `cluster/probe.sbatch` (same pinned image as the Modal preflight, run with Apptainer). Official Muon recipe, unchanged except no wandb, no checkpoints, no validation, and the model loaded from the local snapshot. Cost: $0.
+
+| Hardware | Batch | Steps | s/step (gen / logprob+ref / update) | Peak alloc | Reward (critic/score/mean) per step |
+|---|---|---|---|---|---|
+| 2× RTX 3090 24 GB (job 314560) | 32 prompts (smoke) | 3 | ~75 | 15.9 GB | 0.00 → 0.02 |
+| 2× RTX 3090 24 GB (job 314565) | 1024 prompts (official; micro-batches 4/8 to fit) | 2 | 2425, 2348 (~880 / ~480 / ~1020) | 16.4 GB | 0.002, 0.02 |
+| 2× RTX 6000 Ada 48 GB (job 314561) | 1024 prompts (official recipe exactly) | 3 | 1273, 1232, 1170 (~490 / ~245 / ~480) | 34.2 GB | 0.003, 0.013, 0.246 |
+
+- FSDP2 + vLLM sleep/wake and MuonAdamW on DTensor shards run end to end. All runs log a `DataLoader worker ... Killed` traceback at shutdown, after the last step has been written; the job still exits COMPLETED.
+- **Projected cost of a full 105-step run:** about 20 min/step on Ada, so ~36 h per run including validation. On Modal 2×L40S (same chip) that is ~$140 per run, ~$420 for the 3-optimizer pilot. Too expensive, so the pilot runs on the cluster: ~36 h per run on Ada, ~72 h on 3090s.
+- **Format-learning confound:** 47–59% of responses hit the 1024-token limit (Qwen3 thinking), and the strict GSM8K reward needs `#### N`, so the starting reward is ~0. Reward rose to 0.25 by step 3. Early curves mostly measure format learning, and optimizer differences there are not evidence of a geometry effect. Compare plateau and held-out val accuracy, not early slope.
+- Bugs fixed on the way: `/scratch` is node-local on this cluster (everything now under `~/rog` on NFS); transformers 4.57.3 calls the Hub API for a model id even with `HF_HUB_OFFLINE=1` (load from the local snapshot path); verl rejects a model path with a trailing `/`.
+
+## Go/no-go pilot (submitted 2026-11-18)
+`cluster/pilot.sbatch`: official 105-step recipe for AdamW (314862), Muon (314863) and Pion (314864), 1 seed each, run one at a time under `fm-serial` on the Ada partition. Same lr=1e-6 for all three, as in the fork; this is a competence pilot, not a fairly tuned comparison. The jobs are queued behind two FrontierMemory jobs on the same serial lock. Kill criterion: if final GSM8K val accuracy differs by less than ~2–3 points across optimizers, stop the training-comparison track.
