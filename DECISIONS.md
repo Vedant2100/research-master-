@@ -1,21 +1,35 @@
 # Investment assessment
 
-All four research tracks stay ACTIVE. We scale code and GPU investment by defensible experimental headroom rather than funding ten workstreams indiscriminately.
+**Portfolio review: 2026-11-16.** Four research areas remain in the portfolio, but not every historical workstream is active. Five projects remain active or conditional; one is in incubation; three are completed/deprioritized; Iterate was declined.
 
-- **FrontierMemory Learning: HIGH—finish paper.** Finalize latest generator/blend arm and artifact, freeze figures, decide FORGE Nov 15 submission and save receipt; then per-task oracle-from-history and Word2Vec ablations.
-- **EvoMemBench: CONDITIONAL—competence gate first.** Run no-memory/playbook headroom (overall >=55%, category >=30%, avoid >95% ceiling), matched seeds, complete held-out core methods before large GPU matrix.
-- **StaleStream / CS258: HIGH—course deliverable.** Nov 12 proposal target; Nov 19 300 held-out episodes with oracle QA >=90% and >=20 point gap vs strongest fair baseline plus measured 20-step timing; Nov 24 GRPO pilot; Dec 3 freeze; Dec 10 report.
-- **ContagionBench / Swarm: HIGH after independence fix.** Complete independent-seed and source/mediator replication; AGENT Nov 20 only if evidence strong; Dec Apart Agent Attribution requires truly new controller-attribution experiments.
-- **ProvenanceTrap / micro1: CONDITIONAL.** Improve task completion then retest under same scoring; AGENTVERIFY/AGENT or later reliability venue only if evidence matures.
-- **RewardHackLab / Lexsi: CONDITIONAL—fix execution first.** Repair tool-call execution to get nonzero baseline, then try real RL; submit honest Lexsi Stage 1 packet by Nov 15 AoE if feasible.
-- **TrustVal (Vals Build Your Own Eval): HIGH time-boxed.** 2026-11-14: replaces the earlier Benchmaxxing plan. Canonical code moved into `workstreams/vals/`. Push the 4-task dataset to Valkyrie, run Claude Code + Sonnet 4.6, report trace-backed results.
-- **Terminal DreamGym: DEPRIORITIZED (2026-11-13).** Was "HIGH if replicated"; the gain did not replicate. Four preregistered experiments (handwritten, 7B-written, 30B-written skills; rerun on a new 16-repo benchmark) found no gain from skill text. See [STATUS](workstreams/terminal-dreamgym/STATUS.md).
-- **Iterate AI Research Hack: CONDITIONAL time-boxed.** Check approval and event rules; attend only if logistics permit or continue the same research outside the hack.
+## Current status and investment
 
-**Research identity:** RL post-training, continued learning from experience, robust agent evaluation and verifiable autonomous improvement. A negative result can be a useful research contribution with rigorous diagnosis.
+| Workstream | Status | Decision |
+|---|---|---|
+| FrontierMemory Learning | FORGE submission #11 submitted; paper cycle complete | Close current paper work queue. Treat further oracle/Word2Vec studies as a separately scoped follow-up, not unfinished submission work. |
+| EvoMemBench | Partial official ALFWorld pilot; 15 episodes saved; reset/lifecycle blocker; no-memory 3/6 | Conditional. Verify the 25-reset lifecycle stress test, then clear the preregistered competence gate before resuming. No large matrix yet. |
+| StaleStream / CS258 | Design and preregistration; no trained writer | High course priority. Build the timestamp-correct generator and fair baselines; require oracle >=90%, >=20 pp headroom and measured runtime before training. |
+| ContagionBench / Swarm | 324-episode pilot; independence and exposure confounds remain | Continue only the independent-case/seed and direct-versus-mediated replication. Do not claim multi-hop causal contagion from the current pilot. |
+| ProvenanceTrap / micro1 | 96-episode diagnostic; low legitimate completion | Conditional / low priority until a stronger tool-capable agent demonstrates meaningful authorized completion. Do not interpret early quitting as safety. |
+| RewardHackLab / Lexsi | Corrected SFT calibration: 0/18 base, 18/18 SFT; no RL comparison | Continue to a small, matched RL pilot from the shared SFT checkpoint. SFT is a competence warm-start, not evidence for either reward hypothesis. |
+| TrustVal | Four-task benchmark published and evaluated across model generations | Close the benchmark-execution queue. External Vals event submission is **not verified**; do not claim it was submitted or accepted without a receipt. |
+| Adaptive TTC | Conceptual design only | Incubation. Only a low-cost compute-sensitivity pilot after reuse and prior-art review; no dedicated GPU allocation yet. |
+| Terminal DreamGym | Four preregistered experiments; no reliable skill-transfer gain; v2 30B-skill harm | Deprioritized. No further runs planned on this loop. |
+| Iterate AI Research Hack | Owner declined participation | Closed / not planned. Do not suggest it as an active opportunity. |
 
-## Adaptive Test-Time Compute — conditional investment decision (2026-11-11)
+## Next execution order
 
-**Worth a low-cost research pilot, not a full training program yet.** TTC aligns especially well with RL/post-training and agentic decision-making; the focus is an experience-conditioned policy for *when* to reason, plan, verify or stop across many tasks. However, adaptive planning via PPO and adaptive reasoning via GRPO already exist. The incremental research opportunity is measurable improvement and retention of compute allocation over a sequence of related tasks, including shifted held-out task families at equal inference budget.
+1. **StaleStream:** protect the CS258 deliverable. Finish generator semantics, disjoint split, symbolic/LLM baselines, oracle reader and actual 20-step runtime measurement. No GRPO until all gates pass.
+2. **RewardHackLab:** the corrected SFT checkpoint now clears the preregistered 60% competence gate (18/18, zero forbidden resolutions). Next compare proxy and verified terminal-state rewards from the same checkpoint, with nonzero reward variance, matched budgets and held-out evaluation. The previous GRPO run was interrupted before the verified-reward arm and is not a result.
+3. **EvoMemBench:** confirm the close/reset stress test; the current six-task no-memory score (3/6 = 50%) is below the 55% competence threshold. Improve or change the worker before expanding.
+4. **ContagionBench:** replicate with independent cases and decoding seeds; isolate mediated transfer and report both attempted and applied unsafe actions plus benign utility.
+5. **ProvenanceTrap:** pause expensive runs until legitimate task completion is fixed.
+6. **Adaptive TTC:** remain in incubation until a cheap, paired pilot establishes compute-sensitive headroom and strong heuristic/bandit baselines.
 
-**Go:** existing verified terminal/tool task harness has competence and real compute-sensitive headroom; agent policy improves a cost-quality Pareto point over strong heuristics on heldout shift. **No-go:** no reliable baseline competence, no oracle headroom, or improvements only from unconstrained extra tokens. Priority for initial paper/CS258/Lexsi deadlines remains unchanged. Link: [TTC brief](projects/adaptive-ttc.md), [agent issue #10](https://github.com/Vedant2100/research-master-/issues/10).
+## Research identity
+
+The portfolio's central interests remain RL post-training, long-horizon continual learning, memory governance, robust agent evaluation and verifiable autonomous improvement. Negative results are publishable only when the benchmark, controls, uncertainty and interpretation support the claim. A completed project does not need to remain artificially active.
+
+## Adaptive Test-Time Compute — conditional investment decision
+
+TTC remains a low-cost research hypothesis, not an active training program. The relevant question is whether experience across tasks improves compute allocation and transfers to shifted task families beyond strong within-task planning policies and cheap heuristics. Require matched token/tool/latency budgets, verified outcomes, held-out families and multiple seeds before scaling. If no compute-sensitive headroom exists, park it.

@@ -1,51 +1,30 @@
 # TrustVal (Vals AI Build Your Own Eval)
 
-**Area:** RL Post-Training & Reward Design (evaluation lane)
-**Event:** Vals AI hackathon, Build Your Own Eval track, Nov 14–15 2026 (https://www.vals.ai/hackathon)
-**Vals org:** `hackathon-trustval-416d2c2ec6`
-**Owner agent:** `vals`
-**Dataset:** `trustval/stateful-tool-recovery@v1` (4 Harbor tasks)
+**Area:** RL Post-Training & Reward Design (evaluation lane)  
+**Event:** Vals AI Build Your Own Eval, Nov 14–15 2026  
+**Owner agent:** `vals`  
+**Canonical source:** https://github.com/Vedant2100/trustval (since 2026-11-15)  
+**Current state:** benchmark implemented, published to Valkyrie, v3/v4 model evaluations complete; current execution queue closed
 
-## Canonical source
+## Canonical-source rule
 
-As of 2026-11-15 TrustVal lives at https://github.com/Vedant2100/trustval. (2026-11-14 to 2026-11-15 it lived in `research-master-/workstreams/vals/`.) It was imported from `Vedant2100/role-work-forge-artifacts` `main` @ `be8f2eb` (PR #4, `hackathons/2026-11/trustval/`), byte-identical at import. That copy is frozen history; do not edit it or revive the discarded earlier implementation. The earlier "Vals Benchmaxxing" plan (baseline → training → eval) is superseded.
+All further TrustVal code, results and maintenance live in [Vedant2100/trustval](https://github.com/Vedant2100/trustval). This directory is a frozen historical snapshot. Do not edit it as a second canonical copy or revive the discarded earlier implementation.
 
-## Standalone repository
-As of 2026-11-15 TrustVal's canonical repository is https://github.com/Vedant2100/trustval (owner decision). It was created from `research-master-/workstreams/vals` with full history via `git subtree split`. All further TrustVal work happens there; the research-master copy is a frozen snapshot.
+## Completed benchmark and evaluations
 
-## Layout
-- `README.md`: benchmark description, setup, run commands
-- `RESULTS.md`: results ledger (no model results yet)
-- `tasks/{commit_timeout,stale_read,partial_batch,duplicate_delivery}/`: Harbor tasks
-- `scripts/`: `smoke_test.sh` (structure), `write_manifest.py` (generates `tasks/dataset.toml`, not committed), `compose_smoke_test.sh` (Docker API + verifier exercise)
-- CI: `.github/workflows/trustval-validation.yml`
+- Four Harbor tasks with independent SQLite-state verifiers.
+- v3 preregistered before model runs; naive policy 0/4, reference solution 4/4.
+- Ten runs per model: Claude Haiku 4.5 19/40; Sonnet 4.6 35/40; Haiku 5.5 39/40; Sonnet 5.5 40/40; Opus 5.5 40/40; GPT-5.3-Codex 34/40; GPT-5.4 40/40.
+- Three GPT-6 variants each passed 4/4 in one run apiece; these are pilots, not powered comparisons.
+- All 26 Claude 4.x failures were blind retries of committed writes. Claude 5.5 had zero duplicates in 89 errored task-trials.
+- v4 delayed-visibility split: Sonnet 5.5 and GPT-6.1 Terra passed 12/12 each; Haiku 5.5 passed 11/12. Its one duplicate followed a premature state check during the 30-second visibility delay; the harness blocks long foreground sleeps. The study stopped rather than hide the delay and turn the decision into guesswork.
 
-## State (designed / implemented / executed / replicated / submitted)
-| Stage | Status |
-|---|---|
-| Designed | yes |
-| Implemented (4 tasks, hidden-state verifiers) | yes |
-| Structure smoke test | passes locally at import (2026-11-14) |
-| Docker build + compose smoke test in CI | passes (research-master- PR #14, run 43659141063) |
-| `harbor lint` (harbor 0.26.0, Compose v5.7.1) | clean on all 4 tasks (2026-11-14) |
-| Dataset pushed to Valkyrie | yes: `trustval/stateful-tool-recovery@1` (tags `v1`, `latest`), digest `sha256:fcba126ca3b849c759e1b88c971fd03a65a4cd908abb994d1ff13f7011df48eb`, 4 tasks, pushed 2026-11-14 16:52 PST from research-master `db71688`; per-task digests match `scripts/write_manifest.py` |
-| Agent installed | `claude_code-v1.0.0` from vals-ai/public-agent-registry `examples/claude_code-v1.0.0` |
-| Dataset v2 | `trustval/stateful-tool-recovery@2` (tags `v2`, `latest`), digest `sha256:0a0025a5876f…`: agent user `agent` → `root` (harness compatibility; see RESULTS.md) |
-| Model runs | Haiku 4.5 `998e9992…` 4/4; Sonnet 4.6 `8ff83c9b…` 4/4 (1 trial/task); locally re-graded, matches |
-| Finding | v2 saturated: fault messages reveal outcome and server dedup makes blind retries safe |
-| v3 design | `DESIGN_V3.md`, committed (`2116af2`) before any v3 run |
-| v3 validation | naive policy 0 / reference solution 1 on all tasks (CI containers + local); Valkyrie oracle 4/4 (`1217913d…`) |
-| Dataset v3 | `trustval/stateful-tool-recovery@3` (tags `v3`, `latest`), digest `sha256:49f35b97bbaa6a22810c24232ea9c7532151b454b59be345d1c0defdd075063b` |
-| v3 model runs | 10 runs × 4 tasks per model. Haiku 4.5: 19/40 (ct 6/10, sr 10/10, pb 3/10, dd 0/10). Sonnet 4.6: 35/40 (ct 10/10, sr 10/10, pb 7/10, dd 8/10). Run-level permutation p = 2.3e-4. All 26 failures: duplicate from a blind retry of a committed write. False success claims: Haiku 4/21 failures, Sonnet 4/5. Local regrade matches Valkyrie |
-| v3 Claude 5.5 runs | 10 runs × 4 tasks each: Haiku 5.5 39/40, Sonnet 5.5 40/40, Opus 5.5 40/40. 0 duplicates in 89 errored task-trials; the one failure was a swapped-argument slip (fault not triggered). v3 saturated for the 5.5 generation |
-| Spend | about $8.4 Claude Code reported cost across all runs (v2 $0.57, v3 4.x $4.60, v3 5.5 $3.20), plus Modal sandbox time on workspace `artemis-76548` |
-| Results in README / Vals project entry | no |
+See the canonical [RESULTS.md](https://github.com/Vedant2100/trustval/blob/main/RESULTS.md) and [DESIGN_V4.md](https://github.com/Vedant2100/trustval/blob/main/DESIGN_V4.md) for run IDs, per-task results, statistical tests, traces and limitations.
 
-## Next decisive action
-Owner: write the one-paragraph human overview for the README, review PRs #15/#16, and fill the Vals project entry (name, description, repo link). Optional: replace or harden stale_read (saturated in v3) and close the partial_batch single-item loophole, as a preregistered v4.
+## Submission status
 
-## Do not overclaim
-CI or deterministic integration tests passing is not evidence of frontier-model capability. No results, run IDs or dataset digests exist until Valkyrie reports them. Never modify a task to make a model pass; never commit credentials.
+The benchmark implementation and current model-evaluation cycle are complete. An official Vals submission receipt or acceptance record has not been verified in accessible evidence. Do not claim submission or acceptance without the receipt.
 
-## Evidence handoff
-Record run IDs, dataset version/digest, per-task rewards, trace locations and costs here and in `RESULTS.md` when they exist.
+## Closure
+
+The original work queue — prepare and execute a reproducible Vals benchmark attempt — is complete. Any future benchmark version or new model-generation evaluation should be a separately scoped project with its own protocol and issue.

@@ -1,43 +1,35 @@
-# Source map — prior code to import and build on
+# Source map — canonical code and evidence locations
 
-> **Owner decision 2026-11-14 (applies always):** all work lives in research-master under `workstreams/<slug>/`. The repositories below are prior sources: import what a workstream needs (pinning repo + SHA), then continue here. Do not open new work in them. Rules below that say to extend the upstream repo instead of the master are superseded.
+> **Portfolio rule (2026-11-16):** this public repository is the coordination and evidence-summary control plane. Canonical experiment code and raw results remain in their source repositories unless an explicit owner decision says otherwise. Workstream status summaries live under `workstreams/<slug>/`; do not import whole repositories or private code into this public repository.
 
-**All ten specialists must use existing working code, configs, tests, artifacts, and prior experiment results. This public master is a control plane, not a monorepo. Do not copy source directories or rebuild a working harness here.**
+**Use existing code, configs, tests, artifacts and results first.** This repository is not a replacement monorepo or a synchronization system. Never copy private code, test fixtures, credentials, raw conversations or private artifacts into the public master.
 
 ## Exact source locations
 
-| Agent | Repository / branch | Read existing code and evidence FIRST |
+| Agent | Canonical repository / branch | Read existing code and evidence FIRST |
 |---|---|---|
-| `frontiermemory` | [Vedant2100/frontiermemory-learning](https://github.com/Vedant2100/frontiermemory-learning) `main` | `official/`, `scripts/`, `configs/`, `paper/`, `results/official/`, `STATUS-DETAILED.md` |
-| `evomembench` | [Vedant2100/evo-mem-bench](https://github.com/Vedant2100/evo-mem-bench) `main`, also inspect `codex/full-memory-arm-matrix` | `src/`, `scripts/`, `configs/`, `docs/`, `tests/`, `reports/`; full-arm branch may contain methods absent from `main`. Compare branches before choosing. |
-| `stalestream` | [Vedant2100/f26](https://github.com/Vedant2100/f26) `main` **private** | `cs258/stalestream/RESEARCH_MATURATION_2026-11-10.md`, `cs258/stalestream/headroom_gate.py`, existing CS258 proposal assets. **Writer/training implementation does not yet exist**; build only genuinely missing components. |
-| `contagionbench` | [Vedant2100/role-work-forge-artifacts](https://github.com/Vedant2100/role-work-forge-artifacts) `main` **private** | `hackathons/2026-11/contagionbench/experiment.py`, `experiments/swarm_v3.py`, `experiments/swarm_repro.py`, `experiments/swarm_all_defenses_control_preflight.py`, `results/`, `reports/`, `tests/`. All experiment paths relative to `hackathons/2026-11/`. |
-| `provenancetrap` | Same private [role-work-forge-artifacts](https://github.com/Vedant2100/role-work-forge-artifacts) `main` | `hackathons/2026-11/provenancetrap/eval.py`, `experiments/micro1_repro.py`, `experiments/micro1_v3.py`, `experiments/controlled_micro1.py`, `results/`, `reports/`, `tests/`. |
-| `rewardhacklab` | Same private [role-work-forge-artifacts](https://github.com/Vedant2100/role-work-forge-artifacts) `main` | `hackathons/2026-11/rewardhacklab/env.py`, `agenttune_smoke.py`, `experiments/lexsi_train_cohere.py`, `experiments/lexsi_repro.py`, `experiments/ticket_model_eval.py`, `modal/`, `results/`; existing [HF Tiny Aya adapter](https://huggingface.co/Artemis2100/rewardhacklab-tiny-aya-global-lexsi-2026). |
-| `vals` | **This repo: `workstreams/vals/`** (frozen snapshot; TrustVal now lives at [Vedant2100/trustval](https://github.com/Vedant2100/trustval), owner decision 2026-11-15) | Canonical since 2026-11-14 by owner decision; imported byte-identical from `role-work-forge-artifacts` `main` @ `be8f2eb` (PR #4, `hackathons/2026-11/trustval/`), which is now frozen history. Do not revive the discarded earlier implementation. Uses official Valkyrie CLI and Harbor task format. |
-| `terminal-dreamgym` | [Vedant2100/terminal_dreamgym](https://github.com/Vedant2100/terminal_dreamgym) `main` | `terminal_dreamgym/`, `task_templates/`, `curricula/`, `skills/`, `tests/`, `runs/`, `reports/live_model_run_qwen.md`, `reports/report.md`; investigate conflicting pilot/sweep results before new implementation. |
-| `iterate` | **Event workstream, reuses** [Vedant2100/terminal_dreamgym](https://github.com/Vedant2100/terminal_dreamgym) | Use the same DreamGym run/eval/skill-promotion code and existing demo, adding only event-specific integration if needed. Coordinate shared source changes with `terminal-dreamgym`; no duplicate self-improvement engine. |
+| `frontiermemory` | Experiments: [Vedant2100/frontiermemory-learning](https://github.com/Vedant2100/frontiermemory-learning) `main`; submitted paper: [Vedant2100/frontiermemory-forge-repo](https://github.com/Vedant2100/frontiermemory-forge-repo) | Experiment `FINAL-RESULTS.md`, `STATUS-DETAILED.md`, `results/official/`; paper repository and FORGE submission record. |
+| `evomembench` | [Vedant2100/evo-mem-bench](https://github.com/Vedant2100/evo-mem-bench) `main`; also inspect `codex/full-memory-arm-matrix` | `src/`, `scripts/`, `configs/`, `docs/`, `tests/`, `reports/`; compare the full-arm branch before choosing methods. |
+| `stalestream` | [Vedant2100/f26](https://github.com/Vedant2100/f26) `main` **private** | `cs258/stalestream/RESEARCH_MATURATION_2026-11-10.md`, `headroom_gate.py`, and the current CS258 proposal/design assets. Writer/training implementation is not yet verified. |
+| `contagionbench` | [Vedant2100/role-work-forge-artifacts](https://github.com/Vedant2100/role-work-forge-artifacts) `main` **private** | `hackathons/2026-11/contagionbench/`, `experiments/swarm_v3.py`, `experiments/swarm_repro.py`, control preflight, reports and raw results. |
+| `provenancetrap` | Same private [role-work-forge-artifacts](https://github.com/Vedant2100/role-work-forge-artifacts) `main` | `hackathons/2026-11/provenancetrap/`, evaluation scripts, controlled experiments, reports and raw traces. |
+| `rewardhacklab` | Same private [role-work-forge-artifacts](https://github.com/Vedant2100/role-work-forge-artifacts) `main` | `hackathons/2026-11/rewardhacklab/`, Modal runner, SFT/RL scripts, `results/`; corrected SFT run 43647115920 and interrupted GRPO run 43641448741. |
+| `vals` | [Vedant2100/trustval](https://github.com/Vedant2100/trustval) `main` — canonical since 2026-11-15 | `README.md`, `RESULTS.md`, `DESIGN_V3.md`, task manifests and raw `results/`. The copy in `workstreams/vals/` is a frozen historical snapshot; do not revive it. |
+| `terminal-dreamgym` | [Vedant2100/terminal_dreamgym](https://github.com/Vedant2100/terminal_dreamgym) `main` | `terminal_dreamgym/`, `task_templates/`, `curricula/`, `skills/`, `tests/`, `runs/`, `reports/`. This workstream is deprioritized; no further runs are planned. |
+| `iterate` | Event declined; historical work reused [Vedant2100/terminal_dreamgym](https://github.com/Vedant2100/terminal_dreamgym) | Retain the event record only. Do not open a new event stream or duplicate DreamGym code. |
+| `adaptive-ttc` | Reuse [Terminal DreamGym](https://github.com/Vedant2100/terminal_dreamgym) and, if needed, private [Role Work Forge artifacts](https://github.com/Vedant2100/role-work-forge-artifacts) | Inspect existing verifiable tasks and cost traces first. The Atlas is a conceptual reference, not a verified code source. |
 
 ## Mandatory agent bootstrap
 
-1. Identify the assigned slug via `AGENT_ROSTER.md` and locate its upstream above. Obtain **read access** through an available GitHub connection, clone, or existing workspace checkout. If private repo access is missing, report the blocker; don't invent code.
-2. Read the *current upstream main branch*, relevant experimental branches, upstream `README`, existing tests, configs and raw evidence. Pin the exact commit SHA and document the branch.
-3. Execute existing CPU/unit/smoke checks in a safe authorized environment. Examine actual previous run files and logs. **Never assume a green CI result proves model performance.**
-4. Find and reuse the real entry point. If functionality is absent, extend **that upstream repository** on a scoped branch, not the master. Reuse existing helper modules, evaluators, manifests, logging and adapters. Do not introduce a second framework unless a concrete deficiency is demonstrated.
-5. Report code changes and experimental result links back to `workstreams/<slug>/STATUS.md`; use an upstream PR for code changes and a master PR for status. Track upstream SHA, tests, execution provenance and source of truth.
-6. When two agents share upstream code (safety trio, DreamGym/Iterate), use distinct branches and never alter another lane without explicit coordination.
-7. Source reads alone are fine; **new GPU/API spend, external paper/event submission or work affecting third parties still requires explicit user authorization**. If the user has already authorized a specific run, preserve its exact limits.
-8. Do not mirror **private** upstream code, test fixtures, secrets, private artifacts, or personally identifying files into this **public** master. An agent may summarize findings and link to private refs without exposing their contents.
+1. Identify the assigned active workstream via `AGENT_ROSTER.md` and locate its canonical source above.
+2. Read current source branches, tests, configs and raw evidence. Pin the exact commit SHA and branch in the handoff.
+3. Run existing CPU/unit/smoke checks in an authorized environment. A green CI result is not model-performance evidence.
+4. Reuse the real entry point. Make code changes in the canonical source repository on a scoped branch, not in this control-plane repository.
+5. Report exact source commits, commands, run IDs, per-episode evidence, matched comparisons, costs, caveats and blockers in the corresponding master status file.
+6. For shared source code (ContagionBench/ProvenanceTrap/RewardHackLab or DreamGym/TTC), use distinct branches and coordinate changes.
+7. New GPU/API spend, external submission or work affecting third parties requires explicit user authorization. Preserve existing approved limits.
+8. Do not expose private source code, raw private artifacts, secrets or personal data in this public repository.
 
 ## Scope control
 
-This map is an index, not a synchronization system. No Git submodules, copies of entire repos, new CI runners for the scientific workloads, or auto-launched agents are needed. Each specialist should first answer: **What already exists, which version works, and what is the smallest justified next change?**
-
-
-## New tenth agent — Adaptive TTC (conditional pilot)
-
-| Agent | Existing sources (do not duplicate) | First verified scope |
-|---|---|---|
-| `adaptive-ttc` | [Terminal DreamGym](https://github.com/Vedant2100/terminal_dreamgym) `main` — `terminal_dreamgym/`, `task_templates/`, `tests/`, `runs/`, `reports/`; [private Role Work Forge artifacts](https://github.com/Vedant2100/role-work-forge-artifacts) `main` — `hackathons/2026-11/rewardhacklab/`, `experiments/`, `tests/`; [Frontier Agent Learning Atlas](https://frontier-rl-project-atlas-2711vedant-6531.vercel.app/) as conceptual design artifact, **not code verified available**. | Read original repos and tests first, choose a verifiable task harness with measurable compute sensitivity, then implement only the missing TTC action-router module **in that source repository**. Coordinate with `terminal-dreamgym` and `rewardhacklab`; do not copy their code into this public master. |
-
-The Vercel Atlas deployment exists and is READY but its deployment file-reader truncates the HTML. Do not claim a full Atlas audit until an authorized full-page read is available.
+This map is an index, not a synchronization system. No Git submodules, wholesale source copies, new scientific CI runners or auto-launched agents are needed. First establish what exists, which version works and the smallest justified next change.
