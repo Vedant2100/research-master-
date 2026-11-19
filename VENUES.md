@@ -1,22 +1,49 @@
-# Venue pipeline (candidates ≠ submissions)
+# Publication pipeline and venue watch
 
-| Venue | Deadline | Best match | State |
-|---|---|---|---|
-| [Swarm Alignment](https://apartresearch.com/sprints/swarm-alignment-2026) | Nov 8, 2026 CLOSED | ContagionBench | Organizer confirmed no submission |
-| [micro1 Eval](https://www.hackerrank.com/event/micro1-eval-hackathon) | Nov 8 CLOSED | ProvenanceTrap | No verified receipt |
-| [AGENTVERIFY](https://agentverify2027.github.io/index.html) | Nov 13 | ProvenanceTrap | Check possible Nov 1 abstract gate |
-| [FORGE](https://conf.researchr.org/track/forge-2027/forge-2027-data-and-benchmarking-track) | Nov 15 | FrontierMemory | Draft, submission not verified |
-| [Lexsi](https://hackathon.lexsi.ai/) | Nov 15 11:59 PM AoE | RewardHackLab | Extended deadline, submission unverified |
-| [Vals](https://www.vals.ai/hackathon) | Event Nov 14–15 | Vals (TrustVal, Build Your Own Eval) | Approved registration; not yet submitted |
-| [Iterate](https://luma.com/sht6n8du) | Event Nov 14–15 | DreamGym | Approval unverified |
-| [AGENT ICSE workshop](https://conf.researchr.org/track/icse-2027/agent-2027-papers) | Nov 20 extended | ContagionBench, ProvenanceTrap, DreamGym | Candidate |
-| [Apart Agent Attribution](https://apartresearch.com/sprints/agent-attribution-2026) | Dec 11–13 | ContagionBench **new attribution extension** | Instinct email sent; no signup proof |
-| [EASE 2027](https://conf.researchr.org/dates/ease-2027) | Jan 15/22 research; Feb 22/Mar 1 negative / emerging | FrontierMemory, eval work | Candidate |
-| [ICLR 2027 workshops](https://iclr.cc/Conferences/2027/WorkshopGuidelines) | Track-specific TBD | memory, RL, DreamGym | Watch |
-| [ICML 2027](https://icml.cc/Conferences/2027/CallForPapers) | CFP TBD | mature RL and memory | Watch |
+**Reconciled November 16, 2026.** This file is the publication control plane, not a count of active research agents or a record of official submissions. Verify current-year track-specific official calls and portals at the time of action; status can change. Paper units are scientific contributions, not one paper per repository. Canonical experiment evidence and lifecycle states are in [EVIDENCE.md](EVIDENCE.md), [portfolio.json](portfolio.json), and each source repo.
 
-Do not submit duplicate archival manuscripts simultaneously. Verify source CFP, abstract cutoffs, page limits, prior-work disclosures and deadlines before choosing. All submissions require receipts. Apart Fellowships are usually through strong sprint performance; missing Swarm does not bar future Apart participation.
+## Manuscript units (avoid duplicate papers)
 
-## Adaptive TTC publication strategy (candidate, not selected)
+| Publication unit | Source work | Readiness and intended contribution | Primary verified target | Decision |
+|---|---|---|---|---|
+| **Memory attribution and benchmark validity** | [FrontierMemory paper](https://github.com/Vedant2100/frontiermemory-forge-repo), [experiment repo](https://github.com/Vedant2100/frontiermemory-learning) | Controlled audit, memory/no-memory comparisons, placebo and exposure studies. Paper cycle complete. | FORGE 2027, Nov 15 deadline **past** | Submission #11 user-reported on Nov 16; master lacks external receipt. Monitor review outcome. Do **not** re-submit substantially same archival paper to EASE while under review. |
+| **State reconciliation after ambiguous tool outcomes** | [TrustVal](https://github.com/Vedant2100/trustval) | v3/v4 completed, many cross-model runs, independent database-state grading. Distinct benchmark/reliability contribution; newer models largely saturated. | [AGENT 2027 workshop](https://conf.researchr.org/home/icse-2027/agent-2027), Nov 20 AoE; **5-page benchmark short paper** including references, IEEE proceedings, single-anonymous | **Immediate paper decision.** Finish tightly scoped manuscript only if defensible by deadline. Portal: https://icse2027-agent.hotcrp.com/. Vals *event* submission receipt still unverified; don't conflate it with a paper. |
+| **Failure-conditioned skill transfer: reproducible negative results** | [Terminal DreamGym](https://github.com/Vedant2100/terminal_dreamgym) | Four preregistered experiments: 3/5-seed matched runs, new 16-repo benchmark, stronger writer. No reliable benefit from skill text; v2 30B condition harmful with placebo confounding. | [EASE 2027 Reproducibility and Negative Results](https://conf.researchr.org/dates/ease-2027), Feb 22 abstract / Mar 1 paper | **Develop separate SE negative-results paper.** Show why null matters and distinguish lack of effect from limited power; do not imply general impossibility of self-improvement. |
+| **Learning to maintain memory under conflict** | [StaleStream](https://github.com/Vedant2100/f26/tree/main/cs258/stalestream) | Course proposal, held-out gate design; no verified trained GRPO writer yet. Main contribution requires learned writer, oracle/headroom and 3+ seeds. | [ICML 2027](https://icml.cc/Conferences/2027/CallForPapers), Jan 14 **mandatory abstract**, Jan 22 paper AoE **only if results mature**; otherwise topical ICLR/ICML workshops | **Primary experimental investment now.** Do not force main-track paper from an unverified pilot. |
+| **Reward design for tool agents** | [RewardHackLab](https://github.com/Vedant2100/role-work-forge-artifacts) | Corrected 210-step SFT gate passed: 18/18 vs base 0/18 on held-out ticket IDs, one seed. No valid proxy-reward vs state-verified RL result. | Future verified-reward/RL workshop after a real comparison; no current paper target | **Keep separate from StaleStream.** Need actual RL gains, varied tasks (SFT ceiling), matched compute, held-out robustness. |
+| **Security of agent tool/peer authority** | ContagionBench + ProvenanceTrap | Existing pilots separate and undercontrolled. Possible common threat model/guard evaluation only if independent seeds, genuinely mediated transmission and competent authorized-task completion are established. | [USENIX SAIS 2027](https://www.usenix.org/conference/sais27/call-for-papers), Feb 4 paper 23:59 AoE, **conditional** | **No merge or paper claim yet.** A common contribution requires compatible threat models and matched evidence, not merely overlapping safety labels. |
+| **Memory retrieval and experience transfer** | [EvoMemBench](https://github.com/Vedant2100/evo-mem-bench), existing memory-governance work | Synthetic positive control finished; original ALFWorld partial 15-episode pilot, full matrix unverified. | Later memory / agent evaluation workshop, not ICML main until substantial held-out evidence | Keep as experiment platform and possible independent result; cite in StaleStream only where methods/protocol genuinely transfer. |
+| **Adaptive test-time compute** | [TTC design](projects/adaptive-ttc.md) | Conceptual; no dedicated learned controller or verified compute/quality Pareto gains. | Future ML/RL workshop after headroom and strong heuristic controls | Incubate cheaply, no venue-driven GPU spending. |
 
-TTC is research design only. Its strongest target is a later topical **ICLR/ICML/NeurIPS workshop** on RL post-training, learning agents or efficient inference *after* a genuine matched-budget held-out result exists; check official workshop CFP dates and archival/preprint policies at submission time. Reuse existing Vals benchmark participation only if organizers' permitted environment meaningfully tests compute allocation; otherwise do not retrofit an unrelated hackathon entry. Existing **AGENT** workshop might thematically fit, but Nov 20 is too near for a new, unimplemented TTC experiment—do not rush a paper. No venue submission has occurred.
+## Official upcoming deadlines and constraints
+
+| Specific call/track | Official dates (2026/2027) | Critical requirements and policy |
+|---|---|---|
+| [AGENT 2027 at ICSE](https://conf.researchr.org/home/icse-2027/agent-2027) | **Nov 20, 2026 23:59 AoE** (extended), acceptance Dec 11 | Short emerging/tool/benchmark paper **up to 5 pages including references** or full research/experience up to 8; IEEE template; single-anonymous; accepted papers published in IEEE proceedings. [Portal](https://icse2027-agent.hotcrp.com/). |
+| [ICML 2027 main](https://icml.cc/Conferences/2027/CallForPapers) | Site opens Jan 8; **abstract Jan 14**, full paper Jan 22, 23:59 AoE | Double-blind, 8 pages main text; dedicated contribution types include Negative Results and Datasets/Evaluations/Benchmarks, but the same high scientific bar applies; AI disclosure and reciprocal reviewer requirements; PMLR proceedings. |
+| [EASE 2027 research](https://conf.researchr.org/dates/ease-2027) | **abstract Jan 15**, paper Jan 22 | Original/unpublished research; consult current track CFP for format/eligibility and overlap policies. FrontierMemory's FORGE status must be resolved first. |
+| [USENIX SAIS 2027](https://www.usenix.org/conference/sais27/call-for-papers) | **paper Feb 4**, 23:59 AoE | Preliminary CFP: secure agentic systems, up to 13-page main body/30 overall, double-blind, open-science appendix, strict overlap restrictions. A current systems-security contribution is required. Portal still not announced in consulted preliminary CFP. |
+| [EASE 2027 Negative Results](https://conf.researchr.org/dates/ease-2027) | **abstract Feb 22**, paper Mar 1 | Distinct SE reproducibility and negative-results track. Current-year detailed acceptance requirements must be verified before submission; a failed pilot or inconclusive power alone is insufficient scientific contribution. |
+| [EASE 2027 Short/Emerging](https://conf.researchr.org/dates/ease-2027) | **abstract Feb 22**, paper Mar 1 | Alternative for emergent empirical evidence; confirm specific 2027 CFP, pages and archival status before selecting. |
+| [ICLR 2027 individual workshops](https://iclr.cc/Conferences/2027/WorkshopGuidelines) | Workshop organizer notification **Nov 29, 2026**; suggestion of Feb 1, 2027 for contributions is **not a universal CFP deadline** | Follow each accepted workshop's own eventual call, abstract/paper windows, archival policy and eligibility. Never infer deadlines from the parent workshop guidelines. |
+
+All dates above are **officially checked as of Nov 16, 2026**, not promises that a venue remains open in future runs. AGENT due Nov 20 AoE is Nov 21 at 03:59 Pacific Standard Time. Always show both mandatory abstract and paper deadlines.
+
+## Decision and consolidation rules
+
+1. **One paper per defensible scientific claim.** Integrate code, methods and career narrative at program level; do not join incompatible experiments or republish the same archival results. Treat FrontierMemory and DreamGym as separate research studies despite their shared skill/memory motivation.
+2. **Stage gate:** proposed → implemented → executed → replicated → paper drafted → externally submitted (receipt) → accepted. A Valkyrie dataset publication or organizer RSVP is not a paper submission.
+3. **Submission exclusivity:** never concurrently submit substantially overlapping archival manuscripts. A FORGE submission cannot simply be reused as EASE research while it remains under review. An accepted AGENT IEEE paper restricts later reuse; any substantially extended study needs meaningful new material and policy compliance.
+4. **Readiness before deadlines:** prioritize TrustVal-to-AGENT immediately. Prepare DreamGym for EASE without changing its negative result; progress StaleStream and RewardHackLab scientifically even if no immediate CFP. Do not rush ContagionBench, ProvenanceTrap, EvoMemBench or TTC merely because a call exists.
+5. **Evidence priority:** current canonical source repository and recent actual run outputs outrank older master summaries. The [research consolidation PR](https://github.com/Vedant2100/research-master-/pull/19) may be unmerged; check it and master before reporting. Quote model counts with their exact benchmark versions, seeds and caveats.
+6. **Workshop-first surveillance:** keep an independent radar for topical ICLR, ICML, NeurIPS, ICSE, FSE, ASE, AAMAS, agentic-safety, coding-agent and memory workshops. Mark a paper CFP as **NOT ANNOUNCED** until an individual official page supplies dates. Classify archival vs non-archival routes and any impact on later main-track papers.
+7. **Notification deduplication:** daily alert only on material changes and approaching actionable deadlines; comprehensive Sunday review lists consolidated *paper units* with stage, actual blocked evidence, top valid primary/backup venue and next action, plus projects intentionally parked.
+
+## Historical and non-publication events
+
+- Swarm Alignment and micro1 November events concluded without verified official submissions.
+- FORGE 2027 paper deadline Nov 15 passed; FrontierMemory submission #11 is user-reported, external receipt absent from master.
+- Lexsi Stage 1 deadline Nov 15 passed; event submission unverified, SFT gate success does **not** equal RL result.
+- Vals event Nov 14–15 ended; TrustVal benchmark published to Valkyrie, but Vals hackathon portal entry is still unverified.
+- Iterate event ended; owner reported rejection.
+- Separate Apart Agent Attribution sprint participation and hackathon prizes from publication CFP tracking; they are not publication venues unless an official peer-reviewed proceedings route is independently confirmed.

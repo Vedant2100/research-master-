@@ -49,3 +49,6 @@ CI or deterministic integration tests passing is not evidence of frontier-model 
 
 ## Evidence handoff
 Record run IDs, dataset version/digest, per-task rewards, trace locations and costs here and in `RESULTS.md` when they exist.
+
+
+**2026-11-16 reconciliation:** Benchmark experiments complete in canonical https://github.com/Vedant2100/trustval. v3 OpenAI: GPT-5.3-Codex 34/40, GPT-5.4 40/40, GPT-6 Astra/Sol/Terra each 4/4 in one pilot. v4 delayed visibility: Haiku 5.5 11/12, Sonnet 5.5 12/12, GPT-6.1 Terra 12/12. Source results and traces: https://github.com/Vedant2100/trustval/blob/main/RESULTS.md. Vals event portal submission unverified.

@@ -21,3 +21,5 @@ Only 15 tasks, broken reference solutions for 4; ~8 tasks lacking related source
 Finalize latest generator/blend arm and artifact, freeze figures, decide FORGE Nov 15 submission and save receipt; then per-task oracle-from-history and Word2Vec ablations.
 
 See [evidence ledger](../EVIDENCE.md), [investment assessment](../DECISIONS.md) and [venues](../VENUES.md).
+
+**2026-11-16 reconciliation:** Study and paper completed; FORGE submission #11 user-reported (portal receipt absent from master). Future oracle/Word2Vec ablations are optional new research, not blockers to close the present cycle. Paper: https://github.com/Vedant2100/frontiermemory-forge-repo.

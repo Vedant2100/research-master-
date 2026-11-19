@@ -21,3 +21,5 @@ Planned full ~24,090 episode matrix not confirmed complete; synthetic hidden-rul
 Run no-memory/playbook headroom (overall >=55%, category >=30%, avoid >95% ceiling), matched seeds, complete held-out core methods before large GPU matrix.
 
 See [evidence ledger](../EVIDENCE.md), [investment assessment](../DECISIONS.md) and [venues](../VENUES.md).
+
+**2026-11-16 reconciliation:** Qwen hidden-rule pilot: no memory 8/36 vs oracle 36/36; original official ALFWorld saved 15 episodes (no-memory 3/6, static playbook 5/6, BM25 2/3), then reset error. Cleanup and stress-test code committed, but full methods study not executed. https://github.com/Vedant2100/evo-mem-bench/blob/main/reports/2026-11-09-qwen-memory-results.md

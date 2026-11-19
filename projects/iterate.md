@@ -21,3 +21,5 @@ Overlaps Vals; do not claim both attended or a general recursively self-improvin
 Check approval and event rules; attend only if logistics permit or continue the same research outside the hack.
 
 See [evidence ledger](../EVIDENCE.md), [investment assessment](../DECISIONS.md) and [venues](../VENUES.md).
+
+**2026-11-16 reconciliation:** Nov 14–15 event ended; owner reported rejection. No accepted registration, attendance or official submission verified; close event-specific queue without attributing separate DreamGym experiments to Iterate.

@@ -70,3 +70,6 @@ Deprioritized by the owner on 2026-11-13. No further runs planned. Four experime
 
 ## Do not overclaim
 Four results on one 7B solver and two small benchmarks do not show that skills never help; they show no detectable gain here, with intervals of about ±0.09. The v2 harm is one comparison and is confounded with prompt length.
+
+
+**2026-11-16 reconciliation:** Four preregistered experiments completed and research cycle closed/deprioritized on Nov 13. No further prompt-skill reruns planned absent a new hypothesis. Canonical results: https://github.com/Vedant2100/terminal_dreamgym.

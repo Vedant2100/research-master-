@@ -1,5 +1,7 @@
 # Delivery plan (America/Los_Angeles)
 
+**2026-11-16 reconciliation:** Nov 12–15 items below are historical, not pending deliverables. FrontierMemory paper and DreamGym research are complete; TrustVal benchmark evaluation is complete but official event submission is unverified; RewardHackLab corrected SFT gate passed but its RL comparison remains.
+
 | Date | Work |
 |---|---|
 | Nov 12 | StaleStream proposal (target, check Canvas) |
@@ -13,7 +15,9 @@
 | Dec 10 | StaleStream final report/code |
 | Dec 11–13 | Apart Agent Attribution sprint only if registered, new attribution experiments |
 
-**Weekly minimum:** Memory — completed audit/competence/headroom; Safety — independent seeded safety/competence test; RL — nonzero tool-agent verified outcome or actual reward training; Autonomous — matched DreamGym transfer replication. Report blocker, evidence URL, next action for EACH track.
+**Next live decisions:** Nov 19 StaleStream oracle/headroom/300-episode/timing gate; Nov 20 safety paper only with real causal replication; Nov 24 StaleStream GRPO pilot; RewardHackLab matched proxy-vs-verified RL pilot using the competent SFT adapter; EvoMemBench ALFWorld lifecycle repair + matched competence. Preserve explicit stage/receipt distinctions.
+
+**Weekly minimum:** Report blocker, evidence URL and next decisive action only for unfinished funded workstreams. Do not create repeat experiments just to fill an area after DreamGym or TrustVal has completed.
 
 ## TTC incubation — internal checkpoints, not external deadlines
 - First: inspect the entire accessible [Atlas](https://frontier-rl-project-atlas-2711vedant-6531.vercel.app/) and existing DreamGym/RewardHackLab source + actual traces; write a prior-art overlap matrix against learned dynamic planning and reasoning-budget papers.
