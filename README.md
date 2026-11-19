@@ -1,6 +1,6 @@
-# Research Master — Four Active Tracks, Ten Specialist Agents
+# Research Master — Four Active Tracks, Eleven Specialist Agents
 
-The research portfolio coordinating **ten distinct workstreams across four continuously active areas**. **One agent owns one thread.** This repository is the home for all research work: code, results and coordination (owner decision 2026-11-14).
+The research portfolio coordinating **eleven distinct workstreams across four continuously active areas**. **One agent owns one thread.** This repository is the home for all research work: code, results and coordination (owner decision 2026-11-14).
 
 | Area | Thread | Agent |
 |---|---|---|
@@ -12,13 +12,14 @@ The research portfolio coordinating **ten distinct workstreams across four conti
 | RL Post-Training & Reward Design | [RewardHackLab](projects/rewardhacklab.md) | `rewardhacklab` |
 | RL Post-Training & Reward Design | [TrustVal (Vals Build Your Own Eval)](projects/vals.md) | `vals` |
 | RL Post-Training & Reward Design | [Adaptive Test-Time Compute (TTC)](projects/adaptive-ttc.md) | `adaptive-ttc` |
+| RL Post-Training & Reward Design | [RL Optimizer Geometry](projects/rl-optimizer-geometry.md) | `rl-optimizer-geometry` |
 | Autonomous Research & Self-Improvement | [Terminal DreamGym](projects/terminal-dreamgym.md) | `terminal-dreamgym` |
 | Autonomous Research & Self-Improvement | [Iterate Research Hack](projects/iterate.md) | `iterate` |
 
 ## How agents work
 
-- **GitHub Copilot**: select one of the nine [custom agent profiles](.github/agents) in a supported client; point it at the corresponding project and [work issue](AGENT_ROSTER.md). GitHub profiles require supported Copilot access.
-- **Codex**: use the nine [project-scoped agent configurations](.codex/agents), with [root agent coordination rules](AGENTS.md). Start a Codex multi-agent session and delegate explicitly; configuration does not run agents on its own.
+- **GitHub Copilot**: select one of the eleven [custom agent profiles](.github/agents) in a supported client; point it at the corresponding project and [work issue](AGENT_ROSTER.md). GitHub profiles require supported Copilot access.
+- **Codex**: use the eleven [project-scoped agent configurations](.codex/agents), with [root agent coordination rules](AGENTS.md). Start a Codex multi-agent session and delegate explicitly; configuration does not run agents on its own.
 - **Each agent works in a separate research lane**: read the evidence; implement/run only with authorized repo+compute access; open a PR for review; record experiments in [the handoff template](templates/EXPERIMENT_HANDOFF.md). No self-certifying a result.
 - **Orchestrator/human** reviews cross-project changes and decisions. Agent branches are never implicitly merged.
 
@@ -27,7 +28,7 @@ The research portfolio coordinating **ten distinct workstreams across four conti
 - **[Source map](SOURCE_MAP.md): where each workstream's prior code lives, to import into `workstreams/<slug>/` and build on rather than reinvent.**
 
 
-- [Ten-agent roster](AGENT_ROSTER.md) and [coordination protocol](AGENTS.md)
+- [Eleven-agent roster](AGENT_ROSTER.md) and [coordination protocol](AGENTS.md)
 - [Evidence ledger](EVIDENCE.md) · [Investment decisions](DECISIONS.md) · [Roadmap](ROADMAP.md) · [Research venues](VENUES.md) · [Scientific governance](GOVERNANCE.md)
 - [Track summaries](tracks) · [Machine-readable index](portfolio.json)
 - [Craft research portfolio](https://docs.craft.do/editor/d/dd929934-8174-f727-2930-6f5b7bcce38c/8b4ab40f-4e7e-9c00-0119-df54205b366f)

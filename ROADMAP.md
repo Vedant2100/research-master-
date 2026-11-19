@@ -20,3 +20,10 @@
 - Then: run cheap paired task-level headroom assessment (fixed low/high budget and strongest cheap heuristic), recording real tokens, latency, verification/tool calls and terminal success. Coordinate with source-repo owners; do not duplicate a harness.
 - Only if competence, budget sensitivity and heldout splits are verified: implement an actual experience-adaptive RL allocation policy, compare vs heuristics/bandits/SFT router, replicate across >=3 independent seeds and shifted task families.
 - Go/no-go before any material GPU allocation; this remains a **conditional tenth workstream** within the existing four active tracks, not a fifth track or confirmed TTC result.
+
+
+## RL Optimizer Geometry — incubation checkpoints, not external deadlines
+- Read imported code, test CPU diagnostics and theory_check. Audit official trainer and exact source versions.
+- Check model/verifier competence, GPU/VRAM and maximum cost. No training approval presumed.
+- Freeze independent seeds, datasets and separate validation/test, fair LR tuning, advantages, KL/clipping and applied update RMS before each optimizer comparison.
+- Only if explicitly approved: small same-trainer AdamW/Muon/Pion pilot; if promising then 3-seed held-out confirmation. Stop if fair controls remove the effect.
