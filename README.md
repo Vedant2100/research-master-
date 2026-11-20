@@ -38,3 +38,10 @@ The research portfolio coordinating **ten distinct workstreams across four conti
 Four tracks stay active each week; effort varies by validated promise and deadlines. Separate **planned / implemented / executed / replicated / submitted / accepted**. CI success is not experiment evidence. Do not infer a user has registered/submitted without receipt. The central repo is **public**: no private notes, personal data, secrets, cluster credentials, or inaccessible private experiment code should be copied here.
 
 **Important:** Creating these agent profiles and issues makes them *available for invocation*, not continuously running or independently funded. Execution requires a supported agent runtime and access to the original experiment repos/GPUs.
+
+
+## Apart AI × Epistemics Sprint — Proof Is Not Truth
+
+**Final submission manuscript:** [APART_SUBMISSION_FINAL.md](workstreams/proof-is-not-truth/reports/APART_SUBMISSION_FINAL.md). The official-template PDF has been prepared separately for the Apart submission form; the project has not been submitted externally.
+
+**Pre-sprint code disclosure:** The ProvenanceTrap prototype in [the earlier project record](projects/provenancetrap.md) and [its source repository](https://github.com/Vedant2100/role-work-forge-artifacts/tree/main/hackathons/2026-11/provenancetrap) predates the November 13–15 sprint. It comprised an 8-case prompt-injection test and 96 Qwen2.5-3B runs; the audited run completed 22/96 tasks, while 60 of 76 failures halted before tool interaction. That prototype did not contain the HMAC-SHA256 provenance or telemetry tools evaluated in the sprint. Sprint-created work includes the prototype audit, HMAC keystore, telemetry discovery, 16-case benchmark, 96-episode Qwen2.5-7B-Instruct evaluation, and version-2 action-ordering regrader. The final report distinguishes these contributions explicitly.
